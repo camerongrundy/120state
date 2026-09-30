@@ -445,13 +445,11 @@
   }
   .tbl tbody tr:last-child td{border-bottom:0}
   .tbl tbody tr:hover{background:var(--surface-2)}
-  .tbl .c-check{width:44px;padding-right:0}
-  .tbl .c-act{width:64px;text-align:right}
+  .tbl .c-check{width:54px;padding:0;position:relative}
   .tbl input[type="checkbox"]{accent-color:var(--brand);width:15px;height:15px;cursor:pointer}
   .t-main{display:block;font-weight:600;color:var(--text)}
   .t-sub{display:block;font-size:12px;color:var(--text-3);margin-top:3px}
-  .t-link{display:block;font-weight:600;color:var(--brand)}
-  .t-link:hover{text-decoration:underline}
+  .t-link{display:block;font-weight:600;color:var(--text)}
   .t-none{color:var(--text-3)}
   .t-wrap{white-space:normal;min-width:190px}
   .spill{
@@ -464,11 +462,6 @@
   .spill.crit{background:var(--crit-tint);color:var(--crit)}
   .spill.info{background:var(--accent-tint);color:var(--accent)}
   .spill.neutral{background:var(--surface-3);color:var(--text-2)}
-  .rowact{
-    width:34px;height:34px;border-radius:50%;border:1px solid var(--border-2);
-    display:inline-grid;place-items:center;color:var(--text-2);font-size:14px;letter-spacing:.06em;
-  }
-  .rowact:hover{background:var(--surface-2);color:var(--text)}
   .minisel{
     border:1px solid var(--border-2);border-radius:999px;padding:7px 12px;
     font:inherit;font-size:13px;color:var(--text);background:var(--surface);cursor:pointer;
@@ -536,9 +529,227 @@
   .switch[aria-checked="true"]>span{transform:translateX(19px)}
   @media (max-width:900px){.pair{grid-template-columns:minmax(0,1fr)}}
 
+  /* ---- Calypso: rows are whole click targets, controls keep their own ---- */
+  .tbl tbody tr{cursor:pointer}
+  .tbl tbody tr:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+  /* The label is pinned to its cell rather than padded inside it, so the target and
+     the highlight are the full height of the row however tall the row grows. */
+  .chk{
+    position:absolute;inset:0;
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;transition:background .12s ease;
+  }
+  .chk:hover{background:var(--surface-3)}
+  .chk:focus-within{background:var(--surface-3);box-shadow:inset 0 0 0 2px var(--accent)}
+
+  /* ---- Calypso: right-side record flyout (shell matches the Filters pattern) ---- */
+  .scrim{
+    position:fixed;inset:0;z-index:90;background:rgba(33,37,43,.34);
+    opacity:0;transition:opacity .22s ease;
+  }
+  .scrim.in{opacity:1}
+  .drawer{
+    position:fixed;top:0;right:0;bottom:0;z-index:91;
+    width:min(620px,100vw);background:var(--surface);
+    border-left:1px solid var(--border);box-shadow:-18px 0 44px rgba(33,37,43,.16);
+    display:flex;flex-direction:column;
+    transform:translateX(100%);transition:transform .26s cubic-bezier(.4,0,.2,1);
+  }
+  .drawer.in{transform:none}
+  @media (prefers-reduced-motion:reduce){.drawer,.scrim{transition:none}}
+  .dw-head{display:flex;align-items:flex-start;gap:12px;flex:none;padding:17px 20px;border-bottom:1px solid var(--border)}
+  .dw-head h4{font-size:17px;font-weight:600}
+  .dw-head .sub{font-size:13px;color:var(--text-2);margin-top:3px}
+  .dw-close{
+    margin-left:auto;flex:none;width:32px;height:32px;border-radius:50%;
+    border:1px solid var(--border-2);display:grid;place-items:center;color:var(--text-2);
+  }
+  .dw-close:hover{background:var(--surface-2);color:var(--text)}
+  .dw-body{flex:1;overflow-y:auto;padding:18px 20px 24px;display:flex;flex-direction:column;gap:22px}
+  .dw-foot{flex:none;display:flex;gap:10px;flex-wrap:wrap;padding:14px 20px;border-top:1px solid var(--border)}
+  .dw-sec h5{
+    font-size:12px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;
+    color:var(--text-3);margin-bottom:11px;
+  }
+  .dw-facts{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px 18px;font-size:14px;margin:0}
+  .dw-facts dt{color:var(--text-2)}
+  .dw-facts dd{margin:0;font-weight:500;text-align:right;font-variant-numeric:tabular-nums}
+  .dw-list{display:flex;flex-direction:column;border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+  .dw-row{
+    display:flex;align-items:center;gap:12px;width:100%;text-align:left;
+    padding:12px 14px;border-bottom:1px solid var(--border);font-size:14px;
+  }
+  .dw-row:last-child{border-bottom:0}
+  .dw-row:hover{background:var(--surface-2)}
+  .dw-row .nm{font-weight:600;display:block}
+  .dw-row .meta{display:block;font-size:12px;color:var(--text-3);margin-top:2px}
+  .dw-row .sp{margin-left:auto;flex:none}
+  .dw-note{font-size:13px;color:var(--text-2);line-height:1.55}
+
   /* cards sit almost flat and lift on hover */
   .kpi,.domain,.tbl-card{transition:box-shadow .15s ease}
   .kpi:hover,.domain:hover,.tbl-card:hover{box-shadow:var(--shadow-hover)}
+
+  .crumbs{display:flex;align-items:center;gap:7px;font-size:13px;color:var(--text-2);margin-bottom:20px}
+  .crumbs button{color:var(--brand);font-weight:600}
+  .crumbs button:hover{text-decoration:underline}
+  .crumbs svg{color:var(--text-3);flex:none}
+
+  /* ---- template detail ---- */
+  .rec-card{
+    background:var(--surface);border:1px solid var(--border);border-radius:var(--r);
+    box-shadow:var(--shadow);padding:22px 24px;margin-bottom:44px;
+  }
+  .rec-top{display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap}
+  .rec-top h2{font-size:22px;font-weight:600}
+  .rec-top .btn-pill{margin-left:auto}
+  .rec-desc{font-size:14px;color:var(--text-2);line-height:1.6;max-width:86ch;margin-top:10px}
+  .meta-row{
+    display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:20px;
+    margin-top:22px;padding-top:20px;border-top:1px solid var(--border);
+  }
+  .meta-k{font-size:13px;color:var(--text-2);margin-bottom:5px}
+  .meta-v{font-size:17px;font-weight:600;letter-spacing:-.01em}
+  .sec-bar{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:18px}
+  .sec-bar p{font-size:13px;color:var(--text-2);margin-top:4px}
+
+  /* ---- form controls ---- */
+  .form-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-top:16px}
+  .fld{display:flex;flex-direction:column;gap:6px;min-width:0}
+  .fld.wide{grid-column:1/-1}
+  .fld > span{font-size:13px;font-weight:500;color:var(--text-2)}
+  .fld input,.fld select,.fld textarea{
+    border:1px solid var(--border-2);border-radius:8px;padding:10px 12px;
+    font:inherit;font-size:14px;color:var(--text);background:var(--surface);width:100%;
+  }
+  .fld textarea{resize:vertical;min-height:76px;line-height:1.55}
+  .fld input:focus,.fld select:focus,.fld textarea:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:var(--accent)}
+
+  /* ---- centred modal ---- */
+  .modal-scrim{
+    position:fixed;inset:0;z-index:92;background:rgba(33,37,43,.34);
+    display:grid;place-items:center;padding:24px;
+    opacity:0;transition:opacity .22s ease;
+  }
+  .modal-scrim.in{opacity:1}
+  .modal{
+    width:min(1080px,100%);max-height:min(860px,92vh);background:var(--surface);
+    border:1px solid var(--border);border-radius:12px;box-shadow:0 24px 60px rgba(33,37,43,.22);
+    display:flex;flex-direction:column;
+    transform:translateY(10px) scale(.99);transition:transform .24s cubic-bezier(.4,0,.2,1);
+  }
+  .modal-scrim.in .modal{transform:none}
+  @media (prefers-reduced-motion:reduce){.modal,.modal-scrim{transition:none}}
+  .modal-head{display:flex;align-items:flex-start;gap:14px;flex:none;padding:20px 24px 16px}
+  .modal-head h3{font-size:18px;font-weight:600}
+  .modal-head p{font-size:13px;color:var(--text-2);margin-top:4px}
+  .modal-body{flex:1;overflow-y:auto;padding:0 24px 20px;display:flex;flex-direction:column;gap:16px}
+  .modal-foot{
+    flex:none;display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+    padding:14px 24px;border-top:1px solid var(--border);
+  }
+  .modal-foot .count{font-size:13px;color:var(--text-2)}
+  .modal-foot .right{margin-left:auto;display:flex;gap:10px}
+  .type-pills{display:flex;gap:10px;flex-wrap:wrap}
+  .type-pill{
+    border:1px solid var(--border-2);border-radius:999px;padding:9px 16px;
+    font-size:14px;font-weight:600;color:var(--text);background:var(--surface);
+  }
+  .type-pill:hover{background:var(--surface-2)}
+  .type-pill[aria-pressed="true"]{background:var(--brand-tint);border-color:var(--brand);color:var(--brand)}
+  .type-pill .n{
+    display:inline-grid;place-items:center;min-width:20px;height:20px;padding:0 6px;margin-left:6px;
+    border-radius:999px;background:var(--surface-3);color:var(--text-2);font-size:12px;font-weight:700;
+  }
+  .type-pill[aria-pressed="true"] .n{background:var(--brand);color:#fff}
+  .fac-shown{font-size:13px;color:var(--text-2);white-space:nowrap}
+  #addFacScrim .tbl-wrap{max-height:46vh;overflow-y:auto}
+  #addFacScrim .tbl thead th{position:sticky;top:0;z-index:1}
+  .fld-lab{font-size:13px;font-weight:500;color:var(--text-2);margin-bottom:7px;display:block}
+  button[disabled]{opacity:.5;cursor:default}
+  @media (max-width:900px){
+    .meta-row{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .form-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  }
+  @media (max-width:560px){
+    .meta-row,.form-grid{grid-template-columns:minmax(0,1fr)}
+  }
+
+  /* ---- bulk selection bar (Calypso) ---- */
+  .bulkbar{
+    position:fixed;bottom:26px;z-index:80;
+    left:calc(50% + (var(--sidebar) / 2));transform:translateX(-50%) translateY(14px);
+    display:flex;align-items:center;gap:16px;
+    background:var(--brand);border-radius:14px;
+    box-shadow:0 18px 44px rgba(33,37,43,.24), 0 2px 8px rgba(33,37,43,.14);
+    padding:13px 16px;max-width:calc(100vw - 40px);
+    opacity:0;transition:opacity .2s ease, transform .24s cubic-bezier(.4,0,.2,1);
+  }
+  .bulkbar.in{opacity:1;transform:translateX(-50%)}
+  @media (prefers-reduced-motion:reduce){.bulkbar{transition:none}}
+  .bulkbar .badge{
+    width:34px;height:34px;border-radius:50%;flex:none;display:grid;place-items:center;
+    background:rgba(255,255,255,.17);color:#fff;
+    font-size:14px;font-weight:700;font-variant-numeric:tabular-nums;
+  }
+  .bulk-txt{min-width:0}
+  .bulk-txt b{display:block;font-size:14px;font-weight:600;color:#fff;line-height:1.35}
+  .bulk-txt span{display:block;font-size:12.5px;color:rgba(255,255,255,.74);line-height:1.35;margin-top:1px}
+  .bulk-acts{margin-left:auto;display:flex;align-items:center;gap:10px;flex:none}
+  .bulk-act{
+    background:#fff;color:var(--brand);border:1px solid #fff;border-radius:10px;
+    padding:10px 20px;font-size:14px;font-weight:600;white-space:nowrap;
+  }
+  .bulk-act:hover{background:rgba(255,255,255,.88)}
+  .bulkbar .clear{
+    background:none;border:0;color:#fff;font-size:14px;font-weight:600;
+    padding:9px 10px;white-space:nowrap;
+  }
+  .bulkbar .clear:hover{text-decoration:underline}
+  @media (max-width:920px){.bulkbar{left:50%}}
+  @media (max-width:560px){
+    .bulkbar{flex-wrap:wrap;border-radius:12px}
+    .bulk-acts{margin-left:0;width:100%}
+    .bulk-act{flex:1}
+  }
+
+  /* ---- confirm dialog ---- */
+  .modal.confirm{width:min(540px,100%)}
+  .cf-ico{
+    width:38px;height:38px;border-radius:50%;flex:none;display:grid;place-items:center;
+    background:var(--crit-tint);color:var(--crit);
+  }
+  .btn-danger{
+    border:1px solid var(--crit);border-radius:999px;padding:10px 22px;white-space:nowrap;
+    font-size:14px;font-weight:600;color:#fff;background:var(--crit);
+  }
+  .btn-danger:hover{filter:brightness(.93)}
+
+  /* ---- toast ---- */
+  .toast{
+    position:fixed;bottom:26px;z-index:95;
+    left:calc(50% + (var(--sidebar) / 2));transform:translateX(-50%) translateY(14px);
+    display:flex;align-items:flex-start;gap:12px;
+    background:var(--surface);border:1px solid var(--border);border-radius:12px;
+    box-shadow:0 18px 44px rgba(33,37,43,.18), 0 2px 8px rgba(33,37,43,.10);
+    padding:14px 12px 14px 16px;max-width:calc(100vw - 40px);
+    opacity:0;transition:opacity .2s ease, transform .24s cubic-bezier(.4,0,.2,1);
+  }
+  .toast.in{opacity:1;transform:translateX(-50%)}
+  @media (prefers-reduced-motion:reduce){.toast{transition:none}}
+  .toast .t-ico{
+    width:28px;height:28px;border-radius:50%;flex:none;display:grid;place-items:center;
+    background:var(--ok-tint);color:var(--ok);
+  }
+  .toast .t-txt{min-width:0}
+  .toast .t-txt b{display:block;font-size:14px;font-weight:600;line-height:1.35}
+  .toast .t-txt span{display:block;font-size:13px;color:var(--text-2);line-height:1.4;margin-top:2px}
+  .toast .t-close{
+    width:28px;height:28px;border-radius:50%;flex:none;display:grid;place-items:center;
+    color:var(--text-3);margin-left:4px;
+  }
+  .toast .t-close:hover{background:var(--surface-3);color:var(--text)}
+  @media (max-width:920px){.toast{left:50%}}
 
   .view{display:flex;flex-direction:column}
 
@@ -940,7 +1151,7 @@
       </div>
       <div class="tbl-wrap">
         <table class="tbl">
-          <thead><tr><th class="c-check"><input type="checkbox" aria-label="Select all rows"></th><th class="sortable">PWSID</th><th class="sortable">Name</th><th class="sortable">PWS Type</th><th class="sortable">PWS Owner</th><th class="sortable">Address</th><th class="sortable">Population Served</th><th class="sortable">Service Line Connections</th><th class="sortable">Percent Non-Lead</th><th class="sortable">Status</th><th class="sortable">Assigned Inventory Submission Period</th><th class="sortable">Assigned CNC Submission Period</th><th class="sortable">Counties Served</th><th class="sortable">Territory</th><th class="sortable">Current PTD Opt-In Status</th><th class="c-act">Actions</th></tr></thead>
+          <thead><tr><th class="c-check"><label class="chk"><input type="checkbox" aria-label="Select all rows"></label></th><th class="sortable">PWSID</th><th class="sortable">Name</th><th class="sortable">PWS Type</th><th class="sortable">PWS Owner</th><th class="sortable">Address</th><th class="sortable">Population Served</th><th class="sortable">Service Line Connections</th><th class="sortable">Percent Non-Lead</th><th class="sortable">Status</th><th class="sortable">Assigned Inventory Submission Period</th><th class="sortable">Assigned CNC Submission Period</th><th class="sortable">Counties Served</th><th class="sortable">Territory</th><th class="sortable">Current PTD Opt-In Status</th></tr></thead>
           <tbody id="utilRows"></tbody>
         </table>
       </div>
@@ -1003,7 +1214,7 @@
       </div>
         <div class="tbl-wrap">
           <table class="tbl">
-            <thead><tr><th class="c-check"><input type="checkbox" aria-label="Select all rows"></th><th class="sortable">PWS</th><th class="sortable">Submitted By</th><th class="sortable">Submitted Date</th><th class="sortable">PWS Type</th><th class="sortable">Service Line Connections</th><th class="sortable">Percent Known</th><th class="sortable">Total Lines</th><th class="sortable">Lead</th><th class="sortable">GRR</th><th class="sortable">Unknown</th><th class="sortable">Non-Lead</th><th class="sortable">Assigned To</th><th class="sortable">Submission Status</th><th class="sortable">Overdue</th><th class="sortable">Attempts</th><th class="sortable">Counties Served</th><th class="sortable">Territory</th><th class="sortable">PTD Published Status</th><th class="sortable">Current PTD Opt-In Status</th><th class="c-act">Actions</th></tr></thead>
+            <thead><tr><th class="c-check"><label class="chk"><input type="checkbox" aria-label="Select all rows"></label></th><th class="sortable">PWS</th><th class="sortable">Submitted By</th><th class="sortable">Submitted Date</th><th class="sortable">PWS Type</th><th class="sortable">Service Line Connections</th><th class="sortable">Percent Known</th><th class="sortable">Total Lines</th><th class="sortable">Lead</th><th class="sortable">GRR</th><th class="sortable">Unknown</th><th class="sortable">Non-Lead</th><th class="sortable">Assigned To</th><th class="sortable">Submission Status</th><th class="sortable">Overdue</th><th class="sortable">Attempts</th><th class="sortable">Counties Served</th><th class="sortable">Territory</th><th class="sortable">PTD Published Status</th><th class="sortable">Current PTD Opt-In Status</th></tr></thead>
             <tbody id="subRows"></tbody>
           </table>
         </div>
@@ -1033,7 +1244,7 @@
       </div>
         <div class="tbl-wrap">
           <table class="tbl">
-            <thead><tr><th class="c-check"><input type="checkbox" aria-label="Select all rows"></th><th class="sortable">PWS</th><th class="sortable">Submitted By</th><th class="sortable">Submitted Date</th><th class="sortable">Notice Type</th><th class="sortable">Delivery Method</th><th class="sortable">Certification Status</th><th class="sortable">Counties Served</th><th class="c-act">Actions</th></tr></thead>
+            <thead><tr><th class="c-check"><label class="chk"><input type="checkbox" aria-label="Select all rows"></label></th><th class="sortable">PWS</th><th class="sortable">Submitted By</th><th class="sortable">Submitted Date</th><th class="sortable">Notice Type</th><th class="sortable">Delivery Method</th><th class="sortable">Certification Status</th><th class="sortable">Counties Served</th></tr></thead>
             <tbody id="cncRows"></tbody>
           </table>
         </div>
@@ -1081,7 +1292,7 @@
             <div class="donut" id="morStatusDonut"></div>
             <div class="keys" style="flex:1;min-width:190px" id="morStatusKeys"></div>
           </div>
-          <a class="card-link footer" href="#">View all submissions <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m6 4 4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+          <a class="card-link footer" href="#" id="linkAllSubs">View all submissions <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m6 4 4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
         </div>
       </section>
 
@@ -1092,7 +1303,7 @@
         </div>
         <div class="cell" style="border-left:0">
           <div class="tmpl-rows" id="morTemplates"></div>
-          <a class="card-link footer" href="#">View all templates <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m6 4 4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+          <a class="card-link footer" href="#" id="linkAllTemplates">View all templates <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m6 4 4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
         </div>
       </section>
     </div>
@@ -1113,7 +1324,7 @@
       </div>
       <div class="tbl-wrap">
         <table class="tbl">
-          <thead><tr><th class="c-check"><input type="checkbox" aria-label="Select all rows"></th><th class="sortable">Utility</th><th class="sortable">Facility</th><th class="sortable">Report Template</th><th class="sortable">Status</th><th class="sortable">Submitted Date</th><th class="c-act">Actions</th></tr></thead>
+          <thead><tr><th class="sortable">Utility</th><th class="sortable">Facility</th><th class="sortable">Report Template</th><th class="sortable">Status</th><th class="sortable">Submitted Date</th></tr></thead>
           <tbody id="morRows"></tbody>
         </table>
       </div>
@@ -1152,7 +1363,292 @@
     </section>
    </section>
 
+   <!-- ============ MOR SUBMISSIONS ============ -->
+   <section class="view" id="view-mor-subs" hidden>
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <button type="button" data-crumb="mor">Monthly Operating Reports</button>
+        <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m6 3 5 5-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span aria-current="page">Submissions</span>
+      </nav>
+    <header class="page-head">
+      <h1>Monthly Operating Report Submissions</h1>
+      <p class="sub">Complete view of all monthly operating report submissions across utilities and facilities</p>
+    </header>
+
+    <div class="tbl-card">
+      <div class="tbl-toolbar">
+        <label class="search">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="4.4" stroke="currentColor" stroke-width="1.5"/><path d="m10.4 10.4 3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <input type="search" id="q-morsub" placeholder="Search submissions&hellip;" aria-label="Search submissions&hellip;">
+        </label>
+        <div class="tbl-tools">
+          <button class="btn-pill" type="button"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2.5 3.5h11l-4.2 5v4.2l-2.6 1.3V8.5l-4.2-5Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg> Filters</button>
+          <button class="btn-pill" type="button"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 13V3m0 0L2 5m2-2 2 2M12 3v10m0 0 2-2m-2 2-2-2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Columns</button>
+          <button class="btn-pill" type="button"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 2.5h8a1 1 0 0 1 1 1v10l-5-2.8-5 2.8v-10a1 1 0 0 1 1-1Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg> Views</button>
+          <button class="btn-solid" type="button">Export <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m4 6 4 4 4-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        </div>
+      </div>
+      <div class="tbl-wrap">
+        <table class="tbl">
+          <thead><tr><th class="c-check"><label class="chk"><input type="checkbox" aria-label="Select all rows"></label></th><th class="sortable">Utility</th><th class="sortable">Facility</th><th class="sortable">Submitted</th><th class="sortable">Report</th><th class="sortable">Period</th><th class="sortable">Status</th></tr></thead>
+          <tbody id="morSubRows"></tbody>
+        </table>
+      </div>
+      <div class="tbl-foot">
+        <span>Showing <span class="num">15</span> of <span class="num">3,504</span> submissions</span>
+        <div class="pager">
+          <button type="button" disabled>Previous</button>
+          <button type="button">Next</button>
+        </div>
+      </div>
+    </div>
+   </section>
+
+   <!-- ============ REPORT TEMPLATES ============ -->
+   <section class="view" id="view-mor-templates" hidden>
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <button type="button" data-crumb="mor">Monthly Operating Reports</button>
+        <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m6 3 5 5-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span aria-current="page">Report Templates</span>
+      </nav>
+    <header class="page-head" style="display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:14px">
+      <div>
+        <h1>Report Templates</h1>
+        <p class="sub">Create and manage the templates your utilities use to submit their monthly operating reports.</p>
+      </div>
+      <button class="btn-solid" type="button" style="margin-top:6px"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 3.2v9.6M3.2 8h9.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> New template</button>
+    </header>
+
+    <div class="tbl-card">
+      <div class="tbl-toolbar">
+        <label class="search">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="4.4" stroke="currentColor" stroke-width="1.5"/><path d="m10.4 10.4 3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <input type="search" id="q-mortpl" placeholder="Search templates&hellip;" aria-label="Search templates&hellip;">
+        </label>
+        <div class="tbl-tools">
+          <button class="btn-pill" type="button"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2.5 3.5h11l-4.2 5v4.2l-2.6 1.3V8.5l-4.2-5Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg> Filters</button>
+          <button class="btn-pill" type="button"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 13V3m0 0L2 5m2-2 2 2M12 3v10m0 0 2-2m-2 2-2-2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Columns</button>
+          <button class="btn-pill" type="button"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 2.5h8a1 1 0 0 1 1 1v10l-5-2.8-5 2.8v-10a1 1 0 0 1 1-1Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg> Views</button>
+        </div>
+      </div>
+      <div class="tbl-wrap">
+        <table class="tbl">
+          <thead><tr><th class="c-check"><label class="chk"><input type="checkbox" aria-label="Select all rows"></label></th><th class="sortable">Report</th><th class="sortable">Fields</th><th class="sortable">Assigned facilities</th><th class="sortable">Next due</th><th class="sortable">Schedule</th></tr></thead>
+          <tbody id="morTplRows"></tbody>
+        </table>
+      </div>
+      <div class="tbl-foot">
+        <span>Showing <span class="num">4</span> of <span class="num">4</span> templates</span>
+        <div class="pager">
+          <button type="button" disabled>Previous</button>
+          <button type="button">Next</button>
+        </div>
+      </div>
+    </div>
+   </section>
+
+   <!-- ============ REPORT TEMPLATE DETAIL ============ -->
+   <section class="view" id="view-tpl-detail" hidden>
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <button type="button" data-crumb="mor">Monthly Operating Reports</button>
+      <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m6 3 5 5-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <button type="button" id="crumbTpl">Report Templates</button>
+      <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m6 3 5 5-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span aria-current="page" id="crumbTplName">Template</span>
+    </nav>
+
+    <!-- read state -->
+    <div class="rec-card" id="tplRead">
+      <div class="rec-top">
+        <h2 id="tplName">Water Quality Monthly Report</h2>
+        <span id="tplStatus"></span>
+        <button class="btn-pill" type="button" id="tplEditBtn"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M11.2 2.6l2.2 2.2-8 8-2.9.7.7-2.9 8-8Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg> Edit details</button>
+      </div>
+      <p class="rec-desc" id="tplDesc"></p>
+      <div class="meta-row" id="tplMeta"></div>
+    </div>
+
+    <!-- edit state -->
+    <div class="rec-card" id="tplEdit" hidden>
+      <div class="rec-top"><h2>Edit template details</h2></div>
+      <div class="form-grid">
+        <label class="fld wide"><span>Template name</span><input type="text" id="fName"></label>
+        <label class="fld"><span>Period</span><input type="month" id="fPeriod" value="2026-08"></label>
+        <label class="fld"><span>Schedule</span>
+          <select id="fSched"><option>Monthly</option><option>Quarterly</option><option>One-time</option></select>
+        </label>
+        <label class="fld"><span>Due date</span>
+          <select id="fDue">
+            <option>10th of the following month</option>
+            <option>1st of the following month</option>
+            <option>Last day of the month</option>
+          </select>
+        </label>
+        <label class="fld"><span>Status</span>
+          <select id="fStatus"><option>Active</option><option>Draft</option><option>Retired</option></select>
+        </label>
+        <label class="fld wide"><span>Description</span><textarea id="fDesc"></textarea></label>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:18px">
+        <button class="btn-solid" type="button" id="tplSave">Save changes</button>
+        <button class="btn-pill" type="button" id="tplCancel">Cancel</button>
+      </div>
+    </div>
+
+    <div class="sec-bar">
+      <div>
+        <h2 class="sec-head" style="margin-bottom:0">Assigned facilities</h2>
+        <p>These facilities are required to submit this report every reporting period.</p>
+      </div>
+    </div>
+    <template id="addFacBtnTpl"><button class="btn-solid" type="button" id="addFacBtn"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 3.2v9.6M3.2 8h9.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> Add facilities to this report</button></template>
+
+    <div class="tbl-card">
+      <div class="tbl-toolbar">
+        <label class="search">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="4.4" stroke="currentColor" stroke-width="1.5"/><path d="m10.4 10.4 3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <input type="search" id="q-tplfac" placeholder="Search facilities&hellip;" aria-label="Search facilities">
+        </label>
+        <div class="tbl-tools">
+          <span id="addFacSlot"></span>
+          <button class="btn-pill" type="button"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2.5 3.5h11l-4.2 5v4.2l-2.6 1.3V8.5l-4.2-5Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg> Filters</button>
+          <button class="btn-pill" type="button"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 13V3m0 0L2 5m2-2 2 2M12 3v10m0 0 2-2m-2 2-2-2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Columns</button>
+          <button class="btn-pill" type="button"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 2.5h8a1 1 0 0 1 1 1v10l-5-2.8-5 2.8v-10a1 1 0 0 1 1-1Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg> Views</button>
+        </div>
+      </div>
+      <div class="tbl-wrap">
+        <table class="tbl">
+          <thead><tr><th class="c-check"><label class="chk"><input type="checkbox" aria-label="Select all rows"></label></th><th class="sortable">Facility</th><th class="sortable">Type</th><th class="sortable">Chemical treatment used</th><th class="sortable">Status</th><th class="sortable">Submitted date</th></tr></thead>
+          <tbody id="tplFacRows"></tbody>
+        </table>
+      </div>
+      <div class="tbl-foot">
+        <span>Showing <span class="num">15</span> of <span class="num" id="tplFacTotal">186</span> facilities</span>
+        <div class="pager">
+          <button type="button" disabled>Previous</button>
+          <button type="button">Next</button>
+        </div>
+      </div>
+    </div>
+   </section>
+
   </main>
+
+
+  <!-- ==================== TOAST ==================== -->
+  <div class="toast" id="toast" hidden role="status" aria-live="polite">
+    <span class="t-ico">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m3.6 8.4 2.8 2.8 6-6.4" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </span>
+    <span class="t-txt"><b id="toastTitle"></b><span id="toastSub"></span></span>
+    <button class="t-close" type="button" id="toastClose" aria-label="Dismiss">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m4 4 8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+
+  <!-- ==================== CONFIRM ==================== -->
+  <div class="modal-scrim" id="cfScrim" hidden>
+    <div class="modal confirm" role="alertdialog" aria-modal="true" aria-labelledby="cfTitle" aria-describedby="cfLead">
+      <div class="modal-head">
+        <span class="cf-ico">
+          <svg width="19" height="19" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 4.6v4.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="8" cy="11.4" r="1" fill="currentColor"/></svg>
+        </span>
+        <div>
+          <h3 id="cfTitle">Unassign facilities?</h3>
+          <p id="cfLead"></p>
+        </div>
+      </div>
+      <div class="modal-body" id="cfBody"></div>
+      <div class="modal-foot">
+        <div class="right">
+          <button class="btn-pill" type="button" id="cfCancel">Cancel</button>
+          <button class="btn-danger" type="button" id="cfGo">Unassign</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== BULK SELECTION ==================== -->
+  <div class="bulkbar" id="bulkBar" hidden role="region" aria-label="Actions for the selected rows">
+    <span class="badge num" id="bulkBadge">0</span>
+    <span class="bulk-txt">
+      <b>Active selection</b>
+      <span id="bulkCount"></span>
+    </span>
+    <span class="bulk-acts">
+      <button class="bulk-act" type="button" id="bulkUnassign">Unassign</button>
+      <button class="clear" type="button" id="bulkClear">Clear selections</button>
+    </span>
+  </div>
+
+  <!-- ==================== ADD FACILITIES ==================== -->
+  <div class="modal-scrim" id="addFacScrim" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="addFacTitle">
+      <div class="modal-head">
+        <div>
+          <h3 id="addFacTitle">Add facilities to this report</h3>
+          <p>Select a facility type to add every matching facility at once, or pick them individually below.</p>
+        </div>
+        <button class="dw-close" type="button" id="addFacClose" aria-label="Close" style="margin-left:auto"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m4 4 8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button>
+      </div>
+      <div class="modal-body">
+        <div>
+          <span class="fld-lab">Select by facility type</span>
+          <div class="type-pills" id="facTypePills">
+            <button class="type-pill" type="button" aria-pressed="false" data-type="Groundwater">Groundwater <span class="n num">0</span></button>
+            <button class="type-pill" type="button" aria-pressed="false" data-type="Surface Water">Surface Water <span class="n num">0</span></button>
+            <button class="type-pill" type="button" aria-pressed="false" data-type="Distribution System">Distribution System <span class="n num">0</span></button>
+          </div>
+        </div>
+        <div>
+          <span class="fld-lab">Search facilities</span>
+          <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+            <label class="search" style="flex:1 1 260px;max-width:420px">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="4.4" stroke="currentColor" stroke-width="1.5"/><path d="m10.4 10.4 3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              <input type="search" id="q-addfac" placeholder="Search facilities&hellip;" aria-label="Search facilities">
+            </label>
+            <span id="addFacShown" class="fac-shown"></span>
+            <div class="tbl-tools" style="margin-left:auto">
+              <button class="btn-pill" type="button"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2.5 3.5h11l-4.2 5v4.2l-2.6 1.3V8.5l-4.2-5Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg> Filters</button>
+              <button class="btn-pill" type="button"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 13V3m0 0L2 5m2-2 2 2M12 3v10m0 0 2-2m-2 2-2-2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Columns</button>
+              <button class="btn-pill" type="button"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 2.5h8a1 1 0 0 1 1 1v10l-5-2.8-5 2.8v-10a1 1 0 0 1 1-1Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg> Views</button>
+            </div>
+          </div>
+        </div>
+        <div class="tbl-card" style="box-shadow:none">
+          <div class="tbl-wrap">
+            <table class="tbl">
+              <thead><tr><th class="c-check"><label class="chk"><input type="checkbox" aria-label="Select all rows"></label></th><th class="sortable">Facility</th><th class="sortable">Type</th><th class="sortable">Chemical treatment used</th><th class="sortable">Report assignment status</th></tr></thead>
+              <tbody id="addFacRows"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <span class="count" id="addFacCount">No facilities selected</span>
+        <div class="right">
+          <button class="btn-pill" type="button" id="addFacCancel">Cancel</button>
+          <button class="btn-solid" type="button" id="addFacGo" disabled>Assign facilities</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== RECORD FLYOUT ==================== -->
+  <div class="scrim" id="scrim" hidden></div>
+  <aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="dwTitle" hidden>
+    <div class="dw-head">
+      <div>
+        <h4 id="dwTitle">Record</h4>
+        <p class="sub" id="dwSub"></p>
+      </div>
+      <button class="dw-close" type="button" id="dwClose" aria-label="Close">
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m4 4 8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div class="dw-body" id="dwBody"></div>
+    <div class="dw-foot" id="dwFoot"></div>
+  </aside>
 
 </div>
 
@@ -1564,8 +2060,8 @@
   }
   function two(a, b){ return '<span class="t-main">'+esc(a)+'</span><span class="t-sub">'+esc(b)+'</span>'; }
   function period(name, due){ return '<span class="t-main" style="font-weight:500">'+esc(name)+'</span><span class="t-sub">Due '+esc(due)+'</span>'; }
-  var ACT = '<td class="c-act"><button class="rowact" type="button" aria-label="Row actions">\u2022\u2022\u2022</button></td>';
-  var CHK = '<td class="c-check"><input type="checkbox" aria-label="Select row"></td>';
+  function TR(i){ return '<tr tabindex="0" data-i="'+i+'">'; }
+  var CHK = '<td class="c-check"><label class="chk"><input type="checkbox" aria-label="Select row"></label></td>';
 
   var utilities = [
     {id:"GA9999050", name:"120Water \u2014 PWS Portal Testing", type:"CWS", own:"L", a1:"120 Water Street", a2:"Peachtree, GA", pop:5000, conn:2000, nl:null, inv:null, cnc:["Initial Customer Notice Certification","07/01/2025"], cty:null, terr:"Territory 1", ptd:null},
@@ -1580,8 +2076,8 @@
     {id:"GA1270154", name:"Two Way Utilities", type:"CWS", own:"P", a1:"1400 Shell Bluff Road", a2:"Brunswick, GA", pop:1180, conn:31, nl:"100%", inv:["Annual Inventory Update 2026","10/17/2026"], cnc:["2026 Annual Customer Notice","07/01/2027"], cty:"Glynn", terr:null, ptd:"Yes"}
   ];
 
-  $("utilRows").innerHTML = utilities.map(function(u){
-    return "<tr>" + CHK
+  $("utilRows").innerHTML = utilities.map(function(u, ix){
+    return TR(ix) + CHK
       + '<td><a class="t-link" href="#">'+esc(u.id)+'</a></td>'
       + '<td class="t-wrap"><span class="t-main">'+esc(u.name)+'</span></td>'
       + cell(esc(u.type)) + cell(esc(u.own))
@@ -1591,7 +2087,7 @@
       + (u.inv ? '<td class="t-wrap">'+period(u.inv[0], u.inv[1])+'</td>' : cell(null))
       + (u.cnc ? '<td class="t-wrap">'+period(u.cnc[0], u.cnc[1])+'</td>' : cell(null))
       + cell(u.cty ? esc(u.cty) : null) + cell(u.terr ? esc(u.terr) : null) + cell(u.ptd ? esc(u.ptd) : null)
-      + ACT + "</tr>";
+      + "</tr>";
   }).join("");
 
   /* ---------------- Submissions ---------------- */
@@ -1618,8 +2114,8 @@
     {pws:"North Doublegate Water System",  id:"GA1770026", by:"Reid Mills",    date:"06/11/2026", type:"CWS",    conn:33,  known:"100% Known", total:39,  lead:0, grr:0, unk:0, nonlead:39,  cty:"Lee",      att:1}
   ];
 
-  $("subRows").innerHTML = submissions.map(function(r){
-    return "<tr>" + CHK
+  $("subRows").innerHTML = submissions.map(function(r, ix){
+    return TR(ix) + CHK
       + '<td class="t-wrap"><a class="t-link" href="#">'+esc(r.pws)+'</a><span class="t-sub">'+esc(r.id)+'</span></td>'
       + cell(esc(r.by)) + cell(esc(r.date), "num") + cell(esc(r.type))
       + cell(fmt(r.conn), "num") + cell(esc(r.known))
@@ -1629,7 +2125,7 @@
       + '<td><span class="spill ok">Accepted</span></td>'
       + cell("Yes") + cell(fmt(r.att), "num") + cell(esc(r.cty)) + cell(null)
       + cell("Unpublished") + cell(null)
-      + ACT + "</tr>";
+      + "</tr>";
   }).join("");
 
   var certs = [
@@ -1640,15 +2136,15 @@
     {pws:"Academy Acres Subdivision", id:"GA1850009", by:"Joel Tran", date:"05/11/2026", notice:"Initial Customer Notice Certification", method:"Email", status:["ok","Certified"], cty:"Lowndes"}
   ];
 
-  $("cncRows").innerHTML = certs.map(function(r){
-    return "<tr>" + CHK
+  $("cncRows").innerHTML = certs.map(function(r, ix){
+    return TR(ix) + CHK
       + '<td class="t-wrap"><a class="t-link" href="#">'+esc(r.pws)+'</a><span class="t-sub">'+esc(r.id)+'</span></td>'
       + cell(esc(r.by)) + cell(esc(r.date), "num")
       + '<td class="t-wrap">'+esc(r.notice)+'</td>'
       + cell(esc(r.method))
       + '<td><span class="spill '+r.status[0]+'">'+esc(r.status[1])+'</span></td>'
       + cell(esc(r.cty))
-      + ACT + "</tr>";
+      + "</tr>";
   }).join("");
 
   /* ---------------- Monthly Operating Reports page ---------------- */
@@ -1693,15 +2189,751 @@
     ["Perry Water Department","Booster Station","Heavy Metals Testing","info","Submitted","Sep 2, 2026"],
     ["Vidalia Water","WTP-12 Main","Secondary Contaminant Testing","info","Submitted","Sep 6, 2026"]
   ];
-  $("morRows").innerHTML = morReports.map(function(r){
-    return "<tr>" + CHK
+  $("morRows").innerHTML = morReports.map(function(r, ix){
+    return TR(ix)
       + '<td class="t-wrap"><a class="t-link" href="#">'+esc(r[0])+'</a></td>'
       + cell(r[1] === "\u2014" ? null : esc(r[1]))
       + '<td class="t-wrap">'+r[2]+'</td>'
       + '<td><span class="spill '+r[3]+'">'+esc(r[4])+'</span></td>'
       + cell(r[5] === "\u2014" ? null : esc(r[5]), "num")
-      + ACT + "</tr>";
+      + "</tr>";
   }).join("");
+
+  /* ---------------- toast ---------------- */
+  var toastTimer = null;
+  function showToast(title, sub){
+    var el = $("toast");
+    $("toastTitle").textContent = title;
+    $("toastSub").textContent = sub || "";
+    $("toastSub").hidden = !sub;
+    el.hidden = false;
+    requestAnimationFrame(function(){ el.classList.add("in"); });
+    window.clearTimeout(toastTimer);
+    toastTimer = window.setTimeout(hideToast, 5200);
+  }
+  function hideToast(){
+    var el = $("toast");
+    if (el.hidden) return;
+    el.classList.remove("in");
+    window.clearTimeout(toastTimer);
+    window.setTimeout(function(){ if (!el.classList.contains("in")) el.hidden = true; }, 240);
+  }
+  $("toastClose").addEventListener("click", hideToast);
+
+  /* ---------------- Calypso record flyout ---------------- */
+  var scrim = $("scrim"), drawer = $("drawer"), lastFocus = null;
+
+  function dwFacts(pairs){
+    return '<dl class="dw-facts">' + pairs.filter(Boolean).map(function(p){
+      var v = (p[1] === null || p[1] === undefined || p[1] === "") ? '<span class="t-none">—</span>' : p[1];
+      return '<dt>'+esc(p[0])+'</dt><dd>'+v+'</dd>';
+    }).join("") + '</dl>';
+  }
+  function dwSec(title, html){ return '<section class="dw-sec"><h5>'+esc(title)+'</h5>'+html+'</section>'; }
+  function dwList(rows){ return '<div class="dw-list">'+rows.join("")+'</div>'; }
+  function dwRow(nm, meta, right){
+    return '<button class="dw-row" type="button"><span style="min-width:0">'
+      + '<span class="nm">'+nm+'</span><span class="meta">'+meta+'</span></span>'
+      + '<span class="sp">'+right+'</span></button>';
+  }
+  function spill(tone, label){ return '<span class="spill '+tone+'">'+esc(label)+'</span>'; }
+
+  function openDrawer(cfg){
+    $("dwTitle").textContent = cfg.title;
+    $("dwSub").textContent = cfg.sub || "";
+    $("dwBody").innerHTML = cfg.body;
+    $("dwFoot").innerHTML = (cfg.actions || []).map(function(a){
+      return '<button class="'+(a.primary ? "btn-solid" : "btn-pill")+'" type="button">'+esc(a.label)+'</button>';
+    }).join("");
+    lastFocus = document.activeElement;
+    scrim.hidden = false; drawer.hidden = false;
+    requestAnimationFrame(function(){ scrim.classList.add("in"); drawer.classList.add("in"); });
+    $("dwBody").scrollTop = 0;
+    $("dwClose").focus();
+  }
+  function closeDrawer(){
+    if (drawer.hidden) return;
+    scrim.classList.remove("in"); drawer.classList.remove("in");
+    window.setTimeout(function(){ scrim.hidden = true; drawer.hidden = true; }, 270);
+    if (lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+  $("dwClose").addEventListener("click", closeDrawer);
+  scrim.addEventListener("click", closeDrawer);
+  document.addEventListener("keydown", function(e){
+    if (e.key !== "Escape") return;
+    if (!$("cfScrim").hidden) { $("cfCancel").click(); return; }
+    if (!$("addFacScrim").hidden) { $("addFacCancel").click(); return; }
+    if (!drawer.hidden) { closeDrawer(); return; }
+    if (!$("bulkBar").hidden) $("bulkClear").click();
+  });
+
+  /* every row opens its record; the controls inside a row keep their own behaviour */
+  function wireRows(tbodyId, handler){
+    var tb = $(tbodyId);
+    if (!tb) return;
+    tb.addEventListener("click", function(e){
+      if (e.target.closest(".c-check") || e.target.closest("select")) return;
+      var tr = e.target.closest("tr");
+      if (!tr) return;
+      e.preventDefault();
+      handler(Number(tr.getAttribute("data-i")));
+    });
+    tb.addEventListener("keydown", function(e){
+      if (e.key !== "Enter" && e.key !== " ") return;
+      var tr = e.target.closest("tr");
+      if (!tr || e.target !== tr) return;
+      e.preventDefault();
+      handler(Number(tr.getAttribute("data-i")));
+    });
+  }
+
+  /* ---- Monthly Operating Reports: a utility's submission history ---- */
+  var MOR_HISTORY = [
+    {m:"August 2026",   due:"Sep 1, 2026", on:"Sep 2, 2026"},
+    {m:"July 2026",     due:"Aug 1, 2026", on:"Aug 3, 2026"},
+    {m:"June 2026",     due:"Jul 1, 2026", on:"Jul 2, 2026"},
+    {m:"May 2026",      due:"Jun 1, 2026", on:"Jun 4, 2026"},
+    {m:"April 2026",    due:"May 1, 2026", on:"May 5, 2026"},
+    {m:"March 2026",    due:"Apr 1, 2026", on:"Apr 2, 2026"},
+    {m:"February 2026", due:"Mar 1, 2026", on:"Mar 3, 2026"},
+    {m:"January 2026",  due:"Feb 1, 2026", on:"Feb 4, 2026"}
+  ];
+  function morDrawer(ix){
+    var r = morReports[ix];
+    var utility = r[0], facility = r[1], template = r[2], tone = r[3], label = r[4], on = r[5];
+
+    var history = MOR_HISTORY.map(function(h, k){
+      if (k === 0){
+        return {m:h.m, tone:tone, label:label, missed:(on === "—"),
+                when:(on === "—" ? "Nothing received · due " + h.due : "Received " + on)};
+      }
+      var seed = (ix * 7 + k * 5) % 11;
+      if (seed === 0) return {m:h.m, tone:"crit", label:"Not submitted", missed:true,
+                              when:"Nothing received · due " + h.due};
+      if (seed === 3) return {m:h.m, tone:"warn", label:"Submitted with gaps", missed:false,
+                              when:"Received " + h.on + " · 2 daily values missing"};
+      if (seed === 6) return {m:h.m, tone:"neutral", label:"Not required", missed:false,
+                              when:"No sampling schedule for this month"};
+      return {m:h.m, tone:"ok", label:"Reviewed", missed:false, when:"Received " + h.on};
+    });
+    var missing = history.filter(function(h){ return h.missed; }).length;
+    var historyRows = history.map(function(h){
+      return dwRow(esc(h.m), esc(h.when), spill(h.tone, h.label));
+    });
+
+    openDrawer({
+      title: utility,
+      sub: facility === "—" ? "No facility recorded" : facility,
+      body: dwSec("This facility", dwFacts([
+          ["Report template", esc(template)],
+          ["Reporting month", "August 2026"],
+          ["Status", spill(tone, label)],
+          ["Submitted", on === "—" ? null : esc(on)],
+          ["Deadline", "Sep 1, 2026"]
+        ]))
+        + dwSec("Submission history", dwList(historyRows)
+            + '<p class="dw-note" style="margin-top:10px">Last eight reporting periods. '
+            + (missing
+                ? '<b>' + missing + (missing === 1 ? ' period' : ' periods') + ' never arrived</b> and may be a monitoring violation.'
+                : 'Every period in this window was received.')
+            + ' Open a period to see its daily values.</p>'),
+      actions: [
+        {label:"Review August report", primary:true},
+        {label:"Open utility record"}
+      ]
+    });
+  }
+
+  /* ---- Utilities ---- */
+  function utilDrawer(ix){
+    var u = utilities[ix];
+    openDrawer({
+      title: u.name,
+      sub: u.id + " · " + u.a2,
+      body: dwSec("Record", dwFacts([
+          ["PWSID", esc(u.id)],
+          ["System type", esc(u.type)],
+          ["Owner type", esc(u.own)],
+          ["Address", esc(u.a1) + "<br>" + esc(u.a2)],
+          ["Population served", fmt(u.pop)],
+          ["Service line connections", fmt(u.conn)],
+          ["Percent non-lead", u.nl],
+          ["County", u.cty ? esc(u.cty) : null],
+          ["Territory", u.terr ? esc(u.terr) : null],
+          ["PTD opt-in", u.ptd ? esc(u.ptd) : "No"]
+        ]))
+        + dwSec("Assigned submission periods", dwList([
+            u.inv ? dwRow(esc(u.inv[0]), "Inventory · due " + esc(u.inv[1]), spill("neutral", "Open")) : "",
+            u.cnc ? dwRow(esc(u.cnc[0]), "Customer notice · due " + esc(u.cnc[1]), spill("neutral", "Open")) : ""
+          ].filter(Boolean)) || '<p class="dw-note">No periods assigned to this system.</p>'),
+      actions: [
+        {label:"View submissions", primary:true},
+        {label:"Edit record"},
+        {label:"Export"}
+      ]
+    });
+  }
+
+  /* ---- Submissions ---- */
+  function subDrawer(ix){
+    var r = submissions[ix];
+    openDrawer({
+      title: r.pws,
+      sub: r.id + " · Initial Inventory",
+      body: dwSec("Submission", dwFacts([
+          ["Submitted by", esc(r.by)],
+          ["Submitted date", esc(r.date)],
+          ["System type", esc(r.type)],
+          ["Status", spill("ok", "Accepted")],
+          ["Attempts", fmt(r.att)],
+          ["Overdue", "Yes"],
+          ["County", esc(r.cty)]
+        ]))
+        + dwSec("Service line inventory", dwFacts([
+            ["Total lines", fmt(r.total)],
+            ["Lead", fmt(r.lead)],
+            ["Galvanized (GRR)", fmt(r.grr)],
+            ["Unknown", fmt(r.unk)],
+            ["Non-lead", fmt(r.nonlead)],
+            ["Percent known", esc(r.known)]
+          ])),
+      actions: [
+        {label:"Open submission", primary:true},
+        {label:"Assign reviewer"},
+        {label:"Download"}
+      ]
+    });
+  }
+
+  /* ---- Customer notice certifications ---- */
+  function cncDrawer(ix){
+    var r = certs[ix];
+    openDrawer({
+      title: r.pws,
+      sub: r.id + " · " + r.notice,
+      body: dwSec("Certification", dwFacts([
+          ["Notice type", esc(r.notice)],
+          ["Submitted by", r.by === "—" ? null : esc(r.by)],
+          ["Submitted date", r.date === "—" ? null : esc(r.date)],
+          ["Delivery method", r.method === "—" ? null : esc(r.method)],
+          ["Status", spill(r.status[0], r.status[1])],
+          ["County", esc(r.cty)]
+        ])),
+      actions: [
+        {label:"Open certification", primary:true},
+        {label:"Send reminder"}
+      ]
+    });
+  }
+
+  wireRows("morRows",  morDrawer);
+  wireRows("utilRows", utilDrawer);
+  wireRows("subRows",  subDrawer);
+  wireRows("cncRows",  cncDrawer);
+
+  /* ---------------- MOR submissions (all) ---------------- */
+  var morSubs = [
+    ["Dalton Utilities","WTP-01 Main","—","Water Quality Monthly","August 2026","crit","Not yet submitted"],
+    ["Rome Water Department","WTP-03 Main","Sep 2, 2026","Disinfection Byproduct","August 2026","ok","Reviewed"],
+    ["Griffin Water Works","Booster Station","Sep 1, 2026","Turbidity Measurement","August 2026","warn","Pending review"],
+    ["Statesboro Public Works","WTP-01 Main","Sep 1, 2026","Chlorine Residual Monitoring","August 2026","ok","Reviewed"],
+    ["City of Waycross","WTP-02 Main","—","Water Quality Monthly","August 2026","crit","Not yet submitted"],
+    ["Moultrie Water Department","WTP-02 Main","—","Total Coliform Monitoring","August 2026","crit","Not yet submitted"],
+    ["Camden County WSA","—","Sep 3, 2026","Chemical Residual Testing","August 2026","ok","Reviewed"],
+    ["Thomasville Utilities","WTP-01 Main","Sep 2, 2026","Lead &amp; Copper Compliance","August 2026","ok","Reviewed"],
+    ["Bainbridge Utilities","Booster Station","Sep 4, 2026","Turbidity Measurement","August 2026","warn","Submitted with gaps"],
+    ["Valdosta Utilities","WTP-03 Main","Sep 1, 2026","Fluoride Level Assessment","August 2026","ok","Reviewed"],
+    ["Douglas Water Department","—","—","pH Level Analysis","August 2026","neutral","Not required"],
+    ["Tifton Utilities","WTP-01 Main","Sep 5, 2026","Nitrate Concentration Evaluation","August 2026","info","Submitted"],
+    ["Cordele Utilities","WTP-03 Main","—","Microbial Contaminants Survey","August 2026","crit","Not yet submitted"],
+    ["Perry Water Department","Booster Station","Sep 2, 2026","Heavy Metals Testing","August 2026","ok","Reviewed"],
+    ["Vidalia Water","WTP-12 Main","Sep 6, 2026","Secondary Contaminant Testing","August 2026","info","Submitted"]
+  ];
+  function renderMorSubs(){
+  $("morSubRows").innerHTML = morSubs.map(function(r, ix){
+    return TR(ix) + CHK
+      + '<td class="t-wrap"><span class="t-main">'+esc(r[0])+'</span></td>'
+      + cell(r[1] === "—" ? null : esc(r[1]))
+      + cell(r[2] === "—" ? null : esc(r[2]), "num")
+      + '<td class="t-wrap">'+r[3]+'</td>'
+      + cell(esc(r[4]))
+      + '<td><span class="spill '+r[5]+'">'+esc(r[6])+'</span></td>'
+      + "</tr>";
+  }).join("");
+  }
+  renderMorSubs();
+
+  function morSubDrawer(ix){
+    var r = morSubs[ix];
+    openDrawer({
+      title: r[0],
+      sub: (r[1] === "—" ? "No facility recorded" : r[1]) + " \u00b7 " + r[4],
+      body: dwSec("Submission", dwFacts([
+          ["Report", r[3]],
+          ["Reporting period", esc(r[4])],
+          ["Facility", r[1] === "—" ? null : esc(r[1])],
+          ["Status", spill(r[5], r[6])],
+          ["Submitted", r[2] === "—" ? null : esc(r[2])],
+          ["Deadline", "Sep 1, 2026"]
+        ]))
+        + dwSec("Reviewer notes", '<p class="dw-note">'
+            + (r[5] === "crit" ? 'Nothing has been received for this period. The utility has been notified twice.'
+             : r[5] === "warn" ? 'Received, but not every required daily value is present. Check the values before accepting.'
+             : r[5] === "neutral" ? 'This facility has no sampling schedule for this period, so no report is expected.'
+             : 'Received and complete. No action needed.') + '</p>'),
+      actions: [
+        {label: r[5] === "crit" ? "Send a reminder" : "Open submission", primary:true},
+        {label:"See this utility&rsquo;s history"}
+      ]
+    });
+  }
+  wireRows("morSubRows", morSubDrawer);
+
+  /* ---------------- MOR report templates ---------------- */
+  var morTpl = [
+    {name:"Water Quality Monthly Report", fields:42, fac:186, due:"Sep 1, 2026",  sched:["info","Monthly"],
+     note:"The statewide default. Covers daily turbidity, entry point chlorine, pH and flow."},
+    {name:"Disinfection Byproduct",       fields:28, fac:94,  due:"Sep 1, 2026",  sched:["info","Monthly"],
+     note:"For systems that chlorinate. Adds TTHM and HAA5 quarterly rollups to the monthly values."},
+    {name:"Lead &amp; Copper Compliance", fields:36, fac:122, due:"Oct 17, 2026", sched:["neutral","One-time"],
+     note:"Tied to the LCRI inventory deadline rather than the monthly cycle."},
+    {name:"Nutrient Monitoring",          fields:19, fac:null, due:null,          sched:["warn","Draft"],
+     note:"Not yet published. Assign facilities and set a schedule before it can be used."}
+  ];
+  function renderTplTable(){
+  $("morTplRows").innerHTML = morTpl.map(function(t, ix){
+    return TR(ix) + CHK
+      + '<td class="t-wrap"><span class="t-main">'+t.name+'</span></td>'
+      + cell(fmt(t.fields) + " fields", "num")
+      + cell(t.fac === null ? null : fmt(t.fac), "num")
+      + cell(t.due === null ? null : esc(t.due), "num")
+      + '<td><span class="spill '+t.sched[0]+'">'+t.sched[1]+'</span></td>'
+      + "</tr>";
+  }).join("");
+  }
+  renderTplTable();
+
+  function morTplDrawer(ix){
+    var t = morTpl[ix];
+    openDrawer({
+      title: t.name.replace("&amp;", "&"),
+      sub: t.sched[1] === "Draft" ? "Draft template" : t.sched[1] + " report template",
+      body: dwSec("Template", dwFacts([
+          ["Fields", fmt(t.fields)],
+          ["Assigned facilities", t.fac === null ? null : fmt(t.fac)],
+          ["Schedule", spill(t.sched[0], t.sched[1])],
+          ["Next due", t.due === null ? null : esc(t.due)]
+        ]))
+        + dwSec("What it is for", '<p class="dw-note">'+t.note+'</p>')
+        + (t.fac === null ? "" : dwSec("Recently assigned", dwList([
+            dwRow("Dalton Utilities", "WTP-01 Main", spill("ok","Active")),
+            dwRow("Rome Water Department", "WTP-03 Main", spill("ok","Active")),
+            dwRow("Griffin Water Works", "Booster Station", spill("ok","Active"))
+          ]) + '<p class="dw-note" style="margin-top:10px">'+fmt(t.fac)+' facilities use this template.</p>')),
+      actions: [
+        {label: t.sched[1] === "Draft" ? "Finish and publish" : "Edit template", primary:true},
+        {label:"Assign facilities"}
+      ]
+    });
+  }
+  wireRows("morTplRows", function(ix){ renderTplDetail(ix); showView("tpl-detail", "mor"); });
+
+  /* ---------------- Report template detail ---------------- */
+  var TPL_EXTRA = {
+    0:{created:"March 15, 2026", updated:"August 15, 2026", window:"1st \u2013 10th of following month",
+       desc:"Standard monthly report for water quality parameters required by the state. Covers physical and chemical data, plant operations, compliance checks, groundwater rule residual, 4-log credit, and chlorine event logging."},
+    1:{created:"June 2, 2025", updated:"July 30, 2026", window:"1st \u2013 10th of following month",
+       desc:"For systems that disinfect. Adds total trihalomethane and haloacetic acid results to the monthly operating values, with quarterly running averages calculated on submission."},
+    2:{created:"January 8, 2026", updated:"August 1, 2026", window:"Opens 90 days before the deadline",
+       desc:"Tied to the LCRI inventory deadline rather than the monthly cycle. Collects service line material counts and verification evidence for each facility."},
+    3:{created:"September 4, 2026", updated:"September 12, 2026", window:"Not set",
+       desc:"Not yet published. Assign facilities and set a schedule before this template can be used for a reporting period."}
+  };
+  var TPL_FAC = [
+    ["WTP-01 Main","Dalton Utilities","Surface Water","Chloramine","crit","Not yet submitted",null],
+    ["WTP-02 Main","City of Waycross","Groundwater","Free chlorine","crit","Not yet submitted",null],
+    ["WTP-03 Main","Rome Water Department","Surface Water","Chloramine, fluoride","ok","Reviewed","Sep 2, 2026"],
+    ["Booster Station","Griffin Water Works","Distribution System","Free chlorine","warn","Pending review","Sep 1, 2026"],
+    ["WTP-01 Main","Statesboro Public Works","Surface Water","Chloramine","ok","Reviewed","Sep 1, 2026"],
+    ["WTP-02 Main","Moultrie Water Department","Groundwater","Free chlorine","crit","Not yet submitted",null],
+    ["WTP-01 Main","Camden County WSA","Surface Water","Chloramine, orthophosphate","ok","Reviewed","Sep 3, 2026"],
+    ["WTP-03 Main","Thomasville Utilities","Groundwater","Free chlorine","ok","Reviewed","Sep 2, 2026"],
+    ["Booster Station","Bainbridge Utilities","Distribution System","Free chlorine","warn","Submitted with gaps","Sep 4, 2026"],
+    ["WTP-03 Main","Valdosta Utilities","Surface Water","Chloramine, fluoride","ok","Reviewed","Sep 1, 2026"],
+    ["WTP-01 Main","Douglas Water Department","Groundwater","Free chlorine","neutral","Not required",null],
+    ["WTP-01 Main","Tifton Utilities","Groundwater","Free chlorine, fluoride","info","Submitted","Sep 5, 2026"],
+    ["WTP-03 Main","Cordele Utilities","Surface Water","Chloramine","crit","Not yet submitted",null],
+    ["Booster Station","Perry Water Department","Distribution System","Free chlorine","ok","Reviewed","Sep 2, 2026"],
+    ["WTP-12 Main","Vidalia Water","Surface Water","Chloramine, orthophosphate","info","Submitted","Sep 6, 2026"]
+  ];
+
+  var tplIx = 0;
+  function renderTplDetail(ix){
+    tplIx = ix;
+    var t = morTpl[ix], x = TPL_EXTRA[ix];
+    var plain = t.name.replace("&amp;", "&");
+    $("crumbTplName").textContent = plain;
+    $("tplName").textContent = plain;
+    $("tplStatus").innerHTML = t.sched[1] === "Draft"
+      ? spill("warn", "Draft") : spill("ok", "Active");
+    $("tplDesc").textContent = x.desc;
+    $("tplMeta").innerHTML = [
+      ["Created", x.created],
+      ["Last updated", x.updated],
+      ["Form fields", fmt(t.fields) + " (" + fmt(t.fields) + " required)"],
+      ["Reporting period", t.sched[1]],
+      ["Submission window", x.window]
+    ].map(function(m){
+      return '<div><div class="meta-k">'+esc(m[0])+'</div><div class="meta-v">'+esc(m[1])+'</div></div>';
+    }).join("");
+    $("tplFacTotal").textContent = t.fac === null ? "0" : fmt(t.fac);
+
+    $("fName").value = plain;
+    $("fDesc").value = x.desc;
+    $("fSched").value = t.sched[1] === "Draft" ? "Monthly" : t.sched[1];
+    $("fStatus").value = t.sched[1] === "Draft" ? "Draft" : "Active";
+    $("tplRead").hidden = false; $("tplEdit").hidden = true;
+
+    $("tplFacRows").innerHTML = TPL_FAC.map(function(f, i){
+      return TR(i) + CHK
+        + '<td class="t-wrap"><span class="t-main">'+esc(f[0])+'</span><span class="t-sub">'+esc(f[1])+'</span></td>'
+        + cell(esc(f[2])) + cell(esc(f[3]))
+        + '<td><span class="spill '+f[4]+'">'+esc(f[5])+'</span></td>'
+        + cell(f[6] ? esc(f[6]) : null, "num")
+        + "</tr>";
+    }).join("");
+  }
+  wireRows("tplFacRows", function(i){
+    var f = TPL_FAC[i];
+    openDrawer({
+      title: f[1],
+      sub: f[0] + " \u00b7 " + morTpl[tplIx].name.replace("&amp;", "&"),
+      body: dwSec("This facility", dwFacts([
+          ["Facility", esc(f[0])],
+          ["Type", esc(f[2])],
+          ["Chemical treatment used", esc(f[3])],
+          ["Status", spill(f[4], f[5])],
+          ["Submitted", f[6] ? esc(f[6]) : null],
+          ["Reporting period", "August 2026"]
+        ]))
+        + dwSec("Assignment", '<p class="dw-note">This facility is assigned to this template, so it is expected to submit it every reporting period. Removing the assignment stops future periods but keeps past submissions.</p>'),
+      actions: [
+        {label: f[6] ? "Open submission" : "Send a reminder", primary:true},
+        {label:"Remove from this report"}
+      ]
+    });
+  });
+
+  /* templates now navigate rather than open a flyout */
+  $("crumbTpl").addEventListener("click", function(){ showView("mor-templates", "mor"); });
+  $("tplEditBtn").addEventListener("click", function(){
+    $("tplRead").hidden = true; $("tplEdit").hidden = false; $("fName").focus();
+  });
+  $("tplCancel").addEventListener("click", function(){ renderTplDetail(tplIx); });
+  $("tplSave").addEventListener("click", function(){
+    var t = morTpl[tplIx];
+    t.name = esc($("fName").value) || t.name;
+    TPL_EXTRA[tplIx].desc = $("fDesc").value;
+    t.sched = $("fStatus").value === "Draft" ? ["warn","Draft"]
+            : ($("fSched").value === "Monthly" ? ["info","Monthly"] : ["neutral", $("fSched").value]);
+    TPL_EXTRA[tplIx].updated = "September 30, 2026";
+    renderTplDetail(tplIx);
+    renderTplTable();
+  });
+
+  /* ---------------- add facilities ---------------- */
+  /* 100 rows, generated from a fixed seed so the list is the same on every open. */
+  var GA_PLACES = ["Abbeville","Adairsville","Adel","Albany","Alma","Americus","Ashburn","Bainbridge","Barnesville",
+    "Baxley","Blackshear","Blakely","Bremen","Brunswick","Buford","Cairo","Camilla","Carrollton","Cartersville",
+    "Cedartown","Claxton","Cochran","Commerce","Cordele","Cornelia","Covington","Cuthbert","Dahlonega","Dalton",
+    "Dawson","Douglas","Dublin","Eastman","Eatonton","Elberton","Fitzgerald","Forsyth","Fort Valley","Glennville",
+    "Gray","Greensboro","Griffin","Hartwell","Hawkinsville","Hazlehurst","Hinesville","Jesup","LaGrange","Louisville",
+    "Lyons","Macon","Metter","Milledgeville","Millen","Monroe","Montezuma","Moultrie","Nashville","Newnan","Perry",
+    "Quitman","Reidsville","Rome","Sandersville","Statesboro","Swainsboro","Sylvester","Thomasville","Thomson",
+    "Tifton","Toccoa","Valdosta","Vidalia","Vienna","Warrenton","Washington","Waycross","Waynesboro","Wrens"];
+  var GA_SUFFIX = ["Utilities","Water Department","Water Works","Public Works","Water &amp; Sewer","Municipal Water"];
+  var FAC_NAMES = ["WTP-01 Main","WTP-02 Main","WTP-03 Main","WTP-04 Main","WTP-12 Main",
+    "Booster Station","Well Field A","Well Field B","North Pump Station","Distribution Loop 2"];
+  var TREATS = ["Free chlorine","Chloramine","Free chlorine, fluoride","Chloramine, fluoride",
+    "Free chlorine, orthophosphate","Chloramine, orthophosphate","Free chlorine, corrosion inhibitor","Chlorine dioxide"];
+  var FAC_TYPES = ["Groundwater","Surface Water","Distribution System"];
+  var FAC_STATUS = [["neutral","Not assigned"],["info","Assigned"],["ok","Submitting"]];
+
+  var ADD_FAC = (function(){
+    var seed = 20260930;
+    function rnd(){ seed = (seed * 1103515245 + 12345) % 2147483648; return seed / 2147483648; }
+    var out = [], L = GA_PLACES.length;
+    for (var i = 0; i < 100; i++){
+      var place = GA_PLACES[i % L];
+      var suffix = GA_SUFFIX[Math.floor(i / L) % GA_SUFFIX.length];
+      var r = rnd();
+      var type = r < 0.44 ? FAC_TYPES[0] : (r < 0.78 ? FAC_TYPES[1] : FAC_TYPES[2]);
+      var st = rnd();
+      var status = st < 0.42 ? FAC_STATUS[0] : (st < 0.7 ? FAC_STATUS[1] : FAC_STATUS[2]);
+      out.push([
+        FAC_NAMES[Math.floor(rnd() * FAC_NAMES.length)],
+        place + " " + suffix,
+        type,
+        TREATS[Math.floor(rnd() * TREATS.length)],
+        status[0], status[1]
+      ]);
+    }
+    return out;
+  })();
+
+  /* the trigger lives in the table toolbar, moved there from its template */
+  $("addFacSlot").appendChild($("addFacBtnTpl").content.firstElementChild);
+  var facScrim = $("addFacScrim");
+  var facSel = {}, facQuery = "";
+
+  function facMatches(f){
+    if (!facQuery) return true;
+    return (f[0] + " " + f[1] + " " + f[2] + " " + f[3]).toLowerCase().indexOf(facQuery) > -1;
+  }
+  function facVisible(){
+    return ADD_FAC.map(function(f, i){ return {f:f, i:i}; }).filter(function(o){ return facMatches(o.f); });
+  }
+  function facCount(){
+    var n = 0;
+    for (var k in facSel) if (facSel[k]) n++;
+    return n;
+  }
+  function renderAddFac(){
+    var rows = facVisible();
+    $("addFacRows").innerHTML = rows.length ? rows.map(function(o){
+      var f = o.f;
+      return '<tr data-i="' + o.i + '">'
+        + '<td class="c-check"><label class="chk"><input type="checkbox" data-i="' + o.i + '"'
+          + (facSel[o.i] ? " checked" : "") + ' aria-label="Select ' + esc(f[1]) + '"></label></td>'
+        + '<td class="t-wrap"><span class="t-main">' + esc(f[0]) + '</span><span class="t-sub">' + f[1] + '</span></td>'
+        + cell(esc(f[2])) + cell(esc(f[3]))
+        + '<td><span class="spill ' + f[4] + '">' + esc(f[5]) + '</span></td>'
+        + '</tr>';
+    }).join("")
+      : '<tr><td colspan="5" style="padding:40px 18px;text-align:center;color:var(--text-2)">'
+        + 'No facility matches &ldquo;' + esc(facQuery) + '&rdquo;. Try a utility name, a facility name or a treatment.'
+        + '</td></tr>';
+    $("addFacShown").textContent = rows.length === ADD_FAC.length
+      ? "All " + ADD_FAC.length + " facilities"
+      : "Showing " + rows.length + " of " + ADD_FAC.length + " facilities";
+    syncAddFac();
+  }
+  function syncAddFac(){
+    var n = facCount();
+    $("addFacCount").textContent = n === 0 ? "No facilities selected"
+      : n + (n === 1 ? " facility selected" : " facilities selected");
+    $("addFacGo").disabled = n === 0;
+    $("addFacGo").textContent = n === 0 ? "Assign facilities"
+      : "Assign " + n + (n === 1 ? " facility" : " facilities");
+    Array.prototype.forEach.call($("facTypePills").children, function(pill){
+      var type = pill.getAttribute("data-type");
+      var of = ADD_FAC.map(function(f, i){ return {f:f, i:i}; }).filter(function(o){ return o.f[2] === type; });
+      var on = of.length > 0 && of.every(function(o){ return facSel[o.i]; });
+      pill.setAttribute("aria-pressed", String(on));
+      var badge = pill.querySelector(".n");
+      if (badge) badge.textContent = of.length;
+    });
+  }
+  function openAddFac(){
+    facSel = {}; facQuery = "";
+    $("q-addfac").value = "";
+    renderAddFac();
+    facScrim.hidden = false;
+    requestAnimationFrame(function(){ facScrim.classList.add("in"); });
+    $("addFacClose").focus();
+  }
+  function closeAddFac(){
+    facScrim.classList.remove("in");
+    window.setTimeout(function(){ facScrim.hidden = true; }, 250);
+    $("addFacBtn").focus();
+  }
+  $("addFacBtn").addEventListener("click", openAddFac);
+  $("addFacClose").addEventListener("click", closeAddFac);
+  $("addFacCancel").addEventListener("click", closeAddFac);
+  facScrim.addEventListener("click", function(e){ if (e.target === facScrim) closeAddFac(); });
+  $("addFacRows").addEventListener("change", function(e){
+    var box = e.target.closest('input[type="checkbox"]');
+    if (!box) return;
+    facSel[Number(box.getAttribute("data-i"))] = box.checked;
+    syncAddFac();
+  });
+  $("q-addfac").addEventListener("input", function(e){
+    facQuery = e.target.value.trim().toLowerCase();
+    renderAddFac();
+  });
+  /* the pills act on every facility of that type, not just the ones the search shows */
+  $("facTypePills").addEventListener("click", function(e){
+    var pill = e.target.closest(".type-pill");
+    if (!pill) return;
+    var type = pill.getAttribute("data-type");
+    var on = pill.getAttribute("aria-pressed") !== "true";
+    ADD_FAC.forEach(function(f, i){ if (f[2] === type) facSel[i] = on; });
+    renderAddFac();
+  });
+  $("addFacGo").addEventListener("click", function(){
+    var picked = [];
+    ADD_FAC.forEach(function(f, i){ if (facSel[i]) picked.push(f); });
+    if (!picked.length){ closeAddFac(); return; }
+    /* new assignments start from the next reporting period, so nothing is overdue yet */
+    picked.slice().reverse().forEach(function(f){
+      TPL_FAC.unshift([f[0], f[1], f[2], f[3], "neutral", "Starts next period", null]);
+    });
+    var t = morTpl[tplIx];
+    if (t.fac !== null) t.fac += picked.length;
+    renderTplDetail(tplIx);
+    renderTplTable();
+    closeAddFac();
+    var n = picked.length;
+    showToast(
+      n + (n === 1 ? " facility assigned" : " facilities assigned"),
+      "They start submitting " + t.name.replace("&amp;", "&") + " from the next reporting period."
+    );
+  });
+
+  /* ---------------- bulk selection bar ---------------- */
+  var BULK = [
+    {id:"morSubRows", noun:"submissions"},
+    {id:"morTplRows", noun:"templates"},
+    {id:"tplFacRows", noun:"facilities"}
+  ];
+  var bulkOn = null, bulkBar = $("bulkBar");
+  function singular(w){ return /ies$/.test(w) ? w.replace(/ies$/, "y") : w.replace(/s$/, ""); }
+  function bulkBoxes(id){
+    return Array.prototype.slice.call($(id).querySelectorAll('input[type="checkbox"]'));
+  }
+  function nounFor(id){
+    var e = BULK.filter(function(b){ return b.id === id; })[0];
+    return e ? e.noun : "rows";
+  }
+  function bulkPhrase(id, n){
+    var w = nounFor(id);
+    return n + " " + (n === 1 ? singular(w) : w);
+  }
+  function bulkShow(){
+    if (!bulkBar.hidden) return;
+    bulkBar.hidden = false;
+    requestAnimationFrame(function(){ bulkBar.classList.add("in"); });
+  }
+  function bulkHide(){
+    if (bulkBar.hidden) return;
+    bulkBar.classList.remove("in");
+    window.setTimeout(function(){ if (!bulkBar.classList.contains("in")) bulkBar.hidden = true; }, 240);
+  }
+  function bulkSync(id){
+    var boxes = bulkBoxes(id);
+    var n = boxes.filter(function(b){ return b.checked; }).length;
+    var all = $(id).closest("table").querySelector('thead input[type="checkbox"]');
+    if (all){
+      all.checked = n > 0 && n === boxes.length;
+      all.indeterminate = n > 0 && n < boxes.length;
+    }
+    if (n > 0){
+      bulkOn = id;
+      $("bulkBadge").textContent = n;
+      $("bulkCount").textContent = bulkPhrase(id, n) + " will be unassigned";
+      bulkShow();
+    } else if (bulkOn === id){
+      bulkOn = null;
+      bulkHide();
+    }
+  }
+  function bulkReset(id){
+    bulkBoxes(id).forEach(function(b){ b.checked = false; });
+    bulkSync(id);
+  }
+  function bulkResetAll(){
+    BULK.forEach(function(b){ if ($(b.id)) bulkBoxes(b.id).forEach(function(x){ x.checked = false; }); });
+    BULK.forEach(function(b){
+      if (!$(b.id)) return;
+      var all = $(b.id).closest("table").querySelector('thead input[type="checkbox"]');
+      if (all){ all.checked = false; all.indeterminate = false; }
+    });
+    bulkOn = null;
+    bulkHide();
+  }
+  BULK.forEach(function(b){
+    var tb = $(b.id);
+    if (!tb) return;
+    tb.addEventListener("change", function(){ bulkSync(b.id); });
+    var all = tb.closest("table").querySelector('thead input[type="checkbox"]');
+    if (all) all.addEventListener("change", function(){
+      bulkBoxes(b.id).forEach(function(x){ x.checked = all.checked; });
+      bulkSync(b.id);
+    });
+  });
+  $("bulkClear").addEventListener("click", function(){ if (bulkOn) bulkReset(bulkOn); });
+
+  /* ---------------- confirm before unassigning ---------------- */
+  var cfScrim = $("cfScrim"), cfPending = null;
+  function selectedIn(id){
+    return Array.prototype.slice.call($(id).querySelectorAll("tr")).filter(function(tr){
+      var box = tr.querySelector('input[type="checkbox"]');
+      return box && box.checked;
+    }).map(function(tr){ return Number(tr.getAttribute("data-i")); });
+  }
+  function labelFor(id, i){
+    if (id === "tplFacRows") return TPL_FAC[i][1] + " \u00b7 " + TPL_FAC[i][0];
+    if (id === "morSubRows") return morSubs[i][0] + " \u00b7 " + morSubs[i][1];
+    if (id === "morTplRows") return morTpl[i].name.replace("&amp;", "&");
+    return "Row " + (i + 1);
+  }
+  function applyUnassign(id, idx){
+    var sorted = idx.slice().sort(function(a, b){ return b - a; });
+    if (id === "tplFacRows"){
+      sorted.forEach(function(i){ TPL_FAC.splice(i, 1); });
+      var t = morTpl[tplIx];
+      if (t.fac !== null) t.fac = Math.max(0, t.fac - idx.length);
+      renderTplDetail(tplIx);
+      renderTplTable();
+    } else if (id === "morSubRows"){
+      sorted.forEach(function(i){ morSubs.splice(i, 1); });
+      renderMorSubs();
+    } else if (id === "morTplRows"){
+      sorted.forEach(function(i){ morTpl.splice(i, 1); });
+      renderTplTable();
+    }
+    bulkOn = null;
+    bulkHide();
+  }
+  function openConfirm(id){
+    var idx = selectedIn(id);
+    if (!idx.length) return;
+    cfPending = {id:id, idx:idx};
+    var n = idx.length, noun = n === 1 ? singular(nounFor(id)) : nounFor(id);
+    var where = id === "tplFacRows"
+      ? morTpl[tplIx].name.replace("&amp;", "&")
+      : "this report";
+    $("cfTitle").textContent = "Unassign " + n + " " + noun + "?";
+    $("cfLead").textContent = "They will stop being required to submit " + where
+      + " from the next reporting period.";
+    var shown = idx.slice(0, 5).map(function(i){
+      return '<span class="dw-row" style="cursor:default">'
+        + '<span class="nm">' + esc(labelFor(id, i)) + '</span></span>';
+    });
+    $("cfBody").innerHTML = '<div class="dw-list">' + shown.join("") + '</div>'
+      + (idx.length > 5 ? '<p class="dw-note">and ' + (idx.length - 5) + ' more.</p>' : "")
+      + '<p class="dw-note">Reports they have already submitted are kept, and you can assign them again at any time.</p>';
+    $("cfGo").textContent = "Unassign " + n + " " + noun;
+    cfScrim.hidden = false;
+    requestAnimationFrame(function(){ cfScrim.classList.add("in"); });
+    $("cfCancel").focus();
+  }
+  function closeConfirm(){
+    cfScrim.classList.remove("in");
+    window.setTimeout(function(){ cfScrim.hidden = true; }, 250);
+    cfPending = null;
+  }
+  $("bulkUnassign").addEventListener("click", function(){ if (bulkOn) openConfirm(bulkOn); });
+  $("cfCancel").addEventListener("click", closeConfirm);
+  cfScrim.addEventListener("click", function(e){ if (e.target === cfScrim) closeConfirm(); });
+  $("cfGo").addEventListener("click", function(){
+    if (cfPending){
+      var n = cfPending.idx.length, noun = n === 1 ? singular(nounFor(cfPending.id)) : nounFor(cfPending.id);
+      applyUnassign(cfPending.id, cfPending.idx);
+      showToast(n + " " + noun + " unassigned", "Reports they have already submitted are kept.");
+    }
+    closeConfirm();
+  });
 
   /* ---------------- tab groups ---------------- */
   function initTabs(containerId, storeKey, fallback){
@@ -1739,6 +2971,7 @@
   navBtns.forEach(function(btn){
     btn.addEventListener("click", function(){
       var name = btn.getAttribute("data-view");
+      if (typeof bulkResetAll === "function") bulkResetAll();
       views.forEach(function(v){ v.hidden = v.id !== "view-" + name; });
       navBtns.forEach(function(b){
         if (b === btn) b.setAttribute("aria-current", "page");
@@ -1750,14 +2983,23 @@
     });
   });
 
-  function showView(name){
+  function showView(name, navKey){
+    if (typeof bulkResetAll === "function") bulkResetAll();
     views.forEach(function(v){ v.hidden = v.id !== "view-" + name; });
+    var current = navKey || name;
     navBtns.forEach(function(b){
-      if (b.getAttribute("data-view") === name) b.setAttribute("aria-current", "page");
+      if (b.getAttribute("data-view") === current) b.setAttribute("aria-current", "page");
       else b.removeAttribute("aria-current");
     });
     window.scrollTo({ top: 0, behavior: "instant" });
   }
+
+  /* the two MOR roll-up cards open their own full table */
+  $("linkAllSubs").addEventListener("click", function(e){ e.preventDefault(); showView("mor-subs", "mor"); });
+  $("linkAllTemplates").addEventListener("click", function(e){ e.preventDefault(); showView("mor-templates", "mor"); });
+  Array.prototype.forEach.call(document.querySelectorAll("[data-crumb]"), function(b){
+    b.addEventListener("click", function(){ showView(b.getAttribute("data-crumb")); });
+  });
 
   /* ---------------- settings ---------------- */
   $("openSettings").addEventListener("click", function(e){
