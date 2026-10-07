@@ -817,6 +817,7 @@
   /* Whole-card target. The footer link stays as the focusable, screen-reader-named
      element - the card just widens its hit area - so there is no nested control and
      keyboard reach is unchanged. */
+  #addFacRows tr[data-i]{cursor:pointer}
   .domain--link{cursor:pointer}
   .domain--link:focus-within{box-shadow:var(--shadow-hover)}
   .domain--link:hover .card-link{color:var(--btn-primary-hover);text-decoration:underline}
@@ -3404,7 +3405,7 @@
     var rows = facVisible();
     $("addFacRows").innerHTML = rows.length ? rows.map(function(o){
       var f = o.f;
-      return '<tr data-i="' + o.i + '">'
+      return '<tr data-i="' + o.i + '" tabindex="0">'
         + '<td class="c-check"><label class="chk"><input type="checkbox" data-i="' + o.i + '"'
           + (facSel[o.i] ? " checked" : "") + ' aria-label="Select ' + esc(f[1]) + '"></label></td>'
         + '<td class="t-wrap"><span class="t-main">' + esc(f[0]) + '</span><span class="t-sub">' + f[1] + '</span></td>'
@@ -3456,6 +3457,29 @@
   $("addFacRows").addEventListener("change", function(e){
     var box = e.target.closest('input[type="checkbox"]');
     if (!box) return;
+    facSel[Number(box.getAttribute("data-i"))] = box.checked;
+    syncAddFac();
+  });
+  /* The whole row toggles its checkbox, not just the 54px check cell. Clicks that
+     land on the checkbox or its label are left alone - the change handler above
+     already has them, and acting here too would toggle twice and cancel out. */
+  $("addFacRows").addEventListener("click", function(e){
+    if (e.target.closest(".c-check")) return;
+    var tr = e.target.closest("tr[data-i]"); if (!tr) return;
+    var box = tr.querySelector('input[type="checkbox"]'); if (!box) return;
+    box.checked = !box.checked;
+    facSel[Number(box.getAttribute("data-i"))] = box.checked;
+    syncAddFac();
+  });
+  /* Space and Enter on a focused row do the same, so the row is reachable without
+     tabbing into the checkbox itself. */
+  $("addFacRows").addEventListener("keydown", function(e){
+    if (e.key !== " " && e.key !== "Enter") return;
+    var tr = e.target.closest("tr[data-i]");
+    if (!tr || e.target !== tr) return;
+    e.preventDefault();
+    var box = tr.querySelector('input[type="checkbox"]'); if (!box) return;
+    box.checked = !box.checked;
     facSel[Number(box.getAttribute("data-i"))] = box.checked;
     syncAddFac();
   });
