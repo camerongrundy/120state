@@ -814,6 +814,13 @@
 
   /* One facility can hold several templates; the cell stacks them so no name is
      truncated and each keeps its own activity status beside it. */
+  /* Whole-card target. The footer link stays as the focusable, screen-reader-named
+     element - the card just widens its hit area - so there is no nested control and
+     keyboard reach is unchanged. */
+  .domain--link{cursor:pointer}
+  .domain--link:focus-within{box-shadow:var(--shadow-hover)}
+  .domain--link:hover .card-link{color:var(--btn-primary-hover);text-decoration:underline}
+
   .tpl-stack{display:flex;flex-direction:column;gap:5px}
   .tpl-chip{display:flex;align-items:center;gap:7px;min-width:0}
   .tpl-dot{width:6px;height:6px;border-radius:50%;flex:none}
@@ -1548,7 +1555,7 @@
     </div>
 
     <div class="pair">
-      <section class="domain">
+      <section class="domain domain--link" id="cardAllSubs">
         <div class="domain-head">
           <h2>Submission Status</h2>
           <span class="pill neutral num" style="margin-left:auto">438 facilities</span>
@@ -1562,7 +1569,7 @@
         </div>
       </section>
 
-      <section class="domain">
+      <section class="domain domain--link" id="cardAllTemplates">
         <div class="domain-head">
           <h2>Report Templates</h2>
           <span class="pill neutral" style="margin-left:auto">4 active templates</span>
@@ -3771,8 +3778,13 @@
   }
 
   /* the two MOR roll-up cards open their own full table */
-  $("linkAllSubs").addEventListener("click", function(e){ e.preventDefault(); showView("mor-subs", "mor"); });
-  $("linkAllTemplates").addEventListener("click", function(e){ e.preventDefault(); showView("mor-templates", "mor"); });
+  [["cardAllSubs", "mor-subs"], ["cardAllTemplates", "mor-templates"]].forEach(function(c){
+    var card = $(c[0]); if (!card) return;
+    card.addEventListener("click", function(e){
+      e.preventDefault();
+      showView(c[1], "mor");
+    });
+  });
   Array.prototype.forEach.call(document.querySelectorAll("[data-crumb]"), function(b){
     b.addEventListener("click", function(){ showView(b.getAttribute("data-crumb")); });
   });
