@@ -515,7 +515,10 @@
   }
   .tbl tbody tr:last-child td{border-bottom:0}
   .tbl tbody tr:hover{background:var(--surface-2)}
-  .tbl .c-check{width:54px;padding:0;position:relative}
+  /* The label fills this cell absolutely (so the hit area is the full row height),
+     which leaves the cell with no in-flow content. Auto table layout then collapses
+     width:54px to nothing on a wide table, so the floor has to be a min-width. */
+  .tbl .c-check{width:54px;min-width:54px;padding:0;position:relative}
   .tbl input[type="checkbox"]{accent-color:var(--brand);width:15px;height:15px;cursor:pointer}
   .t-main{display:block;font-weight:600;color:var(--text)}
   .t-sub{display:block;font-size:12px;line-height:1.5;color:var(--text-3);margin-top:3px}
@@ -613,6 +616,26 @@
 
   /* settings */
   .set-row{display:flex;align-items:flex-start;gap:22px;padding:4px 0}
+  .set-row .seg{margin-left:auto;flex:none}
+
+  /* review page: header actions and the rejection note */
+  .br-acts{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:4px}
+  .reject-note{
+    display:flex;align-items:flex-start;gap:10px;margin-top:16px;
+    background:var(--crit-tint);border:1px solid var(--crit);border-radius:var(--r);
+    padding:13px 15px;font-size:13px;color:var(--text);
+  }
+  .reject-note svg{flex:none;margin-top:1px;color:var(--crit)}
+  .reject-note b{display:block;font-weight:600;margin-bottom:3px}
+  .rel-grid{display:flex;flex-wrap:wrap;gap:12px}
+  .rel-card{
+    flex:1 1 300px;min-width:0;display:flex;align-items:flex-start;gap:12px;
+    border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;background:var(--surface);
+  }
+  .rel-card .rel-txt{min-width:0;flex:1}
+  .rel-card b{display:block;font-size:14px;font-weight:600}
+  .rel-card span{display:block;font-size:13px;line-height:1.5;color:var(--text-2);margin-top:3px}
+  .rel-card .btn-pill,.rel-card .btn-solid{margin-top:12px}
   .set-txt h4{font-size:16px;font-weight:600;letter-spacing:-.01em;margin-bottom:5px}
   .set-txt p{font-size:13px;color:var(--text-2);max-width:66ch}
   .switch{
@@ -793,6 +816,42 @@
   /* ---------- empty / error states ----------
      Calypso's three-that-look-alike rule: nothing here yet, no access, and couldn't
      load are different situations and must never share a message. */
+  .period-bar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:12px}
+  .period-bar .field{margin-left:auto}
+
+  /* ---------- wide tables ----------
+     Nineteen columns do not fit any laptop, so the table scrolls sideways. Two things
+     make that readable: the identity column stays pinned, so a row never becomes an
+     anonymous line of numbers once you scroll, and the card shows which edges have
+     more behind them. */
+  .tbl-wrap{position:relative}
+  .tbl--pin th.c-check,.tbl--pin td.c-check{position:sticky;left:0;z-index:3;background:var(--surface)}
+  .tbl--pin thead th.c-check{z-index:5;background:var(--surface-2)}
+  .tbl--pin th:nth-child(2),.tbl--pin td:nth-child(2){
+    position:sticky;left:54px;z-index:3;background:var(--surface);
+  }
+  .tbl--pin thead th:nth-child(2){z-index:5;background:var(--surface-2)}
+  /* no checkbox column here, so the first column is the one that pins */
+  .tbl--pin1 th:nth-child(1),.tbl--pin1 td:nth-child(1){
+    position:sticky;left:0;z-index:3;background:var(--surface);
+  }
+  .tbl--pin1 thead th:nth-child(1){z-index:5;background:var(--surface-2)}
+  .tbl--pin1 th:nth-child(2),.tbl--pin1 td:nth-child(2){position:static;background:none}
+  /* the pinned cells opt out of the row stripe, so hover is re-applied by hand */
+  .tbl--pin tbody tr:hover td.c-check,
+  .tbl--pin tbody tr:hover td:nth-child(2),
+  .tbl--pin1 tbody tr:hover td:nth-child(1){background:var(--surface-2)}
+  /* a hairline marks where the pinned block ends */
+  .tbl--pin td:nth-child(2),.tbl--pin th:nth-child(2),
+  .tbl--pin1 td:nth-child(1),.tbl--pin1 th:nth-child(1){box-shadow:1px 0 0 var(--border)}
+
+  .scroll-cue{position:absolute;top:0;bottom:0;width:38px;pointer-events:none;opacity:0;
+    transition:opacity .18s ease;z-index:4}
+  .scroll-cue.left{left:0;background:linear-gradient(to right,rgba(33,37,43,.10),rgba(33,37,43,0))}
+  .scroll-cue.right{right:0;background:linear-gradient(to left,rgba(33,37,43,.10),rgba(33,37,43,0))}
+  .tbl-wrap.has-left .scroll-cue.left{opacity:1}
+  .tbl-wrap.has-right .scroll-cue.right{opacity:1}
+
   .chips{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 18px}
   .chip-btn{
     display:inline-flex;align-items:center;gap:9px;white-space:nowrap;
@@ -1431,11 +1490,105 @@
     </header>
 
     <div class="tabs" id="subTabs" role="tablist" aria-label="Submission category">
-      <button class="tab" role="tab" id="stab-inv" aria-controls="spanel-inv" aria-selected="true" type="button">Inventory</button>
+      <button class="tab" role="tab" id="stab-base" aria-controls="spanel-base" aria-selected="true" type="button">Baseline Inventory</button>
+      <button class="tab" role="tab" id="stab-inv" aria-controls="spanel-inv" aria-selected="false" type="button">Initial Inventory</button>
       <button class="tab" role="tab" id="stab-cnc" aria-controls="spanel-cnc" aria-selected="false" type="button">Customer Notice Certifications</button>
     </div>
 
-    <section class="panel" id="spanel-inv" role="tabpanel" aria-labelledby="stab-inv">
+    <section class="panel" id="spanel-base" role="tabpanel" aria-labelledby="stab-base">
+      <div class="banner">
+        <span class="banner-ico"><svg width="17" height="17" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 1.8 13.6 4v4c0 3.3-2.3 5.6-5.6 6.4C4.7 13.6 2.4 11.3 2.4 8V4L8 1.8Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg></span>
+        <p><b>Baseline inventories are due 11/01/2027</b> <span>&middot; every community and NTNC system must file one, with connector materials counted alongside service lines</span></p>
+        <button class="btn-pill" type="button">§141.84 <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h9m0 0-3.4-3.4M12 8l-3.4 3.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </div>
+
+      <div class="pair">
+        <section class="domain">
+          <div class="domain-head">
+            <h2>Submission Status</h2>
+            <span class="pill neutral num" style="margin-left:auto">1,903 systems</span>
+          </div>
+          <div class="cell" style="border-left:0">
+            <div class="donut-row">
+              <div class="donut" id="baseStatusDonut"></div>
+              <div class="keys" style="flex:1;min-width:190px" id="baseStatusKeys"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="domain">
+          <div class="domain-head">
+            <h2>Connector Materials</h2>
+            <span class="pill neutral num" style="margin-left:auto">148,402 connectors</span>
+          </div>
+          <div class="cell" style="border-left:0">
+            <div class="donut-row">
+              <div class="donut" id="baseConnDonut"></div>
+              <div class="keys" style="flex:1;min-width:190px" id="baseConnKeys"></div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="period-bar">
+        <h2 class="sec-head" style="margin:0">Submissions</h2>
+        <label class="field">
+          <svg width="17" height="17" viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="2.3" y="3.3" width="11.4" height="10.4" rx="2" stroke="currentColor" stroke-width="1.4"/><path d="M2.3 6.6h11.4M5.5 2.2v2.2M10.5 2.2v2.2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+          <select id="basePeriod" aria-label="Submission period">
+            <option>Baseline Inventory &mdash; November 1, 2027</option>
+            <option>Baseline Inventory &mdash; Revision window 2027</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="tbl-card">
+        <div class="tbl-toolbar">
+          <label class="search">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="4.4" stroke="currentColor" stroke-width="1.5"/><path d="m10.4 10.4 3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            <input type="search" id="q-base" placeholder="Search by PWS, PWSID, submitter or county&hellip;" aria-label="Search baseline inventory submissions">
+          </label>
+          <div class="tbl-tools">
+            <button class="btn-pill" type="button"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2.5 3.5h11l-4.2 5v4.2l-2.6 1.3V8.5l-4.2-5Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg> Filters</button>
+            <button class="btn-pill" type="button"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 13V3m0 0L2 5m2-2 2 2M12 3v10m0 0 2-2m-2 2-2-2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Columns</button>
+            <button class="btn-pill" type="button"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 2.5h8a1 1 0 0 1 1 1v10l-5-2.8-5 2.8v-10a1 1 0 0 1 1-1Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg> Views</button>
+            <button class="btn-solid js-export" type="button">Export <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m4 6 4 4 4-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          </div>
+        </div>
+        <div class="tbl-wrap">
+          <table class="tbl tbl--pin">
+            <thead><tr>
+              <th class="c-check"><label class="chk"><input type="checkbox" aria-label="Select all rows"></label></th>
+              <th class="sortable">PWS</th><th class="sortable">Submitted By</th><th class="sortable">Submitted Date</th>
+              <th class="sortable">PWS Type</th><th class="sortable">Percent Known</th>
+              <th class="sortable">Total Lines</th><th class="sortable">Lead</th><th class="sortable">GRR</th>
+              <th class="sortable">Unknown</th><th class="sortable">Non-Lead</th>
+              <th class="sortable">Total Connectors</th><th class="sortable">Lead Connectors</th>
+              <th class="sortable">Non-Lead Connectors</th><th class="sortable">Unknown Connectors</th>
+              <th class="sortable">Assigned To</th><th class="sortable">Submission Status</th>
+              <th class="sortable">Counties Served</th><th class="sortable">Territory</th>
+            </tr></thead>
+            <tbody id="baseRows"></tbody>
+          </table>
+        </div>
+        <div class="tbl-foot" data-pager data-total="1903" data-per="10" data-noun="submissions">
+          <label class="per-page"><span>Rows</span>
+            <select aria-label="Rows per page" data-perpage>
+              <option value="10">10</option><option value="25">25</option>
+              <option value="50">50</option><option value="100">100</option>
+            </select></label>
+          <span class="range-txt" data-range aria-live="polite"></span>
+          <div class="pager">
+            <button type="button" data-prev><svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M9.6 3.4 5 8l4.6 4.6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg> Previous</button>
+            <span class="pg-jump"><span>Page</span>
+              <input type="number" min="1" step="1" value="1" inputmode="numeric" aria-label="Go to page" data-pgnum>
+              <span>of <b class="num" data-pgtotal>1</b></span></span>
+            <button type="button" data-next>Next <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M6.4 3.4 11 8l-4.6 4.6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" id="spanel-inv" role="tabpanel" aria-labelledby="stab-inv" hidden>
       <section class="domain">
         <div class="domain-head">
           <h2>Submission Breakdown</h2>
@@ -1624,6 +1777,137 @@
     </div>
    </section>
 
+
+   <!-- ============ BASELINE INVENTORY REVIEW ============ -->
+   <section class="view" id="view-base-review" hidden>
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <button type="button" data-crumb="submissions">Submissions</button>
+      <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m6 3 5 5-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <button type="button" id="crumbBase">Baseline Inventory</button>
+      <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m6 3 5 5-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span aria-current="page" id="crumbBaseNow">Submission</span>
+    </nav>
+
+    <header class="page-head" style="display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:16px">
+      <div>
+        <h1 id="brTitle">Baseline Inventory</h1>
+        <p class="sub" id="brSub">Baseline service line inventory &middot; due November 1, 2027</p>
+      </div>
+      <div class="br-acts" id="brActs"></div>
+    </header>
+
+    <div class="pair" style="margin-bottom:18px">
+      <section class="domain">
+        <div class="domain-head"><h2>Water System</h2></div>
+        <div class="cell" style="border-left:0">
+          <div class="meta-row" id="brSystem"></div>
+        </div>
+      </section>
+      <section class="domain">
+        <div class="domain-head">
+          <h2>Submission</h2>
+          <span style="margin-left:auto" id="brStatusPill"></span>
+        </div>
+        <div class="cell" style="border-left:0">
+          <div class="meta-row" id="brSubmission"></div>
+          <div id="brReject"></div>
+        </div>
+      </section>
+    </div>
+
+    <h2 class="sec-head">Materials</h2>
+    <div class="pair" style="margin-bottom:18px">
+      <section class="domain">
+        <div class="domain-head">
+          <h2>Service Line Materials</h2>
+          <span class="pill neutral num" style="margin-left:auto" id="brSlTotal"></span>
+        </div>
+        <div class="cell" style="border-left:0">
+          <div class="donut-row">
+            <div class="donut" id="brSlDonut"></div>
+            <div class="keys" style="flex:1;min-width:190px" id="brSlKeys"></div>
+          </div>
+        </div>
+      </section>
+      <section class="domain">
+        <div class="domain-head">
+          <h2>Connector Materials</h2>
+          <span class="pill neutral num" style="margin-left:auto" id="brConnTotal"></span>
+        </div>
+        <div class="cell" style="border-left:0">
+          <div class="donut-row">
+            <div class="donut" id="brConnDonut"></div>
+            <div class="keys" style="flex:1;min-width:190px" id="brConnKeys"></div>
+          </div>
+          <p class="caption">Connector materials are new in the baseline inventory and are counted separately from service lines. &sect;141.84(a)(2)&ndash;(4)</p>
+        </div>
+      </section>
+    </div>
+
+    <h2 class="sec-head">Public Accessibility</h2>
+    <section class="domain" style="margin-bottom:18px">
+      <div class="cell" style="border-left:0">
+        <div class="meta-row" id="brAccess"></div>
+        <p class="caption">&sect;141.84(b)(3) requires the inventory to be publicly accessible, and &sect;141.90(e)(2) requires systems serving more than 50,000 people to publish it online.</p>
+      </div>
+    </section>
+
+    <h2 class="sec-head">Related Submissions</h2>
+    <section class="domain" style="margin-bottom:18px">
+      <div class="cell" style="border-left:0">
+        <div id="brRelated"></div>
+      </div>
+    </section>
+
+    <h2 class="sec-head">Service Lines</h2>
+    <div class="tbl-card">
+      <div class="tbl-toolbar">
+        <label class="search">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="4.4" stroke="currentColor" stroke-width="1.5"/><path d="m10.4 10.4 3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <input type="search" id="q-sl" placeholder="Search by ID, address or material&hellip;" aria-label="Search service lines">
+        </label>
+        <div class="tbl-tools">
+          <button class="btn-pill" type="button"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2.5 3.5h11l-4.2 5v4.2l-2.6 1.3V8.5l-4.2-5Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg> Filters</button>
+          <button class="btn-pill" type="button"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 13V3m0 0L2 5m2-2 2 2M12 3v10m0 0 2-2m-2 2-2-2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Columns</button>
+          <button class="btn-pill" type="button"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 2.5h8a1 1 0 0 1 1 1v10l-5-2.8-5 2.8v-10a1 1 0 0 1 1-1Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg> Views</button>
+          <button class="btn-solid js-export" type="button">Export <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m4 6 4 4 4-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        </div>
+      </div>
+      <div class="tbl-wrap">
+        <table class="tbl tbl--pin tbl--pin1">
+          <thead><tr>
+            <th class="sortable">Service Line ID</th><th class="sortable">Address</th>
+            <th class="sortable">System-Owned Material</th><th class="sortable">System-Owned Source</th>
+            <th class="sortable">Customer-Owned Material</th><th class="sortable">Customer-Owned Source</th>
+            <th class="sortable">Classification</th>
+            <th class="sortable">Connector Material</th><th class="sortable">Connector Source</th>
+            <th class="sortable">Connector Replaced</th>
+            <th class="sortable">Install Date</th><th class="sortable">Diameter</th>
+            <th class="sortable">Previously Lead</th><th class="sortable">Replacement Date</th>
+            <th class="sortable">Publicly Accessible</th><th class="sortable">Last Verified</th>
+            <th class="sortable">Status</th>
+          </tr></thead>
+          <tbody id="slRows"></tbody>
+        </table>
+      </div>
+      <div class="tbl-foot" id="slFoot" data-pager data-total="400" data-per="12" data-noun="service lines">
+        <label class="per-page"><span>Rows</span>
+          <select aria-label="Rows per page" data-perpage>
+            <option value="10">10</option><option value="25">25</option>
+            <option value="50">50</option><option value="100">100</option>
+          </select></label>
+        <span class="range-txt" data-range aria-live="polite"></span>
+        <div class="pager">
+          <button type="button" data-prev><svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M9.6 3.4 5 8l4.6 4.6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg> Previous</button>
+          <span class="pg-jump"><span>Page</span>
+            <input type="number" min="1" step="1" value="1" inputmode="numeric" aria-label="Go to page" data-pgnum>
+            <span>of <b class="num" data-pgtotal>1</b></span></span>
+          <button type="button" data-next>Next <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M6.4 3.4 11 8l-4.6 4.6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        </div>
+      </div>
+    </div>
+   </section>
+
    <!-- ==================== SETTINGS ==================== -->
    <section class="view" id="view-settings" hidden>
     <header class="page-head">
@@ -1638,6 +1922,16 @@
         <p class="domain-note">Applies to everyone in the Georgia EPD workspace.</p>
       </div>
       <div class="cell" style="border-left:0">
+        <div class="set-row" style="padding-bottom:18px;border-bottom:1px solid var(--border);margin-bottom:18px">
+          <div class="set-txt">
+            <h4>Inventory submission types</h4>
+            <p>Which inventory tabs appear on the Submissions page. Baseline inventories are required of every community and NTNC system by 11/01/2027 and are the default. <b>Both</b> also shows the Initial Inventory tab, for states carrying LCRR submission history &mdash; workspaces onboarded after this release have none.</p>
+          </div>
+          <div class="seg" id="invTypePref" role="group" aria-label="Inventory submission types">
+            <button type="button" data-inv="baseline" aria-pressed="true">Baseline Inventory only</button>
+            <button type="button" data-inv="both" aria-pressed="false">Both</button>
+          </div>
+        </div>
         <div class="set-row">
           <div class="set-txt">
             <h4>Monthly Operating Reports tab</h4>
@@ -3742,6 +4036,495 @@
     });
   });
 
+  /* ================= BASELINE INVENTORY (LCRI) =================
+     Under LCRI every community and NTNC system files a baseline service line
+     inventory by 11/01/2027. It extends the LCRR initial inventory with connector
+     materials, which are categorised and counted alongside service lines, so every
+     count here comes in two halves: lines and connectors. */
+  var CONN_MATS = ["Lead", "Galvanized (GRR)", "Non-Lead", "Unknown"];
+
+  /* status, lines, then the four calculated connector totals. The connector numbers
+     are derived rather than stored so they can never disagree with the detail rows. */
+  var baseSubs = [
+    {pws:"Glenwood", id:"GA3090001", by:"Caryn Edge", date:"09/12/2026", type:"CWS",
+     cty:"Wheeler", terr:"South", pop:11400, total:400, lead:6, grr:14, unk:38, nonlead:342,
+     conn:{lead:4, grr:9, unk:22, nonlead:365}, st:["warn","In review"], assign:"Cam Grundy",
+     access:{method:"Public web page", url:"glenwoodga.gov/lead-inventory", online:true, updated:"09/12/2026"}},
+    {pws:"Two Way Utilities", id:"GA1270154", by:"Rick Smith", date:"09/08/2026", type:"CWS",
+     cty:"Glynn", terr:"Coastal", pop:3100, total:1180, lead:0, grr:31, unk:96, nonlead:1053,
+     conn:{lead:0, grr:18, unk:64, nonlead:1098}, st:["ok","Approved"], assign:"A. Whitfield",
+     access:{method:"Public web page", url:"twowayutilities.com/sl-inventory", online:true, updated:"09/08/2026"}},
+    {pws:"Thundering Springs Assoc., Inc.", id:"GA1750043", by:"Tammy Chambers", date:"09/04/2026", type:"CWS",
+     cty:"Laurens", terr:"Central", pop:860, total:70, lead:2, grr:0, unk:11, nonlead:57,
+     conn:{lead:1, grr:0, unk:8, nonlead:61}, st:["crit","Rejected"], assign:"M. Okafor",
+     reject:{on:"09/06/2026", by:"M. Okafor", reason:"Connector materials were left blank for 11 of the 70 service lines. §141.84(a)(2) requires every connector to be categorised, including as unknown. Resubmit with those 11 classified."},
+     access:{method:"On request at the utility office", url:null, online:false, updated:"09/04/2026"}},
+    {pws:"North Doublegate Water System", id:"GA1770026", by:"Reid Mills", date:"08/29/2026", type:"CWS",
+     cty:"Lee", terr:"Southwest", pop:1450, total:39, lead:0, grr:1, unk:4, nonlead:34,
+     conn:{lead:0, grr:1, unk:3, nonlead:35}, st:["ok","Approved"], assign:"A. Whitfield",
+     access:{method:"Public web page", url:"ndwater.org/inventory", online:true, updated:"08/29/2026"}},
+    {pws:"Spring Creek Mobile Home Park", id:"GA1830008", by:"John Floyd", date:"08/27/2026", type:"CWS",
+     cty:"Long", terr:"Coastal", pop:240, total:28, lead:0, grr:0, unk:2, nonlead:26,
+     conn:{lead:0, grr:0, unk:1, nonlead:27}, st:["info","Submitted"], assign:"Unassigned",
+     access:{method:"On request at the utility office", url:null, online:false, updated:"08/27/2026"}},
+    {pws:"Oatland Island Education Cntr.", id:"GA0510095", by:"Daslin Garcon", date:"08/22/2026", type:"NTNCWS",
+     cty:"Chatham", terr:"Coastal", pop:120, total:5, lead:0, grr:0, unk:0, nonlead:5,
+     conn:{lead:0, grr:0, unk:0, nonlead:5}, st:["ok","Approved"], assign:"Cam Grundy",
+     access:{method:"On request at the utility office", url:null, online:false, updated:"08/22/2026"}},
+    {pws:"Hargett Trailer Park", id:"GA0170002", by:"Robert Ehasz", date:"08/19/2026", type:"CWS",
+     cty:"Ben Hill", terr:"South", pop:180, total:16, lead:1, grr:0, unk:3, nonlead:12,
+     conn:{lead:1, grr:0, unk:2, nonlead:13}, st:["warn","In review"], assign:"M. Okafor",
+     access:{method:"On request at the utility office", url:null, online:false, updated:"08/19/2026"}},
+    {pws:"Big Tree Estates", id:"GA1910066", by:"R Don Lewis Jr", date:"08/14/2026", type:"CWS",
+     cty:"McIntosh", terr:"Coastal", pop:310, total:18, lead:0, grr:0, unk:6, nonlead:12,
+     conn:{lead:0, grr:0, unk:4, nonlead:14}, st:["info","Submitted"], assign:"Unassigned",
+     access:{method:"Public web page", url:"bigtreeestates.org/water", online:true, updated:"08/14/2026"}},
+    {pws:"Fair Haven Acres Mobile Home Park", id:"GA1790145", by:"Kerry White", date:"08/11/2026", type:"CWS",
+     cty:"Liberty", terr:"Coastal", pop:290, total:27, lead:0, grr:2, unk:5, nonlead:20,
+     conn:{lead:0, grr:1, unk:3, nonlead:23}, st:["crit","Rejected"], assign:"Cam Grundy",
+     reject:{on:"08/13/2026", by:"Cam Grundy", reason:"The inventory is not publicly accessible. §141.84(b)(3) requires it to be made available to the public; give a location or a web address and resubmit."},
+     access:{method:"Not yet published", url:null, online:false, updated:"08/11/2026"}},
+    {pws:"Adairsville, GA", id:"GA0150000", by:"Priya Nandi", date:"08/06/2026", type:"CWS",
+     cty:"Bartow", terr:"Northwest", pop:5900, total:2900, lead:18, grr:64, unk:212, nonlead:2606,
+     conn:{lead:12, grr:41, unk:150, nonlead:2697}, st:["warn","In review"], assign:"A. Whitfield",
+     access:{method:"Public web page", url:"adairsvillega.gov/lcri", online:true, updated:"08/06/2026"}}
+  ];
+  function connTotal(r){ return r.conn.lead + r.conn.grr + r.conn.unk + r.conn.nonlead; }
+  function pctKnown(r){
+    return r.total ? (((r.total - r.unk) / r.total) * 100).toFixed(1) + "% Known" : "—";
+  }
+
+  function renderBaseRows(){
+    $("baseRows").innerHTML = baseSubs.map(function(r, ix){
+      return TR(ix)
+        + '<td class="c-check"><label class="chk"><input type="checkbox" aria-label="Select row"></label></td>'
+        + '<td class="t-wrap"><a class="t-link" href="#">' + esc(r.pws) + '</a>'
+          + '<span class="t-sub">' + esc(r.id) + '</span></td>'
+        + cell(esc(r.by)) + cell(esc(r.date), "num") + cell(esc(r.type))
+        + cell(pctKnown(r))
+        + cell(fmt(r.total), "num") + cell(fmt(r.lead), "num") + cell(fmt(r.grr), "num")
+        + cell(fmt(r.unk), "num") + cell(fmt(r.nonlead), "num")
+        + cell(fmt(connTotal(r)), "num") + cell(fmt(r.conn.lead), "num")
+        + cell(fmt(r.conn.nonlead), "num") + cell(fmt(r.conn.unk), "num")
+        + cell(esc(r.assign))
+        + '<td>' + spill(r.st[0], r.st[1]) + '</td>'
+        + cell(esc(r.cty)) + cell(esc(r.terr))
+        + "</tr>";
+    }).join("");
+  }
+  renderBaseRows();
+
+  /* statewide roll-ups for the two cards above the table */
+  (function baseCards(){
+    var byStatus = {};
+    baseSubs.forEach(function(r){ byStatus[r.st[1]] = (byStatus[r.st[1]] || 0) + 1; });
+    var statusSegs = [
+      {label:"Approved",  v:1204, c:C().sevHealthy},
+      {label:"In review", v:388,  c:C().sevCaution},
+      {label:"Submitted", v:214,  c:C().dvBlue},
+      {label:"Rejected",  v:62,   c:C().sevCrit},
+      {label:"Not filed", v:35,   c:C().text3}
+    ];
+    $("baseStatusDonut").innerHTML = donut(statusSegs, 104)
+      + '<div class="donut-label"><b class="num">1,903</b><span>systems</span></div>';
+    $("baseStatusKeys").innerHTML = keyList(statusSegs, 1903);
+
+    var connSegs = [
+      {label:"Non-Lead",         v:131880, c:C().sevHealthy},
+      {label:"Unknown",          v:12640,  c:C().text3},
+      {label:"Galvanized (GRR)", v:2704,   c:C().sevCaution},
+      {label:"Lead",             v:1178,   c:C().sevCrit}
+    ];
+    $("baseConnDonut").innerHTML = donut(connSegs, 104)
+      + '<div class="donut-label"><b class="num">148,402</b><span>connectors</span></div>';
+    $("baseConnKeys").innerHTML = keyList(connSegs, 148402);
+  })();
+
+  /* ---------------- review page ---------------- */
+  var brIx = 0;
+  function factRow(pairs){
+    return pairs.filter(function(m){ return m[1] !== null && m[1] !== undefined; })
+      .map(function(m){
+        return '<div><div class="meta-k">' + esc(m[0]) + '</div>'
+             + '<div class="meta-v">' + m[1] + '</div></div>';
+      }).join("");
+  }
+  function renderBaseReview(ix){
+    brIx = ix;
+    var r = baseSubs[ix];
+    var cTotal = connTotal(r);
+    var plain = r.pws;
+
+    $("crumbBaseNow").textContent = plain;
+    $("brTitle").textContent = plain;
+    $("brSub").textContent = r.id + " · Baseline inventory · due November 1, 2027";
+    $("brStatusPill").innerHTML = spill(r.st[0], r.st[1]);
+
+    $("brSystem").innerHTML = factRow([
+      ["System name", esc(plain)],
+      ["PWSID", esc(r.id)],
+      ["County", esc(r.cty)],
+      ["Territory", esc(r.terr)],
+      ["Population served", fmt(r.pop)]
+    ]);
+
+    $("brSubmission").innerHTML = factRow([
+      ["Submitted by", esc(r.by)],
+      ["Submitted date", esc(r.date)],
+      ["System type", esc(r.type)],
+      ["Assigned to", esc(r.assign)],
+      ["Submission type", "Baseline Inventory"]
+    ]);
+
+    /* A rejected submission has to carry its reasoning, or the utility is left
+       guessing at what to fix. */
+    $("brReject").innerHTML = r.reject
+      ? '<div class="reject-note"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">'
+        + '<circle cx="8" cy="8" r="6.6" stroke="currentColor" stroke-width="1.4"/>'
+        + '<path d="M8 4.8v3.6M8 11.1v.1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>'
+        + '<span><b>Rejected ' + esc(r.reject.on) + ' by ' + esc(r.reject.by) + '</b>'
+        + esc(r.reject.reason) + '</span></div>'
+      : "";
+
+    var slSegs = [
+      {label:"Non-Lead",         v:r.nonlead, c:C().sevHealthy},
+      {label:"Unknown",          v:r.unk,     c:C().text3},
+      {label:"Galvanized (GRR)", v:r.grr,     c:C().sevCaution},
+      {label:"Lead",             v:r.lead,    c:C().sevCrit}
+    ];
+    $("brSlTotal").textContent = fmt(r.total) + " lines";
+    $("brSlDonut").innerHTML = donut(slSegs, 104)
+      + '<div class="donut-label"><b class="num">' + fmt(r.total) + '</b><span>lines</span></div>';
+    $("brSlKeys").innerHTML = keyList(slSegs, r.total);
+
+    var cSegs = [
+      {label:"Non-Lead",         v:r.conn.nonlead, c:C().sevHealthy},
+      {label:"Unknown",          v:r.conn.unk,     c:C().text3},
+      {label:"Galvanized (GRR)", v:r.conn.grr,     c:C().sevCaution},
+      {label:"Lead",             v:r.conn.lead,    c:C().sevCrit}
+    ];
+    $("brConnTotal").textContent = fmt(cTotal) + " connectors";
+    $("brConnDonut").innerHTML = donut(cSegs, 104)
+      + '<div class="donut-label"><b class="num">' + fmt(cTotal) + '</b><span>connectors</span></div>';
+    $("brConnKeys").innerHTML = keyList(cSegs, cTotal);
+
+    var a = r.access;
+    $("brAccess").innerHTML = factRow([
+      ["Made available by", esc(a.method)],
+      ["Web address", a.url ? '<a class="t-link" href="#">' + esc(a.url) + '</a>' : null],
+      ["Online posting required", r.pop > 50000 ? "Yes · serves over 50,000" : "No · serves under 50,000"],
+      ["Online posting met", r.pop > 50000 ? (a.online ? spill("ok","Met") : spill("crit","Not met"))
+                                           : (a.online ? spill("ok","Published anyway") : spill("neutral","Not required"))],
+      ["Last updated", esc(a.updated)]
+    ]);
+
+    /* Companion submissions are conditional: the link only appears where the rule
+       actually applies, and says plainly when the submission has not arrived.
+       Applicability rules are still being confirmed, so the thresholds here are a
+       placeholder rather than the final determination. */
+    var needsSlrp = (r.lead + r.grr) > 0;
+    var needsPool = r.unk > 0;
+    var rel = [];
+    rel.push(relCard("slrp",
+      "Service Line Replacement Plan",
+      needsSlrp
+        ? "Required — this system reported " + fmt(r.lead + r.grr) + " lead or galvanized lines."
+        : "Not required — no lead or galvanized service lines were reported.",
+      needsSlrp, needsSlrp && r.st[1] !== "Rejected"));
+    rel.push(relCard("pool",
+      "Non-Lead Validation Pool",
+      needsPool
+        ? "Required — " + fmt(r.unk) + " service lines are still unknown."
+        : "Not required — every service line has been classified.",
+      needsPool, needsPool && r.st[1] === "Approved"));
+    $("brRelated").innerHTML = '<div class="rel-grid">' + rel.join("") + '</div>'
+      + '<p class="caption" style="margin-top:14px">Applicability and relationship rules are still being confirmed.</p>';
+
+    /* An approved or rejected submission has already been decided, so it offers the
+       way back rather than the decision again. */
+    var pending = r.st[1] === "Submitted" || r.st[1] === "In review";
+    $("brActs").innerHTML = pending
+      ? '<button class="btn-danger" type="button" id="brRejectBtn">Reject</button>'
+        + '<button class="btn-solid" type="button" id="brApprove">Approve submission</button>'
+      : '<button class="btn-pill" type="button" id="brReopen">Reopen for review</button>';
+    if ($("brApprove")) $("brApprove").addEventListener("click", function(){
+      runBusy(this, "Approving…", 1100, function(){
+        r.st = ["ok", "Approved"]; delete r.reject;
+        renderBaseRows(); renderBaseReview(brIx);
+        showToast("Submission approved", plain + "’s baseline inventory has been accepted.");
+      });
+    });
+    if ($("brRejectBtn")) $("brRejectBtn").addEventListener("click", function(){
+      runBusy(this, "Rejecting…", 1000, function(){
+        r.st = ["crit", "Rejected"];
+        r.reject = {on:"10/14/2026", by:"Cam Grundy",
+                    reason:"Returned for correction. Add the reviewer’s reasoning here before sending."};
+        renderBaseRows(); renderBaseReview(brIx);
+        showToast("Submission rejected", plain + " has been notified and can resubmit.");
+      });
+    });
+    if ($("brReopen")) $("brReopen").addEventListener("click", function(){
+      r.st = ["warn", "In review"];
+      renderBaseRows(); renderBaseReview(brIx);
+      showToast("Reopened for review", plain + "’s submission is back in the review queue.");
+    });
+
+    renderSlRows(r);
+  }
+  function relCard(key, name, note, required, exists){
+    return '<div class="rel-card">'
+      + '<span class="rel-txt"><b>' + esc(name) + '</b><span>' + esc(note) + '</span>'
+      + (required
+          ? (exists
+              ? '<button class="btn-pill" type="button" data-rel="' + key + '">Open submission <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h9m0 0-3.4-3.4M12 8l-3.4 3.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>'
+              /* the pill is inside a block, so it needs its own line box or it
+                 stretches the full width of the card */
+              : '<div style="margin-top:12px"><span class="spill warn">Not yet submitted</span></div>')
+          : '')
+      + '</span></div>';
+  }
+
+  /* A companion submission is a quick cross-check during review, not a destination:
+     it opens beside the baseline inventory so the reviewer keeps their place. */
+  $("brRelated").addEventListener("click", function(e){
+    var btn = e.target.closest("[data-rel]"); if (!btn) return;
+    relDrawer(btn.getAttribute("data-rel"));
+  });
+  function relDrawer(key){
+    var r = baseSubs[brIx];
+    var needReplace = r.lead + r.grr;
+
+    if (key === "slrp"){
+      /* LCRI sets a 10% annual pace, so the schedule follows from the count rather
+         than being carried as its own number. */
+      var perYear = Math.max(1, Math.ceil(needReplace / 10));
+      openDrawer({
+        title: "Service Line Replacement Plan",
+        sub: r.pws + " \u00b7 " + r.id,
+        body: dwSec("Submission", dwFacts([
+            ["Submitted by", esc(r.by)],
+            ["Submitted date", esc(r.date)],
+            ["Status", spill("ok", "Approved")],
+            ["Plan period", "2027\u20132037"],
+            ["Submission type", "Service Line Replacement Plan"]
+          ]))
+          + dwSec("Replacement scope", dwFacts([
+              ["Lines requiring replacement", fmt(needReplace)],
+              ["Lead", fmt(r.lead)],
+              ["Galvanized requiring replacement", fmt(r.grr)],
+              ["Mandated annual pace", fmt(perYear) + " per year"],
+              ["Target completion", "2037"]
+            ]))
+          + dwSec("Why this is required",
+              '<p class="dw-note">This system reported ' + fmt(needReplace)
+              + ' lead or galvanized service lines in its baseline inventory, so a '
+              + 'replacement plan is required alongside it.</p>'),
+        actions: [{label:"Open full submission", primary:true}]
+      });
+      return;
+    }
+
+    var pool = Math.max(1, Math.ceil(r.unk * 0.2));
+    var sampled = Math.ceil(pool * 0.6);
+    openDrawer({
+      title: "Non-Lead Validation Pool",
+      sub: r.pws + " \u00b7 " + r.id,
+      body: dwSec("Submission", dwFacts([
+          ["Submitted by", esc(r.by)],
+          ["Submitted date", esc(r.date)],
+          ["Status", spill("warn", "In review")],
+          ["Submission type", "Non-Lead Validation Pool"]
+        ]))
+        + dwSec("Validation pool", dwFacts([
+            ["Unknown service lines", fmt(r.unk)],
+            ["Pool size", fmt(pool)],
+            ["Investigated so far", fmt(sampled)],
+            ["Confirmed non-lead", fmt(Math.max(0, sampled - 1))],
+            ["Found to be lead", fmt(Math.min(1, sampled))]
+          ]))
+        + dwSec("Why this is required",
+            '<p class="dw-note">' + fmt(r.unk) + ' service lines are still unclassified. '
+            + 'A validation pool lets the system support a non-lead determination for '
+            + 'those unknowns from a representative sample rather than excavating every one.</p>'),
+      actions: [{label:"Open full submission", primary:true}]
+    });
+  }
+
+  /* ---------------- service lines ---------------- */
+  var SL_SYS_MAT  = ["Copper", "Lead", "Galvanized", "Plastic (PVC)", "Unknown"];
+  var SL_CUST_MAT = ["Copper", "Lead", "Galvanized", "Plastic (PEX)", "Unknown"];
+  var SL_SRC      = ["Records review", "Visual inspection", "Excavation", "Water quality sampling", "Predictive model"];
+  var SL_CONN     = ["Non-Lead", "Lead", "Galvanized (GRR)", "Unknown"];
+  var SL_STREETS  = ["Magnolia St", "Oak Ridge Rd", "Depot St", "Cypress Ln", "Pine Hollow Dr",
+                     "Chestnut Ave", "River Bend Rd", "Hickory Ct", "Laurel Way", "Mill Pond Rd",
+                     "Sycamore St", "Bay Leaf Dr"];
+  var slRowsData = [];
+  function classify(sys, cust){
+    if (sys === "Lead" || cust === "Lead") return ["crit", "Lead"];
+    if (sys === "Galvanized" || cust === "Galvanized") return ["warn", "Galvanized requiring replacement"];
+    if (sys === "Unknown" || cust === "Unknown") return ["neutral", "Unknown"];
+    return ["ok", "Non-lead"];
+  }
+  /* Deterministic from the PWSID so a system's lines look the same every visit. */
+  function seedFrom(id){
+    var h = 0;
+    for (var i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) % 100000;
+    return h;
+  }
+  function renderSlRows(r){
+    var seed = seedFrom(r.id);
+    slRowsData = [];
+    var count = Math.min(12, r.total);
+    for (var i = 0; i < count; i++){
+      var k = (seed + i * 17) % 1000;
+      var sys  = SL_SYS_MAT[(k + i) % SL_SYS_MAT.length];
+      var cust = SL_CUST_MAT[(k + i * 3) % SL_CUST_MAT.length];
+      var conn = SL_CONN[(k + i * 5) % SL_CONN.length];
+      var cls  = classify(sys, cust);
+      var yr   = 1948 + ((k + i * 7) % 62);
+      slRowsData.push({
+        sid: r.id + "-SL" + String(1000 + i),
+        addr: (100 + ((k + i * 23) % 880)) + " " + SL_STREETS[(k + i) % SL_STREETS.length],
+        sys: sys, sysSrc: SL_SRC[(k + i) % SL_SRC.length],
+        cust: cust, custSrc: SL_SRC[(k + i * 2) % SL_SRC.length],
+        cls: cls,
+        conn: conn, connSrc: SL_SRC[(k + i * 4) % SL_SRC.length],
+        connRep: conn === "Lead" || conn === "Galvanized (GRR)" ? null : (i % 4 === 0 ? "04/18/2026" : null),
+        install: "0" + (1 + (i % 9)) + "/" + (10 + (i % 18)) + "/" + yr,
+        dia: ["3/4\"", "1\"", "1 1/2\"", "2\""][(k + i) % 4],
+        prevLead: cls[1] === "Lead" ? "Yes" : (i % 5 === 0 ? "Yes" : "No"),
+        repl: i % 5 === 0 ? "04/18/2026" : null,
+        access: r.access.online ? "Yes" : "On request",
+        verified: "0" + (1 + (i % 9)) + "/" + (10 + (i % 18)) + "/2026",
+        status: cls[1] === "Unknown" ? ["neutral", "Needs verification"] : ["ok", "Verified"]
+      });
+    }
+    $("slRows").innerHTML = slRowsData.map(function(d, ix){
+      return TR(ix)
+        + '<td class="t-wrap"><a class="t-link" href="#">' + esc(d.sid) + '</a></td>'
+        + cell(esc(d.addr))
+        + cell(esc(d.sys)) + cell(esc(d.sysSrc))
+        + cell(esc(d.cust)) + cell(esc(d.custSrc))
+        + '<td>' + spill(d.cls[0], d.cls[1]) + '</td>'
+        + cell(esc(d.conn)) + cell(esc(d.connSrc)) + cell(d.connRep ? esc(d.connRep) : null, "num")
+        + cell(esc(d.install), "num") + cell(esc(d.dia), "num")
+        + cell(esc(d.prevLead)) + cell(d.repl ? esc(d.repl) : null, "num")
+        + cell(esc(d.access)) + cell(esc(d.verified), "num")
+        + '<td>' + spill(d.status[0], d.status[1]) + '</td>'
+        + "</tr>";
+    }).join("");
+    var foot = $("slFoot");
+    if (foot){
+      foot.setAttribute("data-total", String(r.total));
+      foot.setAttribute("data-page", "1");
+      if (typeof syncPager === "function") syncPager(foot);
+    }
+  }
+
+  /* A service line record is read-only and sits inside the submission being
+     reviewed, so it opens beside the table rather than replacing it - the reviewer
+     keeps their place in the list and can step through lines without navigating. */
+  function slDrawer(ix){
+    var d = slRowsData[ix], r = baseSubs[brIx];
+    var replaceReq = d.cls[1] === "Lead" || d.cls[1] === "Galvanized requiring replacement";
+
+    openDrawer({
+      title: d.sid,
+      sub: d.addr + " \u00b7 " + r.pws,
+      body: dwSec("Classification", dwFacts([
+          ["Classification", spill(d.cls[0], d.cls[1])],
+          ["Record status", spill(d.status[0], d.status[1])],
+          ["Install date", esc(d.install)],
+          ["Diameter", esc(d.dia)]
+        ]))
+        + dwSec("System-owned portion", dwFacts([
+            ["Material", esc(d.sys)],
+            ["Basis of classification", esc(d.sysSrc)],
+            ["Previously lead", esc(d.prevLead)]
+          ]))
+        + dwSec("Customer-owned portion", dwFacts([
+            ["Material", esc(d.cust)],
+            ["Basis of classification", esc(d.custSrc)]
+          ]))
+        /* new in the baseline inventory: the connector is categorised and counted
+           separately from the service line itself */
+        + dwSec("Connector", dwFacts([
+            ["Connector material", esc(d.conn)],
+            ["Basis of classification", esc(d.connSrc)],
+            ["Connector replaced", d.connRep ? esc(d.connRep) : "Not replaced"]
+          ])
+          + '<p class="dw-note" style="margin-top:10px">A connector joins the service '
+          + 'line to the main. New in the baseline inventory. \u00a7141.84(a)(2)\u2013(4)</p>')
+        + dwSec("Replacement", dwFacts([
+            ["Service line replaced", d.repl ? esc(d.repl) : "Not replaced"],
+            ["Replacement required", replaceReq ? "Yes" : "No"]
+          ]))
+        + dwSec("Record", dwFacts([
+            ["Publicly accessible", esc(d.access)],
+            ["Last verified", esc(d.verified)],
+            ["Reported in", "Baseline Inventory \u00b7 " + esc(r.date)],
+            ["PWSID", esc(r.id)]
+          ])
+          + '<p class="dw-note" style="margin-top:10px">Read only. Service line records '
+          + 'are maintained by the water system in 120Utility.</p>')
+    });
+  }
+
+  /* ---------------- navigation ---------------- */
+  wireRows("baseRows", function(ix){ renderBaseReview(ix); showView("base-review", "submissions"); });
+  wireSearch("q-base", "baseRows");
+  wireRows("slRows", slDrawer);
+  wireSearch("q-sl", "slRows");
+  $("crumbBase").addEventListener("click", function(){ showView("submissions"); });
+  $("basePeriod").addEventListener("change", function(){
+    showToast("Period changed", "Showing " + this.value.replace(/—/g, "—") + ".");
+  });
+
+  /* ---------------- which inventory tabs are shown ----------------
+     Baseline only is the default: every workspace needs it, and a state onboarded
+     after this release has no LCRR history for the Initial Inventory tab to show. */
+  var invSeg = $("invTypePref"), invTabInitial = $("stab-inv");
+  function setInvTypes(mode){
+    Array.prototype.forEach.call(invSeg.querySelectorAll("[data-inv]"), function(b){
+      b.setAttribute("aria-pressed", String(b.getAttribute("data-inv") === mode));
+    });
+    invTabInitial.hidden = mode !== "both";
+    /* If the tab being hidden is the one on screen, move to Baseline before it goes.
+       Guarded because this runs once at boot, before the tab group is wired. */
+    if (mode !== "both" && invTabInitial.getAttribute("aria-selected") === "true"
+        && typeof selectSubTab === "function"){
+      selectSubTab("stab-base");
+    }
+    try { localStorage.setItem("gaepd.invTypes", mode); } catch(err){}
+  }
+  invSeg.addEventListener("click", function(e){
+    var b = e.target.closest("[data-inv]"); if (!b) return;
+    setInvTypes(b.getAttribute("data-inv"));
+  });
+  var invSaved = "baseline";
+  try { invSaved = localStorage.getItem("gaepd.invTypes") || "baseline"; } catch(err){}
+  setInvTypes(invSaved);
+
+  /* ---------------- horizontal scroll cues ----------------
+     Every scrollable table gets an edge wash showing which side has more behind it,
+     so a wide table reads as scrollable rather than as truncated. */
+  Array.prototype.forEach.call(document.querySelectorAll(".tbl-wrap"), function(wrap){
+    var l = document.createElement("span"); l.className = "scroll-cue left";
+    var r = document.createElement("span"); r.className = "scroll-cue right";
+    wrap.appendChild(l); wrap.appendChild(r);
+    function sync(){
+      var max = wrap.scrollWidth - wrap.clientWidth;
+      wrap.classList.toggle("has-left", wrap.scrollLeft > 2);
+      wrap.classList.toggle("has-right", max > 2 && wrap.scrollLeft < max - 2);
+    }
+    wrap.addEventListener("scroll", sync, {passive:true});
+    window.addEventListener("resize", sync);
+    /* rows arrive after this runs, and a hidden panel measures as zero, so re-check
+       whenever the table or its visibility changes */
+    if (window.ResizeObserver) new ResizeObserver(sync).observe(wrap);
+    sync();
+  });
+
   /* ---------------- tab groups ---------------- */
   function initTabs(containerId, storeKey, fallback){
     var box = $(containerId);
@@ -3770,7 +4553,7 @@
     return select;
   }
   var selectDashTab = initTabs("dashTabs", "gaepd.tab", "tab-all");
-  initTabs("subTabs", null, "stab-inv");
+  var selectSubTab = initTabs("subTabs", null, "stab-base");
 
   /* ---------------- view router ---------------- */
   var navBtns = Array.prototype.slice.call(document.querySelectorAll(".nav button"));
