@@ -705,6 +705,37 @@
     transform:translateX(100%);transition:transform .26s cubic-bezier(.4,0,.2,1);
   }
   .drawer.in{transform:none}
+  /* the wider record flyout from 120Utility's inventory design, for content that
+     would otherwise be a page */
+  .drawer.drawer--wide{width:min(816px,100vw)}
+  .dw-badge{display:inline-flex;vertical-align:middle;margin-left:6px}
+  .dw-badge .spill{font-size:12px}
+  /* as many equal columns as there are detail groups (two or three) */
+  .fo-details{display:flex;border:1px solid var(--border);border-radius:var(--r)}
+  .fo-details > .cell{flex:1 1 0;min-width:0;padding:16px 18px;border-left:1px solid var(--border)}
+  .fo-details > .cell:first-child{border-left:0}
+  /* a third of an 816px panel is too narrow for label and value side by side,
+     so in the flyout each value sits under its label */
+  .fo-details .dl{grid-template-columns:minmax(0,1fr);row-gap:0;font-size:14px}
+  .fo-details .dl dt{font-size:12px;line-height:1.5}
+  .fo-details .dl dd{margin-bottom:10px}
+  .fo-details .dl dd:last-child{margin-bottom:0}
+  .fo-details .dl-h{margin-bottom:10px}
+  .fo-main .sec-head{font-size:16px;margin:22px 0 10px}
+  .fo-main .sec-head:first-child{margin-top:0}
+  .fo-main .pair{gap:12px;margin-bottom:0;grid-template-columns:repeat(2,minmax(0,1fr))}
+  .fo-main .domain{box-shadow:none}
+  .fo-main .domain-head h2{font-size:16px}
+  .fo-main .rel-card .btn-pill{font-size:13px}
+  .fo-lines .tbl td,.fo-lines .tbl th{white-space:nowrap}
+  .fo-lines tbody tr{cursor:pointer}
+  .fo-more{padding:12px 18px;font-size:12px;line-height:1.5;color:var(--text-2);border-top:1px solid var(--border)}
+  @media (max-width:760px){
+    .fo-details{flex-direction:column}
+    .fo-details > .cell{border-left:0;border-top:1px solid var(--border)}
+    .fo-details > .cell:first-child{border-top:0}
+    .fo-main .pair{grid-template-columns:minmax(0,1fr)}
+  }
   @media (prefers-reduced-motion:reduce){.drawer,.scrim{transition:none}}
   .dw-head{display:flex;align-items:flex-start;gap:12px;flex:none;padding:17px 20px;border-bottom:1px solid var(--border)}
   .dw-head h4{font-size:16px;font-weight:600;letter-spacing:-.01em}
@@ -951,32 +982,9 @@
   .flt-pop .fp-foot b{color:var(--text)}
   .rowmenu.flt-pop .fp-foot .btn-solid{width:auto;min-height:34px;padding:0 18px}
 
-  /* ---- applied filter state ----
-     A chip per condition between the toolbar and the table, a count on the
-     trigger, and Clear all in both places. */
-  .filter-chips{
-    display:flex;align-items:center;gap:8px;flex-wrap:wrap;
-    padding:0 18px 14px;
-  }
-  .fchip{
-    display:inline-flex;align-items:center;gap:7px;
-    background:var(--brand-tint);border:1px solid var(--brand);border-radius:999px;
-    padding:5px 6px 5px 12px;font-size:13px;color:var(--text);
-  }
-  .fchip b{font-weight:600;color:var(--brand)}
-  .fchip button{
-    width:18px;height:18px;border-radius:50%;display:grid;place-items:center;
-    color:var(--brand);background:rgba(41,64,136,.10);
-  }
-  .fchip button:hover{background:var(--brand);color:#fff}
-  .fchip-clear{font-size:13px;font-weight:600;color:var(--text-2);padding:5px 8px;border-radius:var(--r)}
-  .fchip-clear:hover{color:var(--text);background:var(--surface-3)}
+  /* ---- applied filter state: a count on the trigger, nothing in the table ---- */
   .btn-pill.on{border-color:var(--brand);color:var(--brand);background:var(--brand-tint)}
-  .btn-pill .ct{
-    display:inline-grid;place-items:center;min-width:19px;height:19px;padding:0 5px;
-    border-radius:999px;background:var(--brand);color:#fff;
-    font-size:12px;font-weight:600;font-variant-numeric:tabular-nums;
-  }
+  .btn-pill .ct{margin-left:-3px;font-weight:600;font-variant-numeric:tabular-nums}
   .fopts{display:flex;flex-direction:column;gap:2px}
   .fopt{
     display:flex;align-items:center;gap:10px;padding:7px 8px;border-radius:6px;
@@ -1372,7 +1380,7 @@
 .sidebar .avatar{background:var(--rail-av,#127FA6);color:var(--rail-av-ink,#FFFFFF)}
 
 /* Settings > Appearance: each option is a small picture of the rail it sets */
-.rail-pick{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-top:14px}
+.rail-pick{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;margin-top:14px}
 .rail-pick button{
   display:flex;flex-direction:column;gap:10px;padding:10px;text-align:left;
   background:var(--surface);border:1px solid var(--border-2);border-radius:12px;
@@ -1496,13 +1504,104 @@
    clearly larger than the gap below it, otherwise the heading sits equidistant
    between two cards and reads as floating rather than introducing the one
    beneath it - which is what made this page feel compressed. */
-#view-base-review > .page-head{margin-bottom:34px}
-#view-base-review > .sec-head{margin:44px 0 16px}
-#view-base-review > .pair,
-#view-base-review > .domain{margin-bottom:0}
-#view-base-review > .tbl-card{margin-bottom:12px}
+.rv > .page-head{margin-bottom:24px}
+/* status sits with the name it describes, the way a record title does */
+.br-title{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.br-title .spill{font-size:13px}
+#brReject:not(:empty),#sdNote:not(:empty){margin:-8px 0 20px}
+#brReject .reject-note,#sdNote .reject-note{margin-top:0}
+
+/* details card: three definition lists. Labels are quiet and aligned in their
+   own column, values are regular weight - the eye reads down the values, not
+   across a row of equally loud tiles. */
+.br-details .cell{padding:20px 24px 22px}
+.dl-h{font-size:14px;font-weight:600;margin-bottom:14px}
+.dl{display:grid;grid-template-columns:104px minmax(0,1fr);column-gap:16px;row-gap:10px;margin:0;font-size:14px;line-height:1.45}
+.dl dt{color:var(--text-2)}
+.dl dd{margin:0;color:var(--text);min-width:0;overflow-wrap:anywhere}
+.dl-muted{color:var(--text-2)}
+.dl-crit{color:var(--crit);font-weight:600}
+/* history list on the submission pages: date, what happened, outcome */
+.hist{display:flex;flex-direction:column}
+.hist-row{display:grid;grid-template-columns:120px minmax(0,1fr) auto;gap:16px;align-items:baseline;padding:12px 0;border-top:1px solid var(--border);font-size:14px}
+.hist-row:first-child{border-top:0;padding-top:0}
+.hist-row:last-child{padding-bottom:0}
+.hist-row .when{color:var(--text-2);font-variant-numeric:tabular-nums}
+.hist-row .what b{font-weight:600}
+.hist-row .what span{display:block;font-size:13px;color:var(--text-2);margin-top:2px}
+/* certified statements */
+.checks{display:flex;flex-direction:column;gap:14px;font-size:14px;line-height:1.45}
+.checks li{display:flex;gap:10px;align-items:flex-start;list-style:none}
+.checks{margin:0;padding:0}
+.checks svg{flex:none;margin-top:1px}
+.checks .on svg{color:var(--ok)}
+.checks .off{color:var(--text-2)}
+.checks .off svg{color:var(--text-3)}
+/* attachments */
+.files{display:flex;flex-direction:column;gap:10px}
+.file{display:flex;align-items:center;gap:12px;padding:10px 12px;border:1px solid var(--border);border-radius:var(--r);text-align:left;width:100%;background:var(--surface)}
+.file:hover{border-color:var(--border-2);background:var(--surface-2)}
+.file .ico{display:grid;place-items:center;width:32px;height:32px;border-radius:8px;background:var(--brand-tint);color:var(--brand);flex:none}
+.file b{display:block;font-size:14px;font-weight:600;color:var(--text)}
+.file span.m{display:block;font-size:12px;line-height:1.5;color:var(--text-2)}
+.file .dl-ico{margin-left:auto;color:var(--text-3)}
+.cover{display:flex;flex-direction:column;gap:12px;font-size:14px}
+.cover .cv{display:flex;justify-content:space-between;gap:12px}
+.cover .cv span{color:var(--text-2)}
+.cover .cv b{font-weight:600;font-variant-numeric:tabular-nums}
+.dl-note{margin-top:16px;font-size:12px;line-height:1.5;color:var(--text-3)}
+@media (max-width:920px){
+  .rv .br-details .cols-3{grid-template-columns:minmax(0,1fr)!important}
+  .br-details .cell{border-left:0!important}
+  .br-details .cell+.cell{border-top:1px solid var(--border)!important}
+}
+.rv .br-main > .sec-head{margin:44px 0 16px}
+.rv .br-main > .sec-head:first-child{margin-top:0}
+.rv .br-main > .pair,
+.rv .br-main > .domain{margin-bottom:0}
+.rv .br-main > .tbl-card{margin-bottom:12px}
+.rv > .sec-head{margin:44px 0 16px}
+.rv > .tbl-card{margin-bottom:12px}
 /* the two cards in a row get the same air between them as below them */
-#view-base-review > .pair{gap:18px}
+.rv .br-main > .pair{gap:18px}
+
+/* ---- review page layouts ------------------------------------------------
+   Side (default): the main column takes the page's working content and the
+   details sit to its right, pinned while the long service line table scrolls.
+   Top: the details run across the page above everything, in three columns. */
+.br-layout{display:grid;gap:24px;align-items:start}
+.br-side{min-width:0}
+.br-main{min-width:0}
+.rv:not([data-layout="top"]) .br-layout{grid-template-columns:minmax(0,1fr) 312px}
+/* starts level with the first card on the left rather than its heading: the
+   offset is the section heading's line box (20px x 1.4) plus its 16px gap */
+.rv:not([data-layout="top"]) .br-side{grid-column:2;grid-row:1;margin-top:44px}
+.rv:not([data-layout="top"]) .br-main{grid-column:1;grid-row:1;align-self:stretch;display:flex;flex-direction:column}
+/* Whatever height the details column adds is shared equally by the two card rows
+   on the left (equal flex-grow), so both columns finish on one line without
+   either row stretching much. Each card centres its contents in the new height. */
+.rv:not([data-layout="top"]) .br-main > .pair,
+.rv:not([data-layout="top"]) .br-main > .domain{flex:1 1 auto}
+.rv:not([data-layout="top"]) .br-main > .pair .donut-row{align-items:center;align-content:center}
+.rv:not([data-layout="top"]) .br-main > .domain{display:flex;flex-direction:column}
+.rv:not([data-layout="top"]) .br-main > .domain > .cell{flex:1;display:flex;flex-direction:column;justify-content:center}
+/* in the side column the three lists stack, divided like GitHub's sidebar */
+.rv:not([data-layout="top"]) .br-details .cols-3{grid-template-columns:minmax(0,1fr)}
+.rv:not([data-layout="top"]) .br-details .cell{border-left:0;padding:18px 20px}
+.rv:not([data-layout="top"]) .br-details .cell+.cell{border-top:1px solid var(--border)}
+.rv:not([data-layout="top"]) .dl{grid-template-columns:96px minmax(0,1fr);row-gap:9px}
+.rv:not([data-layout="top"]) .dl-h{margin-bottom:12px}
+/* the narrower main column: the two material cards keep side by side as long
+   as a donut and its legend fit, then stack */
+.rv:not([data-layout="top"]) .br-main > .pair{grid-template-columns:repeat(auto-fit,minmax(340px,1fr))}
+.rv[data-layout="top"] .br-layout{gap:44px}
+@media (max-width:1180px){
+  .rv:not([data-layout="top"]) .br-layout{grid-template-columns:minmax(0,1fr);gap:44px}
+  .rv:not([data-layout="top"]) .br-side{grid-column:1;grid-row:1;margin-top:0}
+  .rv:not([data-layout="top"]) .br-main{grid-row:2}
+  .rv:not([data-layout="top"]) .br-details .cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .rv:not([data-layout="top"]) .br-details .cell+.cell{border-top:0;border-left:1px solid var(--border)}
+}
 </style>
 </head>
 <body>
@@ -2286,7 +2385,7 @@
    </section>
 
    <!-- ============ BASELINE INVENTORY REVIEW ============ -->
-   <section class="view" id="view-base-review" hidden>
+   <section class="view rv" id="view-base-review" hidden>
     <nav class="crumbs" aria-label="Breadcrumb">
       <button type="button" data-crumb="submissions">Submissions</button>
       <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m6 3 5 5-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -2297,31 +2396,40 @@
 
     <header class="page-head" style="display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:16px">
       <div>
-        <h1 id="brTitle">Baseline Inventory</h1>
+        <div class="br-title"><h1 id="brTitle">Baseline Inventory</h1><span id="brStatusPill"></span></div>
         <p class="sub" id="brSub">Baseline service line inventory &middot; due November 1, 2027</p>
       </div>
       <div class="br-acts" id="brActs"></div>
     </header>
+    <div id="brReject"></div>
 
-    <div class="pair">
-      <section class="domain">
-        <div class="domain-head"><h2>Water System</h2></div>
-        <div class="cell" style="border-left:0">
-          <div class="meta-row" id="brSystem"></div>
+    <!-- Layout test: the details stack in a right-hand column beside the page's
+         working content, the way GitHub and Linear keep record properties in a
+         sidebar. Settings > Appearance switches back to the details across the top. -->
+    <div class="br-layout">
+    <!-- One details card in three label/value lists - the record-detail pattern
+         Stripe, GitHub and HubSpot use - rather than a grid of bold stat tiles. -->
+    <aside class="br-side" aria-label="Submission details">
+    <section class="domain br-details">
+      <div class="cols cols-3">
+        <div class="cell">
+          <h3 class="dl-h">Submission</h3>
+          <dl class="dl" id="brSubmission"></dl>
         </div>
-      </section>
-      <section class="domain">
-        <div class="domain-head">
-          <h2>Submission</h2>
-          <span style="margin-left:auto" id="brStatusPill"></span>
+        <div class="cell">
+          <h3 class="dl-h">Water system</h3>
+          <dl class="dl" id="brSystem"></dl>
         </div>
-        <div class="cell" style="border-left:0">
-          <div class="meta-row" id="brSubmission"></div>
-          <div id="brReject"></div>
+        <div class="cell">
+          <h3 class="dl-h">Public access</h3>
+          <dl class="dl" id="brAccess"></dl>
+          <p class="dl-note">&sect;141.84(b)(3) &middot; &sect;141.90(e)(2)</p>
         </div>
-      </section>
-    </div>
+      </div>
+    </section>
+    </aside>
 
+    <div class="br-main">
     <h2 class="sec-head">Materials</h2>
     <div class="pair">
       <section class="domain">
@@ -2351,14 +2459,6 @@
       </section>
     </div>
 
-    <h2 class="sec-head">Public Accessibility</h2>
-    <section class="domain">
-      <div class="cell" style="border-left:0">
-        <div class="meta-row" id="brAccess"></div>
-        <p class="caption">&sect;141.84(b)(3) requires the inventory to be publicly accessible, and &sect;141.90(e)(2) requires systems serving more than 50,000 people to publish it online.</p>
-      </div>
-    </section>
-
     <h2 class="sec-head">Related Submissions</h2>
     <section class="domain">
       <div class="cell" style="border-left:0">
@@ -2366,6 +2466,11 @@
       </div>
     </section>
 
+    </div>
+    </div>
+
+    <!-- the service line table is too wide for the main column, so it runs the
+         full page width below the details and the materials -->
     <h2 class="sec-head">Service Lines</h2>
     <div class="tbl-card">
       <div class="tbl-toolbar">
@@ -2412,6 +2517,33 @@
           <button type="button" data-next>Next <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M6.4 3.4 11 8l-4.6 4.6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
         </div>
       </div>
+    </div>
+   </section>
+
+   <!-- ============ SUBMISSION (Initial Inventory, Customer Notice) ============
+        Same layout as the baseline review: details in a right-hand column, the
+        submission's own content in the main column. Filled by renderSubPage(). -->
+   <section class="view rv" id="view-sub-detail" hidden>
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <button type="button" data-crumb="submissions">Submissions</button>
+      <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m6 3 5 5-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <button type="button" id="sdCrumbTab">Initial Inventory</button>
+      <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m6 3 5 5-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span aria-current="page" id="sdCrumbNow">Submission</span>
+    </nav>
+    <header class="page-head" style="display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:16px">
+      <div>
+        <div class="br-title"><h1 id="sdTitle">Submission</h1><span id="sdStatus"></span></div>
+        <p class="sub" id="sdSub"></p>
+      </div>
+      <div class="br-acts" id="sdActs"></div>
+    </header>
+    <div id="sdNote"></div>
+    <div class="br-layout">
+      <aside class="br-side" aria-label="Submission details">
+        <section class="domain br-details"><div class="cols cols-3" id="sdSide"></div></section>
+      </aside>
+      <div class="br-main" id="sdMain"></div>
     </div>
    </section>
 
@@ -2468,6 +2600,27 @@
           <button type="button" role="radio" aria-checked="false" data-rail="aqua"><span class="rp-sw" style="--sw:#E6F6FB;--ink:#0F2E44;--on:#FFFFFF"><i></i><i class="on"></i><i></i><i></i></span><span class="rp-txt"><b>Aqua</b><span>#E6F6FB</span></span></button>
           <button type="button" role="radio" aria-checked="false" data-rail="periwinkle"><span class="rp-sw" style="--sw:#DDE5F7;--ink:#192543;--on:#FFFFFF"><i></i><i class="on"></i><i></i><i></i></span><span class="rp-txt"><b>Periwinkle</b><span>#DDE5F7</span></span></button>
           <button type="button" role="radio" aria-checked="false" data-rail="white"><span class="rp-sw" style="--sw:#FFFFFF;--ink:#21252B;--on:#E3F2F8"><i></i><i class="on"></i><i></i><i></i></span><span class="rp-txt"><b>White</b><span>#FFFFFF</span></span></button>
+        </div>
+        <div class="set-row" style="margin-top:26px;padding-top:22px;border-top:1px solid var(--border)">
+          <div class="set-txt">
+            <h4>Opening a submission</h4>
+            <p>Whether a submission opens in a wide flyout over its table, keeping the reviewer's place in the list, or as its own full page. <b>Mixed</b> gives baseline inventories, the longest review, their own page and opens Initial Inventory and Customer Notice submissions in a flyout.</p>
+          </div>
+          <div class="seg" id="subViewPref" role="group" aria-label="Opening a submission">
+            <button type="button" data-sv="mixed" aria-pressed="true">Mixed</button>
+            <button type="button" data-sv="flyout" aria-pressed="false">All flyouts</button>
+            <button type="button" data-sv="page" aria-pressed="false">All pages</button>
+          </div>
+        </div>
+        <div class="set-row" id="brLayoutRow" style="margin-top:22px;padding-top:22px;border-top:1px solid var(--border)">
+          <div class="set-txt">
+            <h4>Submission details layout</h4>
+            <p>Applies to submissions that open as a page. Where a submission page shows its details (submission, water system, public access): in a column beside the page, or across the top of it.</p>
+          </div>
+          <div class="seg" id="brLayoutPref" role="group" aria-label="Submission details layout">
+            <button type="button" data-brl="side" aria-pressed="true">Side column</button>
+            <button type="button" data-brl="top" aria-pressed="false">Across the top</button>
+          </div>
         </div>
       </div>
     </section>
@@ -3297,6 +3450,7 @@
     {pws:"Academy Acres Subdivision", id:"GA1850009", by:"Joel Tran", date:"05/11/2026", notice:"Initial Customer Notice Certification", method:"Email", status:["ok","Certified"], cty:"Lowndes"}
   ];
 
+  function renderCncRows(){
   $("cncRows").innerHTML = certs.map(function(r, ix){
     return TR(ix) + CHK
       + '<td class="t-wrap"><a class="t-link" href="#">'+esc(r.pws)+'</a><span class="t-sub">'+esc(r.id)+'</span></td>'
@@ -3307,6 +3461,9 @@
       + cell(esc(r.cty))
       + "</tr>";
   }).join("");
+  if (typeof refreshRows === "function" && filterState && filterState.cncRows) refreshRows("cncRows");
+  }
+  renderCncRows();
 
   /* ---------------- Monthly Operating Reports page ---------------- */
   var morStatus = [
@@ -3549,11 +3706,17 @@
   function spill(tone, label){ return '<span class="spill '+tone+'">'+esc(label)+'</span>'; }
 
   function openDrawer(cfg){
-    $("dwTitle").textContent = cfg.title;
+    /* a record opened from inside a submission flyout carries a way back to it */
+    if (!cfg.wide && typeof flyCtx !== "undefined" && flyCtx && !cfg.noBack){
+      var back = flyBack();
+      if (back){ cfg.actions = [back].concat(cfg.actions || []); cfg.wide = true; }
+    }
+    drawer.classList.toggle("drawer--wide", !!cfg.wide);
+    $("dwTitle").innerHTML = esc(cfg.title) + (cfg.badge ? ' <span class="dw-badge">' + cfg.badge + '</span>' : '');
     $("dwSub").textContent = cfg.sub || "";
     $("dwBody").innerHTML = cfg.body;
     $("dwFoot").innerHTML = (cfg.actions || []).map(function(a){
-      return '<button class="'+(a.primary ? "btn-solid" : "btn-pill")+'" type="button"'
+      return '<button class="'+(a.danger ? "btn-danger" : a.primary ? "btn-solid" : "btn-pill")+'" type="button"'
            + (a.id ? ' id="'+a.id+'"' : '') + '>'+esc(a.label)+'</button>';
     }).join("");
     /* Calypso's dead-click rule: an action that is rendered has to do something. */
@@ -3568,9 +3731,10 @@
     $("dwClose").focus();
   }
   function closeDrawer(){
+    flyCtx = null;
     if (drawer.hidden) return;
     scrim.classList.remove("in"); drawer.classList.remove("in");
-    window.setTimeout(function(){ scrim.hidden = true; drawer.hidden = true; }, 270);
+    window.setTimeout(function(){ if (drawer.classList.contains("in")) return; scrim.hidden = true; drawer.hidden = true; }, 270);
     if (lastFocus && lastFocus.focus) lastFocus.focus();
   }
   $("dwClose").addEventListener("click", closeDrawer);
@@ -3735,48 +3899,20 @@
     var btn = toolIn(tbodyId, "Filters"); if (!btn) return;
     var n = activeFields(tbodyId).length;
     var badge = btn.querySelector(".ct");
-    if (!n){ if (badge) badge.parentNode.removeChild(badge); btn.classList.remove("on"); return; }
+    if (!n){ if (badge) badge.parentNode.removeChild(badge); btn.classList.remove("on"); btn.removeAttribute("aria-label"); return; }
     if (!badge){
       badge = document.createElement("span");
       badge.className = "ct num";
       btn.appendChild(badge);
     }
-    badge.textContent = String(n);
+    badge.textContent = "(" + n + ")";
+    btn.setAttribute("aria-label", "Filters, " + n + " applied");
     btn.classList.add("on");
   }
 
-  /* a removable chip per condition, between the toolbar and the table */
-  function chipRow(tbodyId){
-    var card = cardOf(tbodyId); if (!card) return null;
-    var row = card.querySelector(".filter-chips");
-    if (!row){
-      row = document.createElement("div");
-      row.className = "filter-chips";
-      var wrap = card.querySelector(".tbl-scroll") || card.querySelector(".tbl-wrap");
-      card.insertBefore(row, wrap);
-    }
-    return row;
-  }
-  function renderFilterChips(tbodyId){
-    var row = chipRow(tbodyId); if (!row) return;
-    var st = filterState[tbodyId] || {}, fields = activeFields(tbodyId);
-    if (!fields.length){ row.hidden = true; row.innerHTML = ""; return; }
-    row.hidden = false;
-    row.innerHTML = fields.map(function(label){
-      var vals = st[label];
-      var txt = vals.length === 1 ? vals[0] : vals.length + " selected";
-      return '<span class="fchip"><b>' + esc(label) + '</b><span>' + esc(txt) + '</span>'
-        + '<button type="button" data-drop="' + esc(label) + '" aria-label="Remove filter ' + esc(label) + '">'
-        + '<svg width="11" height="11" viewBox="0 0 16 16" fill="none" aria-hidden="true">'
-        + '<path d="m4.4 4.4 7.2 7.2M11.6 4.4l-7.2 7.2" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg>'
-        + '</button></span>';
-    }).join("") + '<button class="fchip-clear" type="button" data-clear>Clear all</button>';
-    row.onclick = function(e){
-      var drop = e.target.closest("[data-drop]");
-      if (drop){ delete filterState[tbodyId][drop.getAttribute("data-drop")]; refreshRows(tbodyId); return; }
-      if (e.target.closest("[data-clear]")){ filterState[tbodyId] = {}; refreshRows(tbodyId); }
-    };
-  }
+  /* Applied filters live only in the Filters menu; the table itself shows
+     nothing but the count on its trigger. */
+  function renderFilterChips(){}
 
   /* ---- the Filters popover (120Utility Inventory Refresh pattern) ----
      Anchored to its trigger, field rail on the left, that field's options on
@@ -4248,8 +4384,280 @@
 
   wireRows("morRows",  morDrawer);
   wireRows("utilRows", utilDrawer);
-  wireRows("subRows",  subDrawer);
-  wireRows("cncRows",  cncDrawer);
+  wireRows("subRows",  function(ix){ openSub("inv", ix); });
+  wireRows("cncRows",  function(ix){ openSub("cnc", ix); });
+
+  /* ---- submission detail: full page or flyout (Settings > Appearance) ----
+     Both read from the same render. The page is always rendered (hidden when the
+     flyout is on) and the flyout is composed from it, so the two can't drift. */
+  /* "mixed" (default): baseline inventories open as a page, the smaller
+     Initial Inventory and Customer Notice submissions in a flyout */
+  var subViewMode = "mixed", flyCtx = null, subHandlers = {}, baseHandlers = {};
+  function bindActs(boxId, H){
+    var box = $(boxId); if (!box) return;
+    Array.prototype.forEach.call(box.querySelectorAll("button[id]"), function(b){
+      if (H[b.id]) b.addEventListener("click", H[b.id]);
+    });
+  }
+  /* the page's buttons, restated as drawer actions that run the same handlers */
+  function actsFrom(boxId, H){
+    return Array.prototype.map.call($(boxId).querySelectorAll("button[id]"), function(b){
+      return {label:b.textContent.trim(), id:"fly-" + b.id,
+              primary:b.classList.contains("btn-solid"), danger:b.classList.contains("btn-danger"),
+              onClick:H[b.id]};
+    });
+  }
+  function noIds(html){ return html.replace(/ id="[^"]*"/g, ""); }
+  function flySide(cellsHtml){
+    return '<div class="fo-details">' + cellsHtml + '</div>';
+  }
+  function openSub(kind, ix){
+    if (subViewMode !== "page"){ flyCtx = {type:"sub", kind:kind, ix:ix}; renderSubPage(kind, ix); }
+    else { flyCtx = null; renderSubPage(kind, ix); showView("sub-detail", "submissions"); }
+  }
+  function openBase(ix){
+    if (subViewMode === "flyout"){ flyCtx = {type:"base", ix:ix}; renderBaseReview(ix); }
+    else { flyCtx = null; renderBaseReview(ix); showView("base-review", "submissions"); }
+  }
+  function subFlyFromPage(){
+    openDrawer({
+      wide:true,
+      title:$("sdTitle").textContent, badge:$("sdStatus").innerHTML, sub:$("sdSub").textContent,
+      body:noIds($("sdNote").innerHTML)
+        + flySide($("sdSide").innerHTML)
+        + '<div class="fo-main">' + noIds($("sdMain").innerHTML) + '</div>',
+      actions:actsFrom("sdActs", subHandlers)
+    });
+  }
+  function baseFlyFromPage(){
+    var lines = slRowsData.slice(0, 8);
+    var r = baseSubs[brIx];
+    openDrawer({
+      wide:true,
+      title:$("brTitle").textContent, badge:$("brStatusPill").innerHTML, sub:$("brSub").textContent,
+      body:noIds($("brReject").innerHTML)
+        + flySide(noIds(document.querySelector("#view-base-review .br-details .cols").innerHTML))
+        + '<div class="fo-main">'
+        + noIds(document.querySelector("#view-base-review .br-main").innerHTML)
+        + '<h2 class="sec-head">Service Lines</h2>'
+        + '<div class="tbl-card fo-lines"><div class="tbl-wrap"><table class="tbl"><thead><tr>'
+        + '<th>Service Line ID</th><th>Address</th><th>Classification</th><th>Status</th></tr></thead><tbody>'
+        + lines.map(function(d, i){
+            return '<tr tabindex="0" data-fly-sl="' + i + '"><td><a class="t-link" href="#">' + esc(d.sid) + '</a></td>'
+              + '<td>' + esc(d.addr) + '</td><td>' + spill(d.cls[0], d.cls[1]) + '</td>'
+              + '<td>' + spill(d.status[0], d.status[1]) + '</td></tr>';
+          }).join("")
+        + '</tbody></table></div>'
+        + '<p class="fo-more">Showing ' + lines.length + ' of ' + fmt(r.total) + ' service lines. Export for the full inventory.</p></div>'
+        + '</div>',
+      actions:actsFrom("brActs", baseHandlers)
+    });
+  }
+  /* links inside the flyout: companion submissions and service lines open in the
+     same panel, with a way back to the submission */
+  $("dwBody").addEventListener("click", function(e){
+    if (!flyCtx) return;
+    var rel = e.target.closest("[data-rel]");
+    if (rel){ e.preventDefault(); relDrawer(rel.getAttribute("data-rel")); return; }
+    var sl = e.target.closest("[data-fly-sl]");
+    if (sl){ e.preventDefault(); slDrawer(Number(sl.getAttribute("data-fly-sl"))); return; }
+    var f = e.target.closest("[data-file]");
+    if (f){ showToast("Download started", f.getAttribute("data-file")); }
+  });
+  function flyBack(){
+    if (!flyCtx) return null;
+    var ctx = flyCtx;
+    var label = "Back to " + (ctx.type === "base" ? baseSubs[ctx.ix].pws : (ctx.kind === "inv" ? submissions[ctx.ix] : certs[ctx.ix]).pws);
+    return {label:label, id:"flyBack", onClick:function(){
+      if (ctx.type === "base") baseFlyFromPage(); else subFlyFromPage();
+    }};
+  }
+
+  /* ---- Initial Inventory and Customer Notice submission pages ---- */
+  var ICO_CHECK = '<svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="6.6" stroke="currentColor" stroke-width="1.4"/><path d="m5.3 8.2 1.9 1.9 3.6-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  var ICO_OPEN = '<svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="6.6" stroke="currentColor" stroke-width="1.4" stroke-dasharray="2.2 2.2"/></svg>';
+  var ICO_FILE = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 1.8h5l3.2 3.2v8.2a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2.8a1 1 0 0 1 1-1Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M9 1.8V5h3.2" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>';
+  var ICO_DL = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 2.5v8m0 0L4.8 7.3M8 10.5l3.2-3.2M3 13.5h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  var CNC_DUE = {"2026 Annual Customer Notice":"07/01/2027",
+                 "2025 Annual Customer Notice Certification":"07/01/2026",
+                 "Initial Customer Notice Certification":"07/01/2025"};
+  var sdKind = "inv", sdIx = 0;
+
+  function sideCell(title, rows, note){
+    return '<div class="cell"><h3 class="dl-h">' + esc(title) + '</h3><dl class="dl">' + dlRows(rows) + '</dl>'
+      + (note ? '<p class="dl-note">' + note + '</p>' : '') + '</div>';
+  }
+  function histRows(items){
+    return '<div class="hist">' + items.map(function(h){
+      return '<div class="hist-row"><span class="when">' + esc(h[0]) + '</span>'
+        + '<span class="what"><b>' + esc(h[1]) + '</b>' + (h[2] ? '<span>' + esc(h[2]) + '</span>' : '') + '</span>'
+        + (h[3] ? h[3] : '<span></span>') + '</div>';
+    }).join("") + '</div>';
+  }
+  function sysTypeFor(id, fallback){
+    for (var i = 0; i < utilities.length; i++) if (utilities[i].id === id) return SYS_TYPE[utilities[i].type] || utilities[i].type;
+    return fallback ? (SYS_TYPE[fallback] || fallback) : "Community (CWS)";
+  }
+
+  function renderSubPage(kind, ix){
+    sdKind = kind; sdIx = ix;
+    var r = kind === "inv" ? submissions[ix] : certs[ix];
+    $("sdCrumbTab").textContent = kind === "inv" ? "Initial Inventory" : "Customer Notice Certifications";
+    $("sdCrumbNow").textContent = r.pws;
+    $("sdTitle").textContent = r.pws;
+    $("sdNote").innerHTML = "";
+    var side = [], main = "", acts = "";
+
+    if (kind === "inv"){
+      $("sdStatus").innerHTML = spill("ok", "Accepted");
+      $("sdSub").textContent = "Initial service line inventory \u00b7 LCRR";
+      side.push(sideCell("Submission", [
+        ["Submitted", esc(longDate(r.date))],
+        ["Submitted by", esc(r.by)],
+        ["Attempts", '<span class="num">' + r.att + '</span>'],
+        ["Due", "Oct 16, 2024"]
+      ]));
+      side.push(sideCell("Water system", [
+        ["PWSID", '<span class="num">' + esc(r.id) + '</span>'],
+        ["Type", esc(sysTypeFor(r.id, r.type))],
+        ["County", esc(r.cty)],
+        ["Connections", '<span class="num">' + fmt(r.conn) + '</span>']
+      ]));
+      var segs = [
+        {label:"Non-Lead",         v:r.nonlead, c:C().dvBlue},
+        {label:"Unknown",          v:r.unk,     c:C().dvNavy},
+        {label:"Galvanized (GRR)", v:r.grr,     c:C().sevCaution},
+        {label:"Lead",             v:r.lead,    c:C().sevCrit}
+      ];
+      main = '<h2 class="sec-head">Materials</h2><div class="pair">'
+        + '<section class="domain"><div class="domain-head"><h2>Service Line Materials</h2>'
+        + '<span class="pill neutral num" style="margin-left:auto">' + fmt(r.total) + ' lines</span></div>'
+        + '<div class="cell" style="border-left:0"><div class="donut-row"><div class="donut" id="sdDonut"></div>'
+        + '<div class="keys" style="flex:1;min-width:190px">' + keyList(segs, r.total) + '</div></div></div></section>'
+        + '<section class="domain"><div class="domain-head"><h2>Coverage</h2></div>'
+        + '<div class="cell" style="border-left:0"><div class="cover">'
+        + '<div class="cv"><span>Service lines inventoried</span><b>' + fmt(r.total) + '</b></div>'
+        + '<div class="cv"><span>Service connections</span><b>' + fmt(r.conn) + '</b></div>'
+        + '<div class="cv"><span>Material known</span><b>' + esc(r.known.replace(" Known", "")) + '</b></div>'
+        + '</div><p class="caption">Lines can outnumber connections where a connection serves more than one line.</p></div></section>'
+        + '</div>'
+        + '<h2 class="sec-head">Review history</h2><section class="domain"><div class="cell" style="border-left:0">'
+        + histRows((function(){
+            var h = [];
+            if (r.att > 1) h.push([longDate(r.date).replace(/\d+,/, function(d){ return (Math.max(1, parseInt(d, 10) - 9)) + ","; }),
+                                   "Attempt 1 returned", "Unknown materials were not broken out by ownership.", spill("crit", "Returned")]);
+            h.push([longDate(r.date), "Attempt " + r.att + " submitted", "Submitted by " + r.by + ".", ""]);
+            h.push([longDate(r.date), "Accepted", "Reviewed by A. Whitfield.", spill("ok", "Accepted")]);
+            return h.reverse();
+          })())
+        + '</div></section>';
+      acts = '<button class="btn-pill" type="button" id="sdUtil">Open utility record</button>'
+           + '<button class="btn-pill" type="button" id="sdDownload">Download</button>';
+    } else {
+      var st = r.status[1], none = r.date === "\u2014";
+      var due = CNC_DUE[r.notice] || "07/01/2027";
+      $("sdStatus").innerHTML = spill(r.status[0], st);
+      $("sdSub").textContent = r.notice;
+      side.push(sideCell("Certification", [
+        ["Submitted", none ? '<span class="dl-muted">Not yet</span>' : esc(longDate(r.date))],
+        ["Submitted by", none ? null : esc(r.by)],
+        ["Delivery", none ? null : esc(r.method)],
+        ["Due", st === "Overdue" ? '<span class="dl-crit">' + esc(longDate(due)) + '</span>' : esc(longDate(due))]
+      ]));
+      side.push(sideCell("Water system", [
+        ["PWSID", '<span class="num">' + esc(r.id) + '</span>'],
+        ["Type", esc(sysTypeFor(r.id))],
+        ["County", esc(r.cty)]
+      ], "&sect;141.85(e)"));
+      var certified = !none;
+      var stmts = [
+        "The notice went to every person served by a lead, galvanized requiring replacement, or unknown service line.",
+        "It stated the service line material, the health effects of lead and the steps to reduce exposure.",
+        "It was delivered within the required window and by the method recorded."
+      ];
+      var recips = 40 + (r.id.charCodeAt(5) * 7) % 260;
+      main = '<h2 class="sec-head">Certification</h2><div class="pair">'
+        + '<section class="domain"><div class="domain-head"><h2>' + (certified ? "Certified statements" : "Statements to certify") + '</h2></div>'
+        + '<div class="cell" style="border-left:0"><ul class="checks">'
+        + stmts.map(function(t){ return '<li class="' + (certified ? "on" : "off") + '">' + (certified ? ICO_CHECK : ICO_OPEN) + '<span>' + esc(t) + '</span></li>'; }).join("")
+        + '</ul></div></section>'
+        + '<section class="domain"><div class="domain-head"><h2>Attachments</h2></div>'
+        + '<div class="cell" style="border-left:0">'
+        + (certified
+            ? '<div class="files">'
+              + '<button class="file" type="button" data-file="Customer notice letter.pdf"><span class="ico">' + ICO_FILE + '</span><span><b>Customer notice letter.pdf</b><span class="m">2 pages \u00b7 uploaded ' + esc(longDate(r.date)) + '</span></span><span class="dl-ico">' + ICO_DL + '</span></button>'
+              + '<button class="file" type="button" data-file="Delivery list.csv"><span class="ico">' + ICO_FILE + '</span><span><b>Delivery list.csv</b><span class="m">' + fmt(recips) + ' recipients \u00b7 ' + esc(r.method) + '</span></span><span class="dl-ico">' + ICO_DL + '</span></button>'
+              + '</div>'
+            : '<p class="dl-muted" style="font-size:14px">Nothing uploaded yet. The utility attaches its notice and delivery list when it certifies.</p>')
+        + '</div></section></div>'
+        + '<h2 class="sec-head">Activity</h2><section class="domain"><div class="cell" style="border-left:0">'
+        + histRows(none
+            ? [[longDate(due), "Due date passed", "No certification has been received.", spill("crit", "Overdue")],
+               ["Jun 15, 2026", "Reminder sent", "Automatic reminder, 2 weeks before the due date.", ""]]
+            : (st === "Certified"
+                ? [[longDate(r.date), "Certified", "Accepted by A. Whitfield.", spill("ok", "Certified")],
+                   [longDate(r.date), "Submitted", "Submitted by " + r.by + " \u00b7 " + r.method + ".", ""]]
+                : [[longDate(r.date), "Submitted", "Submitted by " + r.by + " \u00b7 " + r.method + ".", spill("warn", "In review")]]))
+        + '</div></section>';
+      acts = st === "Overdue"
+        ? '<button class="btn-pill" type="button" id="sdUtil">Open utility record</button><button class="btn-solid" type="button" id="sdRemind">Send reminder</button>'
+        : st === "In review"
+          ? '<button class="btn-danger" type="button" id="sdReturn">Return</button><button class="btn-solid" type="button" id="sdAccept">Accept certification</button>'
+          : '<button class="btn-pill" type="button" id="sdUtil">Open utility record</button><button class="btn-pill" type="button" id="sdDownload">Download</button>';
+    }
+
+    $("sdSide").className = "cols cols-3";
+    $("sdSide").innerHTML = side.join("");
+    $("sdMain").innerHTML = main;
+    $("sdActs").innerHTML = acts;
+    if ($("sdDonut")){
+      $("sdDonut").innerHTML = donut([
+        {label:"Non-Lead", v:r.nonlead, c:C().dvBlue}, {label:"Unknown", v:r.unk, c:C().dvNavy},
+        {label:"Galvanized (GRR)", v:r.grr, c:C().sevCaution}, {label:"Lead", v:r.lead, c:C().sevCrit}
+      ], 104) + '<div class="donut-label"><b class="num">' + fmt(r.total) + '</b><span>lines</span></div>';
+    }
+
+    var name = r.pws, H = {};
+    H.sdUtil = function(){
+      closeDrawer();
+      var ux = -1; utilities.forEach(function(u, i){ if (u.id === r.id) ux = i; });
+      goToFiltered("utilities", null, "utilRows", [["Name", ux > -1 ? utilities[ux].name : name]]);
+      if (ux > -1) setTimeout(function(){ utilDrawer(ux); }, 0);
+    };
+    H.sdDownload = function(){
+      runBusy(this, "Preparing\u2026", 1100, function(){ showToast("Download ready", name + "\u2019s submission has been queued."); });
+    };
+    H.sdRemind = function(){
+      runBusy(this, "Sending\u2026", 1000, function(){ showToast("Reminder sent", name + " has been notified."); });
+    };
+    H.sdAccept = function(){
+      runBusy(this, "Accepting\u2026", 1000, function(){
+        r.status = ["ok", "Certified"]; renderCncRows(); renderSubPage("cnc", ix);
+        showToast("Certification accepted", name + "\u2019s customer notice is certified.");
+      });
+    };
+    H.sdReturn = function(){
+      runBusy(this, "Returning\u2026", 900, function(){
+        r.status = ["crit", "Returned"]; renderCncRows(); renderSubPage("cnc", ix);
+        showToast("Certification returned", name + " has been asked to correct and resubmit.");
+      });
+    };
+    if (kind === "cnc" && r.status[1] === "Returned"){
+      $("sdNote").innerHTML = '<div class="reject-note"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="6.6" stroke="currentColor" stroke-width="1.4"/><path d="M8 4.8v3.6M8 11.1v.1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>'
+        + '<span><b>Returned by Cam Grundy</b>Add the reviewer\u2019s reasoning here before sending.</span></div>';
+    }
+    bindActs("sdActs", H);
+    subHandlers = H;
+    if (flyCtx && flyCtx.type === "sub" && flyCtx.kind === kind && flyCtx.ix === ix) subFlyFromPage();
+  }
+  $("sdCrumbTab").addEventListener("click", function(){
+    showView("submissions");
+    selectSubTab(sdKind === "inv" ? "stab-inv" : "stab-cnc");
+  });
+  if ($("sdMain")) $("sdMain").addEventListener("click", function(e){
+    var f = e.target.closest("[data-file]"); if (!f) return;
+    showToast("Download started", f.getAttribute("data-file"));
+  });
 
   /* The toolbar searches were decorative; they filter for real now, which is also
      what makes the "no matches" state reachable. */
@@ -5041,7 +5449,7 @@
     {pws:"Thundering Springs Assoc., Inc.", id:"GA1750043", by:"Tammy Chambers", date:"09/04/2026", type:"CWS",
      cty:"Laurens", terr:"Central", pop:860, total:70, lead:2, grr:0, unk:11, nonlead:57,
      conn:{lead:1, grr:0, unk:8, nonlead:61}, st:["crit","Rejected"], assign:"M. Okafor",
-     reject:{on:"09/06/2026", by:"M. Okafor", reason:"Connector materials were left blank for 11 of the 70 service lines. §141.84(a)(2) requires every connector to be categorised, including as unknown. Resubmit with those 11 classified."},
+     reject:{on:"09/06/2026", by:"M. Okafor", reason:"Connector materials were left blank for 11 of the 70 service lines. §141.84(a)(2) requires every connector to be categorized, including as unknown. Resubmit with those 11 classified."},
      access:{method:"On request at the utility office", url:null, online:false, updated:"09/04/2026"}},
     {pws:"North Doublegate Water System", id:"GA1770026", by:"Reid Mills", date:"08/29/2026", type:"CWS",
      cty:"Lee", terr:"Southwest", pop:1450, total:39, lead:0, grr:1, unk:4, nonlead:34,
@@ -5137,6 +5545,17 @@
              + '<div class="meta-v">' + m[1] + '</div></div>';
       }).join("");
   }
+  /* label / value pairs as a definition list */
+  function dlRows(pairs){
+    return pairs.filter(function(m){ return m[1] !== null && m[1] !== undefined; })
+      .map(function(m){ return '<dt>' + esc(m[0]) + '</dt><dd>' + m[1] + '</dd>'; }).join("");
+  }
+  var MON = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  function longDate(d){
+    var m = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(d || "");
+    return m ? MON[+m[1] - 1] + " " + (+m[2]) + ", " + m[3] : (d || "");
+  }
+  var SYS_TYPE = {CWS:"Community (CWS)", NTNCWS:"Non-transient non-community (NTNCWS)"};
   function renderBaseReview(ix){
     brIx = ix;
     var r = baseSubs[ix];
@@ -5145,23 +5564,22 @@
 
     $("crumbBaseNow").textContent = plain;
     $("brTitle").textContent = plain;
-    $("brSub").textContent = r.id + " · Baseline inventory · due November 1, 2027";
+    $("brSub").textContent = "Baseline service line inventory";
     $("brStatusPill").innerHTML = spill(r.st[0], r.st[1]);
 
-    $("brSystem").innerHTML = factRow([
-      ["System name", esc(plain)],
-      ["PWSID", esc(r.id)],
-      ["County", esc(r.cty)],
-      ["Territory", esc(r.terr)],
-      ["Population served", fmt(r.pop)]
+    $("brSubmission").innerHTML = dlRows([
+      ["Submitted", esc(longDate(r.date))],
+      ["Submitted by", esc(r.by)],
+      ["Reviewer", r.assign && r.assign !== "Unassigned" ? esc(r.assign) : '<span class="dl-muted">Unassigned</span>'],
+      ["Due", "Nov 1, 2027"]
     ]);
 
-    $("brSubmission").innerHTML = factRow([
-      ["Submitted by", esc(r.by)],
-      ["Submitted date", esc(r.date)],
-      ["System type", esc(r.type)],
-      ["Assigned to", esc(r.assign)],
-      ["Submission type", "Baseline Inventory"]
+    $("brSystem").innerHTML = dlRows([
+      ["PWSID", '<span class="num">' + esc(r.id) + '</span>'],
+      ["Type", esc(SYS_TYPE[r.type] || r.type)],
+      ["County", esc(r.cty)],
+      ["Territory", esc(r.terr)],
+      ["Population", '<span class="num">' + fmt(r.pop) + '</span>']
     ]);
 
     /* A rejected submission has to carry its reasoning, or the utility is left
@@ -5170,7 +5588,7 @@
       ? '<div class="reject-note"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">'
         + '<circle cx="8" cy="8" r="6.6" stroke="currentColor" stroke-width="1.4"/>'
         + '<path d="M8 4.8v3.6M8 11.1v.1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>'
-        + '<span><b>Rejected ' + esc(r.reject.on) + ' by ' + esc(r.reject.by) + '</b>'
+        + '<span><b>Rejected ' + esc(longDate(r.reject.on)) + ' by ' + esc(r.reject.by) + '</b>'
         + esc(r.reject.reason) + '</span></div>'
       : "";
 
@@ -5198,13 +5616,18 @@
     $("brConnKeys").innerHTML = keyList(cSegs, cTotal);
 
     var a = r.access;
-    $("brAccess").innerHTML = factRow([
-      ["Made available by", esc(a.method)],
-      ["Web address", a.url ? '<a class="t-link" href="#">' + esc(a.url) + '</a>' : null],
-      ["Online posting required", r.pop > 50000 ? "Yes · serves over 50,000" : "No · serves under 50,000"],
-      ["Online posting met", r.pop > 50000 ? (a.online ? spill("ok","Met") : spill("crit","Not met"))
-                                           : (a.online ? spill("ok","Published anyway") : spill("neutral","Not required"))],
-      ["Last updated", esc(a.updated)]
+    /* Online posting is one fact, not two: whether it's required and whether it
+       happened read as a single sentence. Only the failing case gets colour. */
+    var big = r.pop > 50000, posting;
+    if (big && a.online)       posting = 'Posted online <span class="dl-muted">&middot; required over 50,000</span>';
+    else if (big)              posting = '<span class="dl-crit">Not posted</span> <span class="dl-muted">&middot; required over 50,000</span>';
+    else if (a.online)         posting = 'Posted online <span class="dl-muted">&middot; optional</span>';
+    else                       posting = '<span class="dl-muted">Not required under 50,000</span>';
+    $("brAccess").innerHTML = dlRows([
+      ["Method", esc(a.method)],
+      ["Web address", a.url ? '<a class="t-link" href="#" data-ext>' + esc(a.url) + '</a>' : null],
+      ["Online posting", posting],
+      ["Last updated", esc(longDate(a.updated))]
     ]);
 
     /* Companion submissions are conditional: the link only appears where the rule
@@ -5236,14 +5659,15 @@
       ? '<button class="btn-danger" type="button" id="brRejectBtn">Reject</button>'
         + '<button class="btn-solid" type="button" id="brAcceptBtn">Accept submission</button>'
       : '<button class="btn-pill" type="button" id="brReopen">Reopen for review</button>';
-    if ($("brAcceptBtn")) $("brAcceptBtn").addEventListener("click", function(){
+    var BH = {};
+    BH.brAcceptBtn = function(){
       runBusy(this, "Accepting…", 1100, function(){
         r.st = ["ok", "Accepted"]; delete r.reject;
         renderBaseRows(); renderBaseReview(brIx);
         showToast("Submission accepted", plain + "’s baseline inventory has been accepted.");
       });
-    });
-    if ($("brRejectBtn")) $("brRejectBtn").addEventListener("click", function(){
+    };
+    BH.brRejectBtn = function(){
       runBusy(this, "Rejecting…", 1000, function(){
         r.st = ["crit", "Rejected"];
         r.reject = {on:"10/14/2026", by:"Cam Grundy",
@@ -5251,14 +5675,17 @@
         renderBaseRows(); renderBaseReview(brIx);
         showToast("Submission rejected", plain + " has been notified and can resubmit.");
       });
-    });
-    if ($("brReopen")) $("brReopen").addEventListener("click", function(){
+    };
+    BH.brReopen = function(){
       r.st = ["warn", "In review"];
       renderBaseRows(); renderBaseReview(brIx);
       showToast("Reopened for review", plain + "’s submission is back in the review queue.");
-    });
+    };
 
     renderSlRows(r);
+    bindActs("brActs", BH);
+    baseHandlers = BH;
+    if (flyCtx && flyCtx.type === "base" && flyCtx.ix === ix) baseFlyFromPage();
   }
   function relCard(key, name, note, required, exists){
     return '<div class="rel-card">'
@@ -5466,7 +5893,7 @@
   }
 
   /* ---------------- navigation ---------------- */
-  wireRows("baseRows", function(ix){ renderBaseReview(ix); showView("base-review", "submissions"); });
+  wireRows("baseRows", function(ix){ openBase(ix); });
   wireSearch("q-base", "baseRows");
   wireRows("slRows", slDrawer);
   wireSearch("q-sl", "slRows");
@@ -5563,7 +5990,7 @@
       title: "40 CFR §141.84",
       sub: "Lead and Copper Rule Improvements · service line inventory",
       body: dwSec("What the baseline inventory must contain", dwFacts([
-          ["§141.84(a)(2)", "Connector materials are categorised and counted alongside service lines."],
+          ["§141.84(a)(2)", "Connector materials are categorized and counted alongside service lines."],
           ["§141.84(a)(3)", "Each line is classified as lead, galvanized requiring replacement, non-lead or unknown."],
           ["§141.84(a)(4)", "Unknowns must be resolved on a schedule, not left open."],
           ["§141.84(b)(3)", "The inventory is made available to the public."],
@@ -5728,6 +6155,12 @@
     e.preventDefault();
     if (!openSystem(a.getAttribute("data-sys"))) showView("utilities");
   });
+  /* a utility's own site: the prototype can't follow it, so it says where it goes */
+  document.addEventListener("click", function(e){
+    var a = e.target.closest("[data-ext]"); if (!a) return;
+    e.preventDefault();
+    showToast("Opens in a new tab", a.textContent + " \u2014 the utility's public inventory page.");
+  });
   /* "#" is a placeholder href throughout; inside the hosted frame following it
      reloads the page, so it is never followed */
   document.addEventListener("click", function(e){
@@ -5854,6 +6287,41 @@
     try { saved = localStorage.getItem("gaepd.rail2") || "navy"; } catch(err){}
     if (!opts.some(function(b){ return b.getAttribute("data-rail") === saved; })) saved = "navy";
     setRail(saved, false);
+  })();
+
+  /* opening a submission: flyout (default) or full page (prototype only) */
+  (function(){
+    var seg = $("subViewPref"); if (!seg) return;
+    var btns = Array.prototype.slice.call(seg.querySelectorAll("[data-sv]"));
+    function setMode(k, save){
+      subViewMode = k;
+      btns.forEach(function(b){ b.setAttribute("aria-pressed", String(b.getAttribute("data-sv") === k)); });
+      var row = $("brLayoutRow"); if (row) row.style.opacity = k === "flyout" ? ".55" : "";
+      if (save){ try { localStorage.setItem("gaepd.subView2", k); } catch(err){} }
+    }
+    btns.forEach(function(b){ b.addEventListener("click", function(){ setMode(b.getAttribute("data-sv"), true); }); });
+    /* key renamed when Mixed became the default, so earlier choices don't override it */
+    var saved = "mixed";
+    try { saved = localStorage.getItem("gaepd.subView2") || "mixed"; } catch(err){}
+    setMode(/^(mixed|flyout|page)$/.test(saved) ? saved : "mixed", false);
+  })();
+
+  /* submission details layout (prototype only) */
+  (function(){
+    var seg = $("brLayoutPref"); if (!seg) return;
+    var pages = Array.prototype.slice.call(document.querySelectorAll(".view.rv"));
+    var btns = Array.prototype.slice.call(seg.querySelectorAll("[data-brl]"));
+    function setLayout(k, save){
+      pages.forEach(function(view){
+        if (k === "top") view.setAttribute("data-layout", "top"); else view.removeAttribute("data-layout");
+      });
+      btns.forEach(function(b){ b.setAttribute("aria-pressed", String(b.getAttribute("data-brl") === k)); });
+      if (save){ try { localStorage.setItem("gaepd.brLayout", k); } catch(err){} }
+    }
+    btns.forEach(function(b){ b.addEventListener("click", function(){ setLayout(b.getAttribute("data-brl"), true); }); });
+    var saved = "side";
+    try { saved = localStorage.getItem("gaepd.brLayout") || "side"; } catch(err){}
+    setLayout(saved === "top" ? "top" : "side", false);
   })();
 
   var morPrefBtn = $("morTabPref"), morTab = $("tab-mor");
