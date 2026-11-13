@@ -2071,6 +2071,8 @@
           <select id="basePeriod" aria-label="Submission period">
             <option>Baseline Inventory &mdash; November 1, 2027</option>
             <option>Baseline Inventory &mdash; Revision window 2027</option>
+            <option>Annual Inventory Update 2026 &mdash; October 17, 2026</option>
+            <option>Optional Inventory Update &mdash; December 31, 2026</option>
           </select>
         </label>
       </div>
@@ -3108,11 +3110,11 @@
     {name:"Optional Inventory Update", type:"LCRI", due:"Dec 31, 2026", got:"344 / 1,903", pct:18.1, tone:"ok", alerts:"None", color:"var(--dv-navy)"},
     {name:"Initial Inventory", type:"LCRI", due:"Oct 17, 2024", got:"1,894 / 1,903", pct:99.5, tone:"ok", alerts:"2 attention", color:"var(--dv-navy)"}
   ];
-  $("typeRows").innerHTML = types.map(function(t){
+  $("typeRows").innerHTML = types.map(function(t, ix){
     var pill = t.tone==="crit" ? '<span class="pill crit">At risk</span>'
              : t.tone==="warn" ? '<span class="pill warn">Behind pace</span>'
              : '<span class="pill ok">On track</span>';
-    return '<tr><td style="padding-left:22px"><span class="type-name"><span class="swatch" style="background:'+t.color+'"></span>'+esc(t.name)+'</span></td>'
+    return TR(ix) + '<td style="padding-left:22px"><span class="type-name"><span class="swatch" style="background:'+t.color+'"></span><a class="t-link" href="#">'+esc(t.name)+'</a></span></td>'
          + '<td>'+esc(t.type)+'</td><td class="n">'+esc(t.due)+'</td><td class="n">'+esc(t.got)+'</td>'
          + '<td style="min-width:160px"><div class="bar" style="margin-bottom:5px"><i class="'+(t.tone==="crit"?"crit":t.tone==="warn"?"warn":"ok")+'" style="width:'+t.pct+'%"></i></div>'
          + '<span class="num" style="font-size:12px;line-height:1.5;color:var(--text-2)">'+t.pct.toFixed(1)+'%</span></td>'
@@ -5898,6 +5900,32 @@
   wireRows("slRows", slDrawer);
   wireSearch("q-sl", "slRows");
   $("crumbBase").addEventListener("click", function(){ showView("submissions"); });
+  /* Dashboard > Submission Types: each period opens the table it lives in, set to
+     that period. Initial Inventory is shown even where the workspace has it
+     turned off, since the dashboard row says there is history to see. */
+  function setSelect(id, text){
+    var sel = $(id); if (!sel) return;
+    for (var i = 0; i < sel.options.length; i++){
+      if (sel.options[i].text.indexOf(text) === 0){ sel.selectedIndex = i; return; }
+    }
+  }
+  wireRows("typeRows", function(ix){
+    var t = types[ix];
+    if (t.type === "MOR"){
+      goToFiltered("mor-subs", "mor", "morSubRows", []);
+      setSelect("morSubPeriod", "August 2026");
+      $("morSubPeriod").dispatchEvent(new Event("change"));
+      return;
+    }
+    if (t.name === "Initial Inventory"){
+      $("stab-inv").hidden = false;
+      showView("submissions"); selectSubTab("stab-inv");
+      return;
+    }
+    showView("submissions"); selectSubTab("stab-base");
+    setSelect("basePeriod", t.name.indexOf("Optional") === 0 ? "Optional Inventory Update" : "Annual Inventory Update 2026");
+  });
+
   $("basePeriod").addEventListener("change", function(){
     showToast("Period changed", "Showing " + this.value.replace(/—/g, "—") + ".");
   });
