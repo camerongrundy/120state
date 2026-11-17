@@ -2009,6 +2009,46 @@ html[data-skin="combined"] #view-submissions > .page-head .tab:hover{background:
 html[data-skin="combined"] #view-submissions > .page-head .tab[aria-selected="true"]{background:#fff;color:#0E3A52;box-shadow:0 6px 18px rgba(3,30,46,.18)}
 html[data-skin="combined"] #view-submissions > .page-head .tab[aria-selected="true"] .tab-ico{color:#0E7499}
 @media (max-width:920px){html[data-skin="combined"] #view-submissions > .page-head .tabs{border-radius:22px}}
+
+/* ---- Combined: white glass ----------------------------------------------
+   Tabs, roll-up cards and the open panel are frosted white glass with blue
+   type, each at the lowest opacity where its text still clears 4.5:1 against
+   the darkest point of the photo behind it, including at the far ends of the
+   hover drift (tabs 60%, cards 69%, open panel 64%). */
+html[data-skin="combined"] body #view-dashboard #dashTabs,
+html[data-skin="combined"] body #view-submissions > .page-head .tabs{
+  background:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.8);
+  -webkit-backdrop-filter:blur(14px) saturate(160%);backdrop-filter:blur(14px) saturate(160%);
+  box-shadow:0 8px 24px -10px rgba(8,50,90,.35)}
+html[data-skin="combined"] body #view-dashboard #dashTabs .tab,
+html[data-skin="combined"] body #view-submissions > .page-head .tab{color:#0F3B66}
+html[data-skin="combined"] body #view-dashboard #dashTabs .tab:hover,
+html[data-skin="combined"] body #view-submissions > .page-head .tab:hover{background:rgba(255,255,255,.7);color:#0B2E50}
+html[data-skin="combined"] body #view-dashboard #dashTabs .tab[aria-selected="true"],
+html[data-skin="combined"] body #view-submissions > .page-head .tab[aria-selected="true"]{background:#1D5E9E;color:#fff;box-shadow:0 4px 12px rgba(8,50,90,.25)}
+html[data-skin="combined"] body #view-dashboard #dashTabs .tab[aria-selected="true"] .tab-ico,
+html[data-skin="combined"] body #view-submissions > .page-head .tab[aria-selected="true"] .tab-ico{color:#fff}
+html[data-skin="combined"] body #view-dashboard .kpi-wrap .kpi,
+html[data-skin="combined"] body #view-dashboard .kpi-panel div.kp-inner{
+  background:rgba(255,255,255,.69);border:1px solid rgba(255,255,255,.85);color:#0F3B66;
+  -webkit-backdrop-filter:blur(16px) saturate(160%);backdrop-filter:blur(16px) saturate(160%);
+  box-shadow:0 10px 30px -12px rgba(8,50,90,.35)}
+html[data-skin="combined"] body #view-dashboard .kpi-wrap .kpi:hover{background:rgba(255,255,255,.78)}
+html[data-skin="combined"] body #view-dashboard .kpi-top{color:#14385C}
+html[data-skin="combined"] body #view-dashboard .kpi-top svg{color:#1D5E9E}
+html[data-skin="combined"] body #view-dashboard .kpi-tile{background:#1D5E9E}
+html[data-skin="combined"] body #view-dashboard .kpi-tile svg{color:#fff}
+html[data-skin="combined"] body #view-dashboard .kpi-chev{color:#1D5E9E}
+html[data-skin="combined"] body #view-dashboard .kpi-val b{color:#0B2E50}
+html[data-skin="combined"] body #view-dashboard .info-mark{border-color:rgba(29,94,158,.5);color:#1D5E9E}
+html[data-skin="combined"] body #view-dashboard .delta.up{color:#055A34}
+html[data-skin="combined"] body #view-dashboard .delta.flat{color:#24405C}
+html[data-skin="combined"] body #view-dashboard .kpi-panel div.kp-inner{--text:#0B2E50;--text-2:#2E4E6C;--border:rgba(15,59,102,.14)}
+html[data-skin="combined"] body #view-dashboard .kpi-panel .kp-col h4{color:#0B2E50}
+html[data-skin="combined"] body #view-dashboard .kpi-panel .kr span:first-child{color:#203D5A}
+html[data-skin="combined"] body #view-dashboard .kpi-panel .kr span:last-child{color:#0B2E50}
+html[data-skin="combined"] body #view-dashboard .kpi-panel .kp-link{color:#14487C}
+html[data-skin="combined"] body #view-dashboard .kpi-panel div.kp-inner{background:rgba(255,255,255,.64)}
 </style>
 </head>
 <body>
