@@ -1648,7 +1648,7 @@ html:is([data-skin="lake"],[data-skin="banner"],[data-skin="combined"]) .cr-hori
 html:not([data-skin="combined"]) .cr-karst{display:none}
 .skin-pick{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
 .rp-sw.sk-banner{background:linear-gradient(180deg,transparent 0 52%,#F4FAFB 52%),var(--photo-lake) center 30%/cover;--ink:#0E3A52;--on:#FFFFFF}
-.rp-sw.sk-combined{background:linear-gradient(180deg,rgba(5,38,56,.1),rgba(4,34,52,.45)),var(--photo-lake) center/cover;--ink:#FFFFFF;--on:rgba(255,255,255,.4)}
+.rp-sw.sk-combined{background:linear-gradient(180deg,rgba(5,38,56,.05),rgba(4,34,52,.3)),var(--photo-pond) center 62%/cover;--ink:#FFFFFF;--on:rgba(255,255,255,.7)}
 .rp-sw.sk-overlap{background:linear-gradient(180deg,transparent 0 60%,#F4FAFB 60%),var(--photo-horizon) center 40%/cover;--ink:#FFFFFF;--on:#FFFFFF}
 .rp-sw.sk-lake{background:linear-gradient(180deg,rgba(5,38,56,.1),rgba(4,34,52,.45)),var(--photo-lake) center/cover;--ink:#FFFFFF;--on:rgba(255,255,255,.4)}
 .rp-sw.sk-horizon{background:var(--photo-horizon) center/cover;--ink:#FFFFFF;--on:rgba(255,255,255,.7)}
@@ -2050,6 +2050,19 @@ html[data-skin="combined"] body #view-dashboard .kpi-panel .kr span:first-child{
 html[data-skin="combined"] body #view-dashboard .kpi-panel .kr span:last-child{color:#0B2E50}
 html[data-skin="combined"] body #view-dashboard .kpi-panel .kp-link{color:#14487C}
 html[data-skin="combined"] body #view-dashboard .kpi-panel div.kp-inner{background:rgba(255,255,255,.64)}
+
+/* Settings: the two current dashboard options up front, explorations folded */
+.skin-pick{grid-template-columns:repeat(auto-fill,minmax(180px,220px))}
+.skin-more{margin-top:14px}
+.skin-more summary{display:inline-flex;align-items:center;gap:8px;cursor:pointer;list-style:none;
+  font-size:13px;font-weight:600;color:var(--text-2);padding:6px 10px 6px 6px;border-radius:var(--r)}
+.skin-more summary::-webkit-details-marker{display:none}
+.skin-more summary::before{content:"";width:7px;height:7px;border-right:1.6px solid currentColor;border-bottom:1.6px solid currentColor;
+  transform:rotate(-45deg);transition:transform .15s ease;margin:0 2px 0 4px}
+.skin-more[open] summary::before{transform:rotate(45deg)}
+.skin-more summary:hover{color:var(--text);background:var(--surface-3)}
+.skin-more .sm-ct{font-size:12px;font-weight:600;color:var(--text-3);background:var(--surface-3);border-radius:999px;padding:0 7px}
+.skin-more .skin-pick{margin-top:10px}
 </style>
 </head>
 <body>
@@ -3065,16 +3078,22 @@ html[data-skin="combined"] body #view-dashboard .kpi-panel div.kp-inner{backgrou
         <div style="margin-top:26px;padding-top:22px;border-top:1px solid var(--border)">
           <div class="set-txt">
             <h4>Dashboard style</h4>
-            <p>Standard is the Calypso dashboard. The others carry the same modules on an image of clean water, each with a different hero structure. Combined pairs the Lake dashboard with a photo banner on every other page.</p>
+            <p><b>Standard</b> is the current Calypso dashboard. <b>Future</b> is the proposed direction: a photo header on the dashboard and a photo banner on every other page, with the same modules.</p>
           </div>
           <div class="rail-pick skin-pick" id="skinPref" role="radiogroup" aria-label="Dashboard style">
             <button type="button" role="radio" aria-checked="true" data-skin="standard"><span class="rp-sw" style="--sw:#ECF0F8;--ink:#21252B;--on:#FFFFFF"><i></i><i class="on"></i><i></i><i></i></span><span class="rp-txt"><b>Standard</b><span>Calypso</span></span></button>
-            <button type="button" role="radio" aria-checked="false" data-skin="lake"><span class="rp-sw sk-lake"><i></i><i class="on"></i><i></i><i></i></span><span class="rp-txt"><b>Lake</b><span>Photo hero</span></span></button>
-            <button type="button" role="radio" aria-checked="false" data-skin="horizon"><span class="rp-sw sk-horizon"><i></i><i class="on"></i><i></i><i></i></span><span class="rp-txt"><b>Horizon</b><span>Full-page photo</span></span></button>
-            <button type="button" role="radio" aria-checked="false" data-skin="banner"><span class="rp-sw sk-banner"><i></i><i class="on"></i><i></i><i></i></span><span class="rp-txt"><b>Banner</b><span>Roll-ups below</span></span></button>
-            <button type="button" role="radio" aria-checked="false" data-skin="overlap"><span class="rp-sw sk-overlap"><i></i><i class="on"></i><i></i><i></i></span><span class="rp-txt"><b>Overlap</b><span>Cards on the edge</span></span></button>
-            <button type="button" role="radio" aria-checked="false" data-skin="combined"><span class="rp-sw sk-combined"><i></i><i class="on"></i><i></i><i></i></span><span class="rp-txt"><b>Combined</b><span>Lake + page banners</span></span></button>
+            <button type="button" role="radio" aria-checked="false" data-skin="combined"><span class="rp-sw sk-combined"><i></i><i class="on"></i><i></i><i></i></span><span class="rp-txt"><b>Future</b><span>Photo header + page banners</span></span></button>
           </div>
+          <!-- earlier explorations: still selectable, kept out of the way -->
+          <details class="skin-more" id="skinMore">
+            <summary>Earlier explorations <span class="sm-ct">4</span></summary>
+            <div class="rail-pick skin-pick" role="group" aria-label="Earlier dashboard explorations">
+              <button type="button" role="radio" aria-checked="false" data-skin="lake"><span class="rp-sw sk-lake"><i></i><i class="on"></i><i></i><i></i></span><span class="rp-txt"><b>Lake</b><span>Photo hero</span></span></button>
+              <button type="button" role="radio" aria-checked="false" data-skin="horizon"><span class="rp-sw sk-horizon"><i></i><i class="on"></i><i></i><i></i></span><span class="rp-txt"><b>Horizon</b><span>Full-page photo</span></span></button>
+              <button type="button" role="radio" aria-checked="false" data-skin="banner"><span class="rp-sw sk-banner"><i></i><i class="on"></i><i></i><i></i></span><span class="rp-txt"><b>Banner</b><span>Roll-ups below</span></span></button>
+              <button type="button" role="radio" aria-checked="false" data-skin="overlap"><span class="rp-sw sk-overlap"><i></i><i class="on"></i><i></i><i></i></span><span class="rp-txt"><b>Overlap</b><span>Cards on the edge</span></span></button>
+            </div>
+          </details>
         </div>
         <div class="set-row" style="margin-top:22px;padding-top:22px;border-top:1px solid var(--border)">
           <div class="set-txt">
@@ -6802,11 +6821,14 @@ html[data-skin="combined"] body #view-dashboard .kpi-panel div.kp-inner{backgrou
     document.documentElement.setAttribute("data-view",
       (document.querySelector(".view:not([hidden])") || {id:"view-dashboard"}).id.replace("view-", ""));
     var box = $("skinPref"); if (!box) return;
-    var opts = Array.prototype.slice.call(box.querySelectorAll("[data-skin]"));
+    /* the two current options plus the folded-away explorations */
+    var opts = Array.prototype.slice.call(document.querySelectorAll("#skinPref [data-skin], #skinMore [data-skin]"));
     function setSkin(k, save){
       if (k === "standard") document.documentElement.removeAttribute("data-skin");
       else document.documentElement.setAttribute("data-skin", k);
-      opts.forEach(function(b){ var on = b.getAttribute("data-skin") === k; b.setAttribute("aria-checked", String(on)); b.tabIndex = on ? 0 : -1; });
+      opts.forEach(function(b){ b.setAttribute("aria-checked", String(b.getAttribute("data-skin") === k)); });
+      /* an exploration in use keeps its section open, so the selection is visible */
+      var more = $("skinMore"); if (more && !/^(standard|combined)$/.test(k)) more.open = true;
       if (save){ try { localStorage.setItem("gaepd.skin4", k); } catch(err){} }
     }
     opts.forEach(function(b){ b.addEventListener("click", function(){ setSkin(b.getAttribute("data-skin"), true); }); });
