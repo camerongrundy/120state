@@ -1988,6 +1988,27 @@ html[data-skin="combined"] #view-tpl-detail #tplRead > .rec-top::after{
   html[data-skin="combined"] .view:not(#view-dashboard) > .page-head{min-height:200px;padding:20px}
   html[data-skin="combined"] .view:not(#view-dashboard) > .page-head h1{font-size:30px}
 }
+
+/* Submissions: the category tabs sit inside the page header */
+/* with the tabs below them, the title and subtitle sit higher on the photo,
+   so the banner's lower fade starts higher too */
+html[data-skin="combined"] .view#view-submissions > .page-head{
+  background-image:
+    linear-gradient(90deg,rgba(18,74,122,.72) 0,rgba(18,74,122,.32) 50%,rgba(18,74,122,0) 85%),
+    linear-gradient(180deg,rgba(18,74,122,0) 20%,rgba(18,74,122,.46) 55%,rgba(18,74,122,.56) 100%),
+    var(--pg-img)}
+#view-submissions > .page-head .tabs{margin:20px 0 0}
+#view-submissions > .page-head{margin-bottom:22px}
+html[data-skin="combined"] #view-submissions > .page-head .tabs{
+  margin-top:22px;width:max-content;max-width:100%;gap:2px;padding:4px;border-radius:999px;
+  background:rgba(22,92,160,.24);border:1px solid rgba(255,255,255,.4);
+  -webkit-backdrop-filter:blur(8px) saturate(160%) brightness(.74);backdrop-filter:blur(8px) saturate(160%) brightness(.74)}
+html[data-skin="combined"] #view-submissions > .page-head .tab{border-radius:999px;border:0;padding:9px 16px;box-shadow:none;color:#fff}
+html[data-skin="combined"] #view-submissions > .page-head .tab .tab-ico{color:inherit}
+html[data-skin="combined"] #view-submissions > .page-head .tab:hover{background:rgba(255,255,255,.16);color:#fff}
+html[data-skin="combined"] #view-submissions > .page-head .tab[aria-selected="true"]{background:#fff;color:#0E3A52;box-shadow:0 6px 18px rgba(3,30,46,.18)}
+html[data-skin="combined"] #view-submissions > .page-head .tab[aria-selected="true"] .tab-ico{color:#0E7499}
+@media (max-width:920px){html[data-skin="combined"] #view-submissions > .page-head .tabs{border-radius:22px}}
 </style>
 </head>
 <body>
@@ -2416,13 +2437,13 @@ html[data-skin="combined"] #view-tpl-detail #tplRead > .rec-top::after{
     <header class="page-head">
       <h1>Submissions</h1>
       <p class="sub">Inventory and customer notice submissions filed by Georgia water systems</p>
+      <!-- the category tabs live in the header, so on a photo banner they sit on it -->
+      <div class="tabs" id="subTabs" role="tablist" aria-label="Submission category">
+        <button class="tab" role="tab" id="stab-base" aria-controls="spanel-base" aria-selected="true" type="button">Baseline Inventory</button>
+        <button class="tab" role="tab" id="stab-inv" aria-controls="spanel-inv" aria-selected="false" type="button">Initial Inventory</button>
+        <button class="tab" role="tab" id="stab-cnc" aria-controls="spanel-cnc" aria-selected="false" type="button">Customer Notice Certifications</button>
+      </div>
     </header>
-
-    <div class="tabs" id="subTabs" role="tablist" aria-label="Submission category">
-      <button class="tab" role="tab" id="stab-base" aria-controls="spanel-base" aria-selected="true" type="button">Baseline Inventory</button>
-      <button class="tab" role="tab" id="stab-inv" aria-controls="spanel-inv" aria-selected="false" type="button">Initial Inventory</button>
-      <button class="tab" role="tab" id="stab-cnc" aria-controls="spanel-cnc" aria-selected="false" type="button">Customer Notice Certifications</button>
-    </div>
 
     <section class="panel" id="spanel-base" role="tabpanel" aria-labelledby="stab-base">
       <div class="banner">
