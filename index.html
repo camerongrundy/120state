@@ -659,8 +659,8 @@
     border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;background:var(--surface);
   }
   .rel-card .rel-txt{min-width:0;flex:1}
-  .rel-card b{display:block;font-size:14px;font-weight:600}
-  .rel-card span{display:block;font-size:13px;line-height:1.5;color:var(--text-2);margin-top:3px}
+  .rel-card b{display:block;font-size:18px;font-weight:600;letter-spacing:-.01em;line-height:1.3;color:var(--text)}
+  .rel-card span{display:block;font-size:13px;line-height:1.5;color:var(--text-2);margin-top:6px}
   .rel-card .btn-pill,.rel-card .btn-solid{margin-top:12px}
   .set-txt h4{font-size:16px;font-weight:600;letter-spacing:-.01em;margin-bottom:5px}
   .set-txt p{font-size:13px;color:var(--text-2);max-width:66ch}
@@ -1250,7 +1250,7 @@
    are Calypso, plus the few values the guide has moved on since.
    ==================================================================== */
 :root{
-  --bg:#ECF0F8;               /* the cool ground, nudged toward the navy (220deg) */
+  --bg:#EBEEF3;               /* the page ground */
 
   /* Calypso ships tertiary text at #888D97, which is 2.9:1 on this ground and
      fails AA. This is the lightest grey that clears 4.5:1 on every surface it
@@ -1364,6 +1364,7 @@
 /* The sidebar is sticky at 100vh, so on a long page its own background
    stops at the fold. Painting the column on .app runs it the full height. */
 .app{background:var(--bg)}
+html:not([data-skin]) body{background:var(--bg)}
 /* The rail floats on the page ground as an inset panel rather than running
    edge to edge: the ground wraps it on three sides, and its rounded corners and
    soft shadow replace the hard 1px edge. It stays sticky, inset by the same
@@ -1654,7 +1655,7 @@ html:not([data-skin="combined"]) .cr-karst{display:none}
 .rp-sw.sk-horizon{background:var(--photo-horizon) center/cover;--ink:#FFFFFF;--on:rgba(255,255,255,.7)}
 
 /* ---------------- Lake: an immersive photo hero, light page below ------- */
-html:is([data-skin="lake"],[data-skin="combined"])[data-view="dashboard"] .app{background:linear-gradient(180deg,#E3F3F6 0,#F4FAFB 640px,#F7FBFC 100%)}
+html:is([data-skin="lake"],[data-skin="combined"])[data-view="dashboard"] .app{background:var(--bg)}
 /* The photo sits on its own layer, sized to the hero's resting height
    (--hero-photo-h, measured in JS while every roll-up is closed). Opening a
    roll-up grows the hero downward past the photo instead of stretching it, so
@@ -1846,7 +1847,7 @@ html[data-skin="horizon"] #view-dashboard .panel{gap:22px}
 
 /* ---------------- shared by Banner and Overlap ------------------- */
 html:is([data-skin="banner"],[data-skin="overlap"])[data-view="dashboard"] .app{
-  background:linear-gradient(180deg,#E3F3F6 0,#F4FAFB 640px,#F7FBFC 100%)}
+  background:var(--bg)}
 html:is([data-skin="banner"],[data-skin="overlap"]) #view-dashboard .hero-copy{display:block}
 html:is([data-skin="banner"],[data-skin="overlap"]) #view-dashboard .hero-credit{display:block;font-size:11px}
 html:is([data-skin="banner"],[data-skin="overlap"]) #view-dashboard .page-head{margin:0}
@@ -1942,7 +1943,9 @@ html[data-skin="overlap"] #view-dashboard .tab[aria-selected="true"] .tab-ico{co
    view of the water. The pages share the two embedded photos, cropped and
    scaled differently (--pg-img / --pg-pos / --pg-size) so no bytes are added;
    swap any page's --pg-img for its own photo when more are available. */
-html[data-skin="combined"] .app{background:linear-gradient(180deg,#E3F3F6 0,#F4FAFB 640px,#F7FBFC 100%)}
+/* Standard and Future share the same light aqua ground */
+html:not([data-skin]) .app,
+html[data-skin="combined"] .app{background:var(--bg)}
 html[data-skin="combined"] .view:not(#view-dashboard) > .page-head,
 html[data-skin="combined"] #view-tpl-detail #tplRead > .rec-top{
   --pg-img:var(--photo-lake);--pg-x:50%;--pg-y:55%;--pg-size:cover;
@@ -2063,6 +2066,189 @@ html[data-skin="combined"] body #view-dashboard .kpi-panel div.kp-inner{backgrou
 .skin-more summary:hover{color:var(--text);background:var(--surface-3)}
 .skin-more .sm-ct{font-size:12px;font-weight:600;color:var(--text-3);background:var(--surface-3);border-radius:999px;padding:0 7px}
 .skin-more .skin-pick{margin-top:10px}
+
+/* ==================== REPLACEMENT PLAN REVIEW ====================
+   Status is carried by a left border and a pill, never a full tinted card -
+   the response text is what the reviewer reads, so it stays on white. */
+.btn-danger[disabled]{
+  background:var(--btn-disabled-face);border-color:var(--btn-disabled-line);
+  color:var(--btn-disabled-ink);cursor:not-allowed;
+}
+.cf-ico.ok{background:var(--brand-tint);color:var(--brand)}
+
+/* what the decision buttons will do, said before the user tries them */
+#rpGate:not(:empty){margin:-8px 0 22px}
+.rp-gate{
+  display:flex;align-items:flex-start;gap:11px;
+  background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--brand);
+  border-radius:var(--r);padding:12px 16px;font-size:14px;line-height:1.5;color:var(--text);
+}
+.rp-gate+.rp-gate{margin-top:10px}
+.rp-gate svg{flex:none;margin-top:2px;color:var(--brand)}
+.rp-gate.warn{border-left-color:var(--warn)} .rp-gate.warn svg{color:var(--warn)}
+.rp-gate.crit{border-left-color:var(--crit)} .rp-gate.crit svg{color:var(--crit)}
+.rp-gate.ok{border-left-color:var(--ok)}     .rp-gate.ok svg{color:var(--ok)}
+.rp-gate b{font-weight:600}
+.rp-gate span{color:var(--text-2)}
+
+/* side column: pinned while the long plan scrolls */
+@media (min-width:1181px){
+  .rv:not([data-layout="top"]) .rp-side{position:sticky;top:18px;max-height:calc(100vh - 36px);overflow-y:auto;margin-top:0}
+}
+.rp-side{display:flex;flex-direction:column;gap:14px}
+.rp-side .br-details .cols{grid-template-columns:minmax(0,1fr)}
+.rp-side .br-details .cell{border-left:0;padding:18px 20px}
+.rp-side .br-details .cell+.cell{border-top:1px solid var(--border)}
+.rp-side .dl{grid-template-columns:96px minmax(0,1fr);row-gap:9px}
+.rp-side .card-link{margin-top:14px}
+.rp-link{color:var(--brand);font-weight:600;font-size:13px}
+.rp-link:hover{text-decoration:underline}
+.rp-toc{padding:14px 10px 12px}
+.rp-toc h3{font-size:14px;font-weight:600;padding:0 10px 8px}
+.rp-toc .g{font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text-3);padding:10px 10px 4px}
+.rp-toc a{display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:8px;font-size:13px;color:var(--text-2);min-height:32px}
+.rp-toc a:hover{background:var(--surface-2);color:var(--text)}
+.rp-toc a .t{min-width:0;flex:1}
+.rp-toc a .s{font-size:12px;font-weight:600;flex:none}
+.rp-toc a .s.crit{color:var(--crit)} .rp-toc a .s.warn{color:var(--warn)} .rp-toc a .s.na{color:var(--text-3);font-weight:500}
+.rp-dot{width:8px;height:8px;border-radius:50%;flex:none;background:var(--border-2)}
+.rp-dot.crit{background:var(--crit)} .rp-dot.warn{background:var(--warn)} .rp-dot.ok{background:var(--ok)}
+.rp-dot.na{background:transparent;box-shadow:inset 0 0 0 1.5px var(--border-2)}
+
+/* groups follow the wizard: Baseline Inventory, Addressing Unknowns, ... */
+.rp-group{margin-top:44px}
+.rp-group:first-child{margin-top:0}
+.rp-group>.sec-head{display:flex;align-items:baseline;gap:10px}
+.rp-group>.sec-head small{font-size:13px;font-weight:500;color:var(--text-3)}
+
+/* replacement pool */
+.rp-pool .cols-4 .cell{padding:16px 20px}
+.rp-stat{font-size:12px;line-height:1.5;color:var(--text-2);display:flex;align-items:center;gap:7px}
+.rp-stat i{width:8px;height:8px;border-radius:2px;flex:none}
+.rp-stat-v{font-size:24px;font-weight:600;letter-spacing:-.02em;margin-top:2px;font-variant-numeric:tabular-nums}
+.rp-stat-v small{font-size:12px;font-weight:500;color:var(--text-3);letter-spacing:0;margin-left:4px}
+.rp-bar{display:flex;height:8px;border-radius:99px;overflow:hidden;background:var(--surface-3);margin:0 20px}
+.rp-bar i{display:block;height:100%}
+.rp-pool .dl{grid-template-columns:180px minmax(0,1fr)}
+.rp-pool .rp-pool-dl{padding:18px 20px;border-top:1px solid var(--border);margin-top:16px}
+.rp-recon{display:flex;align-items:flex-start;gap:9px;padding:12px 20px;border-top:1px solid var(--border);font-size:13px;color:var(--text-2)}
+.rp-recon svg{flex:none;margin-top:1px}
+.rp-recon.ok svg{color:var(--ok)}
+.rp-recon.warn{color:var(--text)} .rp-recon.warn svg{color:var(--warn)}
+.rp-recon b{font-weight:600}
+
+/* one plan element */
+.rp-sec{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--r);
+  box-shadow:var(--shadow);scroll-margin-top:22px;transition:box-shadow .15s ease;
+}
+.rp-sec+.rp-sec{margin-top:14px}
+.rp-sec.is-rej{box-shadow:inset 3px 0 0 var(--crit), var(--shadow)}
+.rp-sec.is-carry{box-shadow:inset 3px 0 0 var(--warn), var(--shadow)}
+.rp-sec.flash{box-shadow:0 0 0 2px var(--accent)}
+.rp-sec-head{display:flex;align-items:flex-start;gap:14px;padding:18px 22px 0}
+.rp-num{
+  flex:none;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;
+  background:var(--surface-3);color:var(--text-2);font-size:13px;font-weight:600;font-variant-numeric:tabular-nums;
+}
+.rp-sec.is-rej .rp-num{background:var(--crit-tint);color:var(--crit)}
+.rp-sec.is-carry .rp-num{background:var(--warn-tint);color:var(--warn)}
+.rp-sec-title{min-width:0;flex:1}
+.rp-sec-title h3{font-size:16px;font-weight:600;letter-spacing:-.01em;line-height:1.35}
+.rp-cite{font-size:12px;line-height:1.5;color:var(--text-3);margin-top:2px}
+.rp-tags{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end;flex:none;max-width:50%}
+.rp-tags .spill{font-size:12px;padding:4px 10px}
+.rp-sec-body{padding:12px 22px 20px 64px}
+.rp-q{font-size:13px;line-height:1.5;color:var(--text-2);padding-bottom:12px;margin-bottom:12px;border-bottom:1px dashed var(--border)}
+.rp-resp{font-size:14px;line-height:1.6;color:var(--text);max-width:76ch}
+.rp-resp p+p,.rp-resp ul+p,.rp-resp p+ul{margin-top:10px}
+.rp-resp ul{padding-left:20px;margin:0}
+.rp-resp li+li{margin-top:4px}
+.rp-resp b{font-weight:600}
+.rp-sec .files{margin-top:16px;max-width:520px}
+.rp-na{font-size:14px;color:var(--text-2)}
+.rp-sec.is-na .rp-sec-head h3{color:var(--text-2)}
+.rp-sec.is-na .rp-sec-body{padding-bottom:18px}
+.rp-sec-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:12px 22px;border-top:1px solid var(--border)}
+.rp-sec-foot .note{font-size:12px;line-height:1.5;color:var(--text-3);min-width:0;flex:1}
+.rp-sec-foot .acts{margin-left:auto;display:flex;gap:10px;flex-wrap:wrap}
+
+/* deferred deadline figures */
+.rp-facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border:1px solid var(--border);border-radius:var(--r);margin-bottom:16px;max-width:76ch}
+.rp-facts>div{padding:12px 14px;border-left:1px solid var(--border);min-width:0}
+.rp-facts>div:nth-child(3n+1){border-left:0}
+.rp-facts>div:nth-child(n+4){border-top:1px solid var(--border)}
+.rp-facts .k{font-size:12px;line-height:1.5;color:var(--text-2)}
+.rp-facts .v{font-size:15px;font-weight:600;margin-top:2px;font-variant-numeric:tabular-nums}
+.rp-facts .v small{display:block;font-size:12px;font-weight:500;color:var(--text-3)}
+.rp-facts .v.ok small{color:var(--ok);font-weight:600}
+@media (max-width:760px){.rp-facts{grid-template-columns:minmax(0,1fr)}.rp-facts>div{border-left:0!important;border-top:1px solid var(--border)}.rp-facts>div:first-child{border-top:0}}
+
+/* rejection comments: the current one, and any carried from an earlier attempt */
+.rp-cmt{margin:0 22px 18px 64px;border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;background:var(--surface-2)}
+.rp-cmt.prior{background:var(--surface)}
+.rp-cmt-h{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:12px;line-height:1.5;color:var(--text-2)}
+.rp-cmt-h b{color:var(--text);font-weight:600;font-size:13px}
+.rp-cmt-h .vis{margin-left:auto;display:inline-flex;align-items:center;gap:6px}
+.rp-cmt-h .vis svg{flex:none}
+.rp-cmt-h .vis.sent{color:var(--ok);font-weight:600}
+.rp-av{width:24px;height:24px;border-radius:50%;flex:none;display:grid;place-items:center;background:var(--brand);color:#fff;font-size:10px;font-weight:600}
+.rp-cmt.prior .rp-av{background:var(--text-3)}
+.rp-cmt p{font-size:14px;line-height:1.55;color:var(--text);margin-top:8px;white-space:pre-wrap}
+.rp-cmt .rp-ed{font-size:12px;color:var(--text-3);margin-top:6px}
+.rp-cmt .res{display:flex;align-items:center;gap:7px;margin-top:10px;padding-top:9px;border-top:1px solid var(--border);font-size:12px;color:var(--text-2)}
+.rp-cmt .res svg{flex:none;color:var(--ok)}
+
+.rp-compose{margin:0 22px 18px 64px}
+.rp-compose label{display:block;font-size:13px;font-weight:600;margin-bottom:6px}
+.rp-compose textarea{
+  display:block;width:100%;min-height:96px;resize:vertical;
+  border:1px solid var(--border-2);border-radius:var(--r);background:var(--surface);
+  padding:10px 12px;font:inherit;font-size:14px;line-height:1.5;color:var(--text);
+}
+.rp-compose textarea:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:var(--brand)}
+.rp-compose .hint{font-size:12px;line-height:1.5;color:var(--text-3);margin-top:6px}
+.rp-compose .err{display:none;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--crit);margin-top:6px}
+.rp-compose.has-err textarea{border-color:var(--crit)}
+.rp-compose.has-err .err{display:flex}
+.rp-compose-acts{display:flex;justify-content:flex-end;gap:10px;margin-top:12px}
+.btn-sm{padding:6px 14px!important;min-height:34px!important;font-size:13px!important}
+.btn-ghost-danger{
+  display:inline-flex;align-items:center;justify-content:center;gap:7px;white-space:nowrap;
+  border:1px solid var(--crit);border-radius:var(--btn-r);background:var(--surface);color:var(--crit);
+  padding:10px 18px;min-height:40px;line-height:1.2;font-size:14px;font-weight:600;
+  transition:background .12s ease;
+}
+.btn-ghost-danger:hover{background:var(--crit-tint)}
+.btn-ghost-danger:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.btn-text{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--brand);padding:7px 8px;border-radius:8px;min-height:34px}
+.btn-text:hover{background:var(--brand-tint)}
+
+/* the generated PDF, as pages, in the flyout */
+.rp-pdfbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;font-size:13px;color:var(--text-2)}
+.rp-pdfbar .seg{margin-left:auto}
+.rp-pdfbar .seg button{padding:6px 13px;font-size:13px}
+.rp-pdf{background:var(--surface-3);border-radius:var(--r);padding:22px;display:flex;flex-direction:column;gap:18px}
+.rp-page{background:#fff;color:#21252B;box-shadow:0 1px 3px rgba(33,37,43,.12),0 6px 18px rgba(33,37,43,.08);padding:40px 46px;font-size:12px;line-height:1.55;max-width:640px;width:100%;margin:0 auto}
+.rp-page h1{font-size:19px;font-weight:600;letter-spacing:-.01em}
+.rp-page .meta{color:#484D57;margin-top:4px}
+.rp-page h2{font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#294088;margin:22px 0 8px;padding-bottom:5px;border-bottom:1px solid #CFCFCF}
+.rp-page h3{font-size:13px;font-weight:600;margin:14px 0 2px}
+.rp-page .c{color:#888D97;font-size:11px}
+.rp-page p,.rp-page ul{margin-top:5px}
+.rp-page ul{padding-left:18px}
+.rp-page .na{color:#888D97;font-style:italic}
+.rp-page .pg{text-align:right;color:#888D97;font-size:10px;margin-top:24px}
+.rp-pdf-fail{display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px;padding:48px 24px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r)}
+.rp-pdf-fail svg{color:var(--crit)}
+.rp-pdf-fail b{font-size:15px;font-weight:600}
+.rp-pdf-fail p{font-size:13px;color:var(--text-2);max-width:44ch}
+
+/* table: required flag */
+.rp-req{font-weight:600;color:var(--text)}
+.rp-req.muted{font-weight:500;color:var(--text-2)}
+
+.rv .rp-pool .dl{grid-template-columns:200px minmax(0,1fr)}
 </style>
 </head>
 <body>
@@ -2490,12 +2676,13 @@ html[data-skin="combined"] body #view-dashboard .kpi-panel div.kp-inner{backgrou
    <section class="view" id="view-submissions" hidden>
     <header class="page-head">
       <h1>Submissions</h1>
-      <p class="sub">Inventory and customer notice submissions filed by Georgia water systems</p>
+      <p class="sub">Inventory, customer notice and replacement plan submissions filed by Georgia water systems</p>
       <!-- the category tabs live in the header, so on a photo banner they sit on it -->
       <div class="tabs" id="subTabs" role="tablist" aria-label="Submission category">
         <button class="tab" role="tab" id="stab-base" aria-controls="spanel-base" aria-selected="true" type="button">Baseline Inventory</button>
         <button class="tab" role="tab" id="stab-inv" aria-controls="spanel-inv" aria-selected="false" type="button">Initial Inventory</button>
         <button class="tab" role="tab" id="stab-cnc" aria-controls="spanel-cnc" aria-selected="false" type="button">Customer Notice Certifications</button>
+      <button class="tab" role="tab" id="stab-rp" aria-controls="spanel-rp" aria-selected="false" type="button">Replacement Plans</button>
       </div>
     </header>
 
@@ -2685,6 +2872,100 @@ html[data-skin="combined"] body #view-dashboard .kpi-panel div.kp-inner{backgrou
             <span class="pg-jump"><span>Page</span>
               <input type="number" min="1" step="1" value="1" inputmode="numeric" aria-label="Go to page" data-pgnum>
               <span>of <b class="num" data-pgtotal>377</b></span></span>
+            <button type="button" data-next>Next <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M6.4 3.4 11 8l-4.6 4.6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== REPLACEMENT PLANS (LCRI §141.84(c)) ====================
+         Same layout as the Baseline Inventory tab. The second card answers the
+         question this submission type adds: which systems have to file at all. -->
+    <section class="panel" id="spanel-rp" role="tabpanel" aria-labelledby="stab-rp" hidden>
+      <div class="banner">
+        <span class="banner-ico"><svg width="17" height="17" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 1.8 13.6 4v4c0 3.3-2.3 5.6-5.6 6.4C4.7 13.6 2.4 11.3 2.4 8V4L8 1.8Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg></span>
+        <p><b>Service line replacement plans are due 11/01/2027</b> <span>&middot; required for every system whose baseline inventory has lead, GRR or unknown service lines</span></p>
+        <button class="btn-pill" type="button" id="btnRegRp">§141.84(c) <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h9m0 0-3.4-3.4M12 8l-3.4 3.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </div>
+
+      <div class="pair">
+        <section class="domain">
+          <div class="domain-head">
+            <h2>Submission Status</h2>
+            <span class="pill neutral num" style="margin-left:auto">1,312 required</span>
+          </div>
+          <div class="cell" style="border-left:0">
+            <div class="donut-row">
+              <div class="donut" id="rpStatusDonut"></div>
+              <div class="keys" style="flex:1;min-width:190px" id="rpStatusKeys"></div>
+            </div>
+            <p class="caption">Not Submitted counts only systems required to file a plan.</p>
+          </div>
+        </section>
+
+        <section class="domain">
+          <div class="domain-head">
+            <h2>Required to Submit</h2>
+            <span class="pill neutral num" style="margin-left:auto">1,903 systems</span>
+          </div>
+          <div class="cell" style="border-left:0">
+            <div class="donut-row">
+              <div class="donut" id="rpReqDonut"></div>
+              <div class="keys" style="flex:1;min-width:190px" id="rpReqKeys"></div>
+            </div>
+            <p class="caption">Required when the most recent baseline inventory has any lead, GRR or unknown lines. Unknown until a baseline inventory is submitted.</p>
+          </div>
+        </section>
+      </div>
+
+      <div class="period-bar">
+        <h2 class="sec-head" style="margin:0">Submissions</h2>
+        <label class="field">
+          <svg width="17" height="17" viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="2.3" y="3.3" width="11.4" height="10.4" rx="2" stroke="currentColor" stroke-width="1.4"/><path d="M2.3 6.6h11.4M5.5 2.2v2.2M10.5 2.2v2.2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+          <select id="rpPeriod" aria-label="Submission period">
+            <option>Initial Replacement Plan &mdash; November 1, 2027</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="tbl-card">
+        <div class="tbl-toolbar">
+          <label class="search">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="4.4" stroke="currentColor" stroke-width="1.5"/><path d="m10.4 10.4 3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            <input type="search" id="q-rp" placeholder="Search by PWS, PWSID, submitter or county&hellip;" aria-label="Search replacement plan submissions">
+          </label>
+          <div class="tbl-tools">
+            <button class="btn-pill" type="button"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2.5 3.5h11l-4.2 5v4.2l-2.6 1.3V8.5l-4.2-5Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg> Filters</button>
+            <button class="btn-pill" type="button"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 13V3m0 0L2 5m2-2 2 2M12 3v10m0 0 2-2m-2 2-2-2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Columns</button>
+            <button class="btn-pill" type="button"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 2.5h8a1 1 0 0 1 1 1v10l-5-2.8-5 2.8v-10a1 1 0 0 1 1-1Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg> Views</button>
+            <button class="btn-solid js-export" type="button">Export <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m4 6 4 4 4-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          </div>
+        </div>
+        <div class="tbl-wrap">
+          <table class="tbl tbl--pin">
+            <thead><tr>
+              <th class="c-check"><label class="chk"><input type="checkbox" aria-label="Select all rows"></label></th>
+              <th class="sortable">PWS</th><th class="sortable">Required</th><th class="sortable">Submission Status</th>
+              <th class="sortable">Submitted Date</th><th class="sortable">Submitted By</th><th class="sortable">Attempts</th>
+              <th class="sortable">Replacement Pool</th><th class="sortable">Deferred Deadline</th>
+              <th class="sortable">Rejected Sections</th><th class="sortable">Assigned To</th>
+              <th class="sortable">Counties Served</th><th class="sortable">Territory</th>
+            </tr></thead>
+            <tbody id="rpRows"></tbody>
+          </table>
+        </div>
+        <div class="tbl-foot" data-pager data-total="1312" data-per="25" data-noun="systems">
+          <label class="per-page"><span>Rows</span>
+            <select aria-label="Rows per page" data-perpage>
+              <option value="10">10</option><option value="25" selected>25</option>
+              <option value="50">50</option><option value="100">100</option>
+            </select></label>
+          <span class="range-txt" data-range aria-live="polite"></span>
+          <div class="pager">
+            <button type="button" data-prev><svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M9.6 3.4 5 8l4.6 4.6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg> Previous</button>
+            <span class="pg-jump"><span>Page</span>
+              <input type="number" min="1" step="1" value="1" inputmode="numeric" aria-label="Go to page" data-pgnum>
+              <span>of <b class="num" data-pgtotal>1</b></span></span>
             <button type="button" data-next>Next <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M6.4 3.4 11 8l-4.6 4.6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
           </div>
         </div>
@@ -3016,6 +3297,32 @@ html[data-skin="combined"] body #view-dashboard .kpi-panel div.kp-inner{backgrou
         <section class="domain br-details"><div class="cols cols-3" id="sdSide"></div></section>
       </aside>
       <div class="br-main" id="sdMain"></div>
+    </div>
+   </section>
+
+
+   <!-- ============ REPLACEMENT PLAN REVIEW ============
+        Each §141.84(c)(1) element is its own response block, in the same order as
+        the 120Utility wizard and the generated PDF. Filled by renderRpReview(). -->
+   <section class="view rv" id="view-rp-review" hidden>
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <button type="button" data-crumb="submissions">Submissions</button>
+      <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m6 3 5 5-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <button type="button" id="rpCrumbTab">Replacement Plans</button>
+      <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m6 3 5 5-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span aria-current="page" id="rpCrumbNow">Plan</span>
+    </nav>
+    <header class="page-head" style="display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:16px">
+      <div>
+        <div class="br-title"><h1 id="rpTitle">Replacement Plan</h1><span id="rpStatus"></span></div>
+        <p class="sub" id="rpSub"></p>
+      </div>
+      <div class="br-acts" id="rpActs"></div>
+    </header>
+    <div id="rpGate"></div>
+    <div class="br-layout">
+      <aside class="br-side rp-side" aria-label="Plan details" id="rpSide"></aside>
+      <div class="br-main" id="rpMain"></div>
     </div>
    </section>
 
@@ -3369,6 +3676,27 @@ html[data-skin="combined"] body #view-dashboard .kpi-panel div.kp-inner{backgrou
     </div>
   </div>
 
+
+  <!-- ==================== REPLACEMENT PLAN DECISION ==================== -->
+  <div class="modal-scrim" id="rpScrim" hidden>
+    <div class="modal confirm" role="alertdialog" aria-modal="true" aria-labelledby="rpMTitle" aria-describedby="rpMLead">
+      <div class="modal-head">
+        <span class="cf-ico" id="rpMIco"></span>
+        <div>
+          <h3 id="rpMTitle">Record decision</h3>
+          <p id="rpMLead"></p>
+        </div>
+      </div>
+      <div class="modal-body" id="rpMBody"></div>
+      <div class="modal-foot">
+        <div class="right">
+          <button class="btn-pill" type="button" id="rpMCancel">Cancel</button>
+          <button class="btn-solid" type="button" id="rpMGo">Confirm</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- ==================== BULK SELECTION ==================== -->
   <div class="bulkbar" id="bulkBar" hidden role="region" aria-label="Actions for the selected rows">
     <span class="badge num" id="bulkBadge">0</span>
@@ -3607,7 +3935,8 @@ html[data-skin="combined"] body #view-dashboard .kpi-panel div.kp-inner{backgrou
     {name:"Annual Inventory Update 2026", type:"LCRI", due:"Oct 17, 2026", got:"1,203 / 1,903", pct:63.2, tone:"warn", alerts:"4 at risk", color:"var(--dv-navy)"},
     {name:"Monthly Operating Report — Aug 2026", type:"MOR", due:"Sep 1, 2026", got:"412 / 438", pct:94.1, tone:"crit", alerts:"6 at risk · 7 attention", color:"var(--dv-blue-mid)"},
     {name:"Optional Inventory Update", type:"LCRI", due:"Dec 31, 2026", got:"344 / 1,903", pct:18.1, tone:"ok", alerts:"None", color:"var(--dv-navy)"},
-    {name:"Initial Inventory", type:"LCRI", due:"Oct 17, 2024", got:"1,894 / 1,903", pct:99.5, tone:"ok", alerts:"2 attention", color:"var(--dv-navy)"}
+    {name:"Initial Inventory", type:"LCRI", due:"Oct 17, 2024", got:"1,894 / 1,903", pct:99.5, tone:"ok", alerts:"2 attention", color:"var(--dv-navy)"},
+    {name:"Initial Replacement Plan", type:"LCRI", due:"Nov 1, 2027", got:"647 / 1,312", pct:49.3, tone:"ok", alerts:"41 rejected", color:"var(--dv-navy)"}
   ];
   $("typeRows").innerHTML = types.map(function(t, ix){
     var pill = t.tone==="crit" ? '<span class="pill crit">At risk</span>'
@@ -3661,7 +3990,7 @@ html[data-skin="combined"] body #view-dashboard .kpi-panel div.kp-inner{backgrou
   $("deadlineRows").innerHTML = sysRows([
     {go:"submissions", name:"Annual Inventory Update 2026", meta:"Inventory · opened Apr 17, 2026", val:"30 days", tone:"warn"},
     {go:"submissions", name:"Optional Inventory Update", meta:"Inventory · opened Jan 1, 2026", val:"105 days", tone:""},
-    {go:"submissions", name:"LSLR Plan", meta:"Replacement plan · opens Jan 1, 2027", val:"Nov 1, 2027", tone:""},
+    {go:"rp", name:"LSLR Plan", meta:"Replacement plan · opens Jan 1, 2027", val:"Nov 1, 2027", tone:""},
     {go:"submissions", name:"Initial Inventory", meta:"Closed Oct 17, 2024", val:"Closed", tone:""}
   ]);
 
@@ -4614,6 +4943,9 @@ html[data-skin="combined"] body #view-dashboard .kpi-panel div.kp-inner{backgrou
     var q = searchState[tbodyId];
     if (q){ searchState[tbodyId] = ""; }
     showView(view, navKey);
+    var tbPanel = $(tbodyId) && $(tbodyId).closest('[role="tabpanel"]');
+    var tbTab = tbPanel && document.querySelector('#subTabs [aria-controls="' + tbPanel.id + '"]');
+    if (tbTab && typeof selectSubTab === "function"){ tbTab.hidden = false; selectSubTab(tbTab.id); }
     refreshRows(tbodyId);
     var card = cardOf(tbodyId);
     if (card) card.scrollIntoView({ block:"start", behavior:"smooth" });
@@ -6035,15 +6367,15 @@ html[data-skin="combined"] body #view-dashboard .kpi-panel div.kp-inner{backgrou
        actually applies, and says plainly when the submission has not arrived.
        Applicability rules are still being confirmed, so the thresholds here are a
        placeholder rather than the final determination. */
-    var needsSlrp = (r.lead + r.grr) > 0;
+    var needsSlrp = (r.lead + r.grr + r.unk) > 0;
     var needsPool = r.unk > 0;
     var rel = [];
     rel.push(relCard("slrp",
       "Service Line Replacement Plan",
       needsSlrp
-        ? "Required — this system reported " + fmt(r.lead + r.grr) + " lead or galvanized lines."
-        : "Not required — no lead or galvanized service lines were reported.",
-      needsSlrp, needsSlrp && r.st[1] !== "Rejected"));
+        ? "Required — this system reported " + fmt(r.lead + r.grr + r.unk) + " lead, GRR or unknown lines."
+        : "Not required — no lead, GRR or unknown service lines were reported.",
+      needsSlrp, needsSlrp && rpIndexOf(r.id) > -1 && rpFiled(rpPlans[rpIndexOf(r.id)])));
     rel.push(relCard("pool",
       "Non-Lead Validation Pool",
       needsPool
@@ -6088,12 +6420,13 @@ html[data-skin="combined"] body #view-dashboard .kpi-panel div.kp-inner{backgrou
     baseHandlers = BH;
     if (flyCtx && flyCtx.type === "base" && flyCtx.ix === ix) baseFlyFromPage();
   }
+  var REL_LABEL = {slrp:"View Replacement Plan", pool:"View Validation Pool"};
   function relCard(key, name, note, required, exists){
     return '<div class="rel-card">'
       + '<span class="rel-txt"><b>' + esc(name) + '</b><span>' + esc(note) + '</span>'
       + (required
           ? (exists
-              ? '<button class="btn-pill" type="button" data-rel="' + key + '">Open submission <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h9m0 0-3.4-3.4M12 8l-3.4 3.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>'
+              ? '<button class="btn-pill" type="button" data-rel="' + key + '">' + esc(REL_LABEL[key] || "View submission") + ' <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h9m0 0-3.4-3.4M12 8l-3.4 3.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>'
               /* the pill is inside a block, so it needs its own line box or it
                  stretches the full width of the card */
               : '<div style="margin-top:12px"><span class="spill warn">Not yet submitted</span></div>')
@@ -6111,6 +6444,7 @@ html[data-skin="combined"] body #view-dashboard .kpi-panel div.kp-inner{backgrou
     var r = baseSubs[brIx];
     var needReplace = r.lead + r.grr;
 
+    if (key === "slrp" && rpIndexOf(r.id) > -1){ closeDrawer(); rpOpen(rpIndexOf(r.id)); return; }
     if (key === "slrp"){
       /* LCRI sets a 10% annual pace, so the schedule follows from the count rather
          than being carried as its own number. */
@@ -6136,7 +6470,7 @@ html[data-skin="combined"] body #view-dashboard .kpi-panel div.kp-inner{backgrou
               '<p class="dw-note">This system reported ' + fmt(needReplace)
               + ' lead or galvanized service lines in its baseline inventory, so a '
               + 'replacement plan is required alongside it.</p>'),
-        actions: [{label:"Open full submission", primary:true, id:"relOpen", onClick:function(){
+        actions: [{label:"View Replacement Plan", primary:true, id:"relOpen", onClick:function(){
         showToast("Opens outside this prototype",
                   "This submission type gets its own page in a later release.");
       }}]
@@ -6166,7 +6500,7 @@ html[data-skin="combined"] body #view-dashboard .kpi-panel div.kp-inner{backgrou
             '<p class="dw-note">' + fmt(r.unk) + ' service lines are still unclassified. '
             + 'A validation pool lets the system support a non-lead determination for '
             + 'those unknowns from a representative sample rather than excavating every one.</p>'),
-      actions: [{label:"Open full submission", primary:true, id:"relOpen", onClick:function(){
+      actions: [{label:"View Validation Pool", primary:true, id:"relOpen", onClick:function(){
         showToast("Opens outside this prototype",
                   "This submission type gets its own page in a later release.");
       }}]
@@ -6310,6 +6644,7 @@ html[data-skin="combined"] body #view-dashboard .kpi-panel div.kp-inner{backgrou
   }
   wireRows("typeRows", function(ix){
     var t = types[ix];
+    if (t.name === "Initial Replacement Plan"){ showView("submissions"); selectSubTab("stab-rp"); return; }
     if (t.type === "MOR"){
       goToFiltered("mor-subs", "mor", "morSubRows", []);
       setSelect("morSubPeriod", "August 2026");
@@ -6392,6 +6727,7 @@ html[data-skin="combined"] body #view-dashboard .kpi-panel div.kp-inner{backgrou
       goToFiltered("utilities", null, "utilRows", [["PWS Type", "CWS"]]);
     },
     "submissions":    function(){ showView("submissions"); },
+    "rp":             function(){ showView("submissions"); selectSubTab("stab-rp"); },
     "mor":            function(){ showView("mor"); },
     "mor-gaps":       function(){
       /* data completeness is about reports that arrived incomplete, which is a
@@ -6889,6 +7225,776 @@ html[data-skin="combined"] body #view-dashboard .kpi-panel div.kp-inner{backgrou
   var morPrefSaved = "1";
   try { morPrefSaved = localStorage.getItem("gaepd.morTab") || "1"; } catch(err){}
   setMorTab(morPrefSaved !== "0");
+
+  /* ================= REPLACEMENT PLANS (LCRI §141.84(c), §141.90(e)(3)(i)) =================
+     Every system whose baseline inventory has lead, GRR or unknown lines files a
+     service line replacement plan by 11/01/2027. The state reviews it element by
+     element: any rejected section rejects the plan, and the utility only sees the
+     section comments once the Rejected decision is recorded. */
+  var RP_ME = "Cam Grundy", RP_TODAY = "11/16/2026";
+  var RP_ST = {"Submitted":"info", "Approved":"ok", "Rejected":"crit", "Voided":"neutral", "Not submitted":"warn"};
+  var RP_GROUPS = ["Baseline Inventory", "Addressing Unknowns", "Replacements", "Communications", "Funding and Access", "State Requirements"];
+  var ICO_WARN = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="6.6" stroke="currentColor" stroke-width="1.4"/><path d="M8 4.8v3.6M8 11.1v.1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>';
+  var ICO_INFO = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="6.6" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.4v3.8M8 4.9v.1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>';
+  var ICO_OK = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="6.6" stroke="currentColor" stroke-width="1.4"/><path d="m5.3 8.2 1.9 1.9 3.6-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  var ICO_EYE_OFF = '<svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2 8s2.2-4.2 6-4.2S14 8 14 8s-2.2 4.2-6 4.2S2 8 2 8Z" stroke="currentColor" stroke-width="1.3"/><path d="M3 13 13 3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>';
+  var ICO_SEND = '<svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m3.6 8.4 2.8 2.8 6-6.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+  /* the response text uses the wizard's simple markup: paragraphs, "- " bullets, **bold** */
+  function rpMd(lines){
+    var out = "", inList = false;
+    (lines || []).forEach(function(l){
+      var txt = esc(l.replace(/^- /, "")).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>");
+      if (l.indexOf("- ") === 0){
+        if (!inList){ out += "<ul>"; inList = true; }
+        out += "<li>" + txt + "</li>";
+      } else {
+        if (inList){ out += "</ul>"; inList = false; }
+        out += "<p>" + txt + "</p>";
+      }
+    });
+    return out + (inList ? "</ul>" : "");
+  }
+
+  /* ---- the plan's sections, in wizard and PDF order ---- */
+  var RP_SECS = [
+    {key:"unk", group:"Addressing Unknowns", title:"Strategy for lead status unknown service lines", cite:"§141.84(c)(1)(i)",
+     q:"Describe how the system will determine the material of service lines whose lead status is unknown.",
+     files:[["Unknown line investigation map.pdf", "2.4 MB"]],
+     resp:function(p){ return [
+       p.pws + " will resolve its " + fmt(p.pool.unk) + " unknown service lines by **December 31, 2029**, working the oldest service areas first.",
+       "- Records review of tap cards, work orders and county plumbing permits",
+       "- Visual inspection at the curb stop and meter pit during scheduled meter replacements",
+       "- Vacuum excavation at two points on each line where records and inspection disagree",
+       "Each line is re-classified in the inventory within 30 days of its investigation."]; }},
+    {key:"sop", group:"Replacements", title:"Full service line replacement procedure", cite:"§141.84(c)(1)(ii)",
+     q:"Describe the standard operating procedure for conducting a full service line replacement.",
+     files:[["Full replacement SOP v3.pdf", "1.1 MB"]],
+     resp:function(){ return [
+       "Full replacements follow the attached SOP, which covers the system-owned and customer-owned portions in a single visit.",
+       "- Locate and mark utilities through Georgia 811 at least 3 business days ahead",
+       "- Replace from the main to the building's first shutoff valve with Type K copper",
+       "- Replace any lead or galvanized connector found during excavation",
+       "- Pressure test, restore the site, and record the new material in the inventory",
+       "Partial replacements are performed only in emergencies and are followed by notice and a pitcher filter."]; }},
+    {key:"flush", group:"Replacements", title:"Flushing after a disturbance or replacement", cite:"§141.84(c)(1)(iv)",
+     q:"Describe the flushing procedure the system will follow after a service line is disturbed or replaced.",
+     files:[["Post-replacement flushing checklist.pdf", "210 KB"]],
+     resp:function(){ return [
+       "After any replacement or disturbance the crew flushes the service line and premise plumbing using the attached checklist.",
+       "- Remove faucet aerators and run all cold-water taps on high for at least 5 minutes, starting at the lowest floor",
+       "- Leave a pitcher filter certified to NSF/ANSI 53 for lead reduction, with 6 months of cartridges",
+       "- Leave written flushing instructions in English and Spanish"]; }},
+    {key:"prio", group:"Replacements", title:"Prioritization strategy", cite:"§141.84(c)(1)(v)",
+     q:"Describe how replacements will be prioritized, referencing known lead and GRR lines and community-specific factors.",
+     files:[["Priority scoring matrix.xlsx", "86 KB"]],
+     resp:function(){ return [
+       "Replacements are scheduled with a scoring matrix that ranks each neighborhood.",
+       "- **Known lead lines** are replaced first, then GRR lines, then unknowns confirmed as lead",
+       "- Schools, childcare facilities and census tracts with higher poverty rates receive additional weight",
+       "- Lines are bundled by street and coordinated with the 2027–2029 water main renewal program"]; }},
+    {key:"llg", group:"Replacements", title:"Lead-lined galvanized service lines", cite:"§141.84(c)(1)(ix)",
+     q:"If lead-lined galvanized service lines were identified, describe the strategy for replacing them.",
+     na:function(p){ return p.llg ? null : "No lead-lined galvanized service lines were identified in the inventory."; },
+     files:[],
+     resp:function(p){ return [
+       "The inventory identified **" + fmt(p.llg || 0) + " lead-lined galvanized** service lines, concentrated in the downtown district built before 1940.",
+       "They are scheduled alongside known lead lines in program years 1–3 and replaced in full using the same procedure."]; }},
+    {key:"def", group:"Replacements", title:"Deferred replacement deadline", cite:"§141.84(d)(5)(vi)",
+     q:"If the system intends to use a deferred deadline, document eligibility, the proposed schedule, and why a faster schedule is not feasible.",
+     na:function(p){ return p.deferred ? null : "The system did not request a deferred deadline. The standard deadline of Dec 31, 2037 applies."; },
+     files:[["Contractor capacity study 2026.pdf", "3.8 MB"], ["Rate impact analysis.xlsx", "140 KB"]],
+     resp:function(p){ return p.deferred ? p.deferred.why : []; }},
+    {key:"notice", group:"Communications", title:"Notice before full or partial replacement", cite:"§141.84(c)(1)(iii)",
+     q:"Describe how consumers and customers will be informed before a full or partial service line replacement.",
+     files:[["45-day notice letter.docx", "48 KB"], ["Pre-replacement door hanger.pdf", "640 KB"]],
+     resp:function(){ return [
+       "Every affected customer is notified in writing at least **45 days before** a planned replacement, and again with a door hanger 7 days before work begins.",
+       "- Letters go to both the account holder and the service address, so tenants who aren't account holders are reached",
+       "- Notices explain the flushing steps, the free pitcher filter, and who to call with questions",
+       "- Emergency partial replacements get notice within 24 hours"]; }},
+    {key:"outreach", group:"Communications", title:"Communicating the plan to owners, renters and tenants", cite:"§141.84(c)(1)(vii)",
+     q:"Describe how the system will communicate the plan and program to owners, renters, and tenants.",
+     files:[],
+     resp:function(p){ return [
+       "The plan is published on the system's website and summarized in the annual Consumer Confidence Report.",
+       "- A mailer to every property owner with a lead, GRR or unknown line, and a separate mailer to every tenant at those addresses",
+       "- A landlord briefing through the " + p.cty + " County apartment association",
+       "- Quarterly program updates at public council meetings"]; }},
+    {key:"fund", group:"Funding and Access", title:"Funding strategy", cite:"§141.84(c)(1)(vi)",
+     q:"Describe the funding strategy, including how the system assists customers who cannot pay where customers are charged.",
+     files:[["Board resolution 2026-14.pdf", "320 KB"]],
+     resp:function(){ return [
+       "The system-owned portion is funded through the capital budget and a DWSRF loan application submitted in 2026.",
+       "- The customer-owned portion is replaced at no cost to the customer",
+       "- Where a cost share applies to non-residential accounts, a hardship fund covers customers below 200% of the federal poverty level"]; }},
+    {key:"law", group:"Funding and Access", title:"Laws, regulations and tariff provisions affecting access", cite:"§141.84(c)(1)(viii)",
+     q:"Identify laws, regulations, and tariff provisions that affect access to customer-owned lines, with citations, including consent and cost sharing.",
+     files:[["Water service tariff excerpt.pdf", "410 KB"]],
+     resp:function(){ return [
+       "Access to customer-owned lines is governed by the service tariff and local code.",
+       "- **Water Service Tariff §7.3**: the system may enter private property to maintain the service line with the owner's written consent",
+       "- **City Code §26-41**: owners must allow replacement of a lead service line within 90 days of notice",
+       "- Written consent is required before work on the customer-owned portion; there is no cost sharing for residential accounts"]; }},
+    {key:"ga1", group:"State Requirements", title:"Replacement contractors and licensing", cite:"Georgia EPD state requirement",
+     q:"List the contractors who will perform replacements and their Georgia utility contractor license numbers.",
+     files:[],
+     resp:function(){ return [
+       "Replacements are performed by in-house crews and one contractor:",
+       "- Southern Pipe & Utility, LLC: Georgia Utility Contractor license UC-004417",
+       "- In-house crew lead certified as a Georgia Class II Distribution operator"]; }}
+  ];
+  function rpDef(key){ return RP_SECS.filter(function(d){ return d.key === key; })[0]; }
+
+  /* ---- plans for the 11/01/2027 period, plus required systems that haven't filed ---- */
+  var rpPlans = [
+    {pws:"Glenwood", id:"GA3090001", type:"CWS", cty:"Wheeler", terr:"South", conns:400, pop:11400, req:"req",
+     st:"Submitted", date:"10/03/2026", by:"Caryn Edge", att:2, assign:"Cam Grundy",
+     pool:{lead:6, grr:14, unk:38}, asOf:"09/12/2026", base:{on:"09/12/2026", lead:6, grr:14, unk:38},
+     pdf:["09/18/2026", "10/03/2026"],
+     over:{prio:[
+       "Replacements are scheduled with a scoring matrix that ranks each neighborhood.",
+       "- **Known lead lines** are replaced first, then GRR lines, then unknowns confirmed as lead",
+       "- Lines are bundled by street to reduce mobilization costs"]},
+     prev:{notice:["Customers receive a door hanger 7 days before work begins, with the crew schedule and a contact number."]},
+     secs:{
+       notice:{changed:true, prior:{att:1, by:"M. Okafor", on:"09/30/2026",
+         text:"The plan only describes a door hanger 7 days before work. Describe how customers are notified ahead of a planned replacement, and how tenants who aren't the account holder are reached."}},
+       prio:{changed:false, prior:{att:1, by:"M. Okafor", on:"09/30/2026",
+         text:"Prioritization doesn't mention community-specific factors. Describe how schools, childcare facilities and disadvantaged neighborhoods are weighted."}}
+     },
+     log:[["09/18/2026", "Attempt 1 submitted", "Caryn Edge"],
+          ["09/30/2026", "Section rejected: Notice before full or partial replacement", "M. Okafor"],
+          ["09/30/2026", "Section rejected: Prioritization strategy", "M. Okafor"],
+          ["09/30/2026", "Plan rejected", "M. Okafor · 2 section comments sent to the utility"],
+          ["10/03/2026", "Attempt 2 submitted", "Caryn Edge · 1 section changed"]]},
+
+    {pws:"City of Cedartown", id:"GA1150000", type:"CWS", cty:"Polk", terr:"Northwest", conns:12400, pop:31200, req:"req",
+     st:"Submitted", date:"10/21/2026", by:"Lena Ortiz", att:1, assign:"Cam Grundy",
+     pool:{lead:2480, grr:1120, unk:3400}, asOf:"10/02/2026", base:{on:"10/02/2026", lead:2480, grr:1120, unk:3400},
+     llg:120, pdf:["10/21/2026"],
+     deferred:{deadline:"12/31/2042", annual:484, years:15,
+       why:["A 10 percent rate would require 700 replacements a year, about 56 per 1,000 connections, which is above the 39 per 1,000 threshold.",
+            "The attached contractor capacity study found two qualified contractors within 90 miles, with combined capacity of about 500 full replacements a year. Bidding the work wider raised unit costs by 41% with no added capacity.",
+            "- Year 1–2 throughput is limited by the 2027–2028 downtown main replacement, which shares crews",
+            "- A faster schedule would require a rate increase of 22% in a system where 31% of households are below 200% of the poverty level"]},
+     secs:{}, log:[["10/21/2026", "Attempt 1 submitted", "Lena Ortiz · deferred deadline requested"]]},
+
+    {pws:"Adairsville, GA", id:"GA0150000", type:"CWS", cty:"Bartow", terr:"Northwest", conns:2900, pop:5900, req:"req",
+     st:"Submitted", date:"10/14/2026", by:"Priya Nandi", att:1, assign:"A. Whitfield",
+     pool:{lead:18, grr:64, unk:230}, asOf:"06/30/2026", base:{on:"08/06/2026", lead:18, grr:64, unk:212},
+     pdf:["10/14/2026"], secs:{}, log:[["10/14/2026", "Attempt 1 submitted", "Priya Nandi"]]},
+
+    {pws:"Thundering Springs Assoc., Inc.", id:"GA1750043", type:"CWS", cty:"Laurens", terr:"Central", conns:70, pop:860, req:"req",
+     st:"Rejected", date:"09/25/2026", by:"Tammy Chambers", att:1, assign:"Cam Grundy",
+     pool:{lead:2, grr:0, unk:11}, asOf:"09/04/2026", base:{on:"09/04/2026", lead:2, grr:0, unk:11},
+     pdf:["09/25/2026"], decided:{on:"10/06/2026", by:"Cam Grundy"},
+     over:{fund:["Costs will be covered through rates."], law:["We do not believe any laws apply."]},
+     secs:{
+       fund:{rej:{by:"Cam Grundy", on:"10/06/2026", sent:"10/06/2026",
+         text:"The plan says costs are covered through rates but doesn't say how customers who can't pay are assisted. Describe the assistance available, or confirm customers are not charged for replacement."}},
+       law:{rej:{by:"Cam Grundy", on:"10/06/2026", sent:"10/06/2026",
+         text:"List the tariff provisions, ordinances or state laws that affect access to customer-owned lines, with citations, including any consent or cost-sharing requirements. If none apply, explain how access is obtained."}}
+     },
+     log:[["09/25/2026", "Attempt 1 submitted", "Tammy Chambers"],
+          ["10/06/2026", "Section rejected: Funding strategy", "Cam Grundy"],
+          ["10/06/2026", "Section rejected: Laws, regulations and tariff provisions affecting access", "Cam Grundy"],
+          ["10/06/2026", "Plan rejected", "Cam Grundy · 2 section comments sent to the utility"]]},
+
+    {pws:"Hargett Trailer Park", id:"GA0170002", type:"CWS", cty:"Ben Hill", terr:"South", conns:16, pop:180, req:"req",
+     st:"Submitted", date:"10/28/2026", by:"Robert Ehasz", att:1, assign:"M. Okafor",
+     pool:{lead:1, grr:0, unk:3}, asOf:"08/19/2026", base:{on:"08/19/2026", lead:1, grr:0, unk:3},
+     pdf:["10/28/2026"], secs:{}, log:[["10/28/2026", "Attempt 1 submitted", "Robert Ehasz"]]},
+
+    {pws:"Pine Ridge Water Authority", id:"GA2310012", type:"CWS", cty:"Pike", terr:"Central", conns:840, pop:2100, req:"unk",
+     st:"Submitted", date:"11/04/2026", by:"Dana Kerr", att:1, assign:"Unassigned",
+     pool:{lead:0, grr:9, unk:61}, asOf:"10/30/2026", base:null, pdfFail:true,
+     pdf:["11/04/2026"], secs:{}, log:[["11/04/2026", "Attempt 1 submitted", "Dana Kerr"]]},
+
+    {pws:"Two Way Utilities", id:"GA1270154", type:"CWS", cty:"Glynn", terr:"Coastal", conns:1180, pop:3100, req:"req",
+     st:"Approved", date:"09/22/2026", by:"Rick Smith", att:1, assign:"A. Whitfield",
+     pool:{lead:0, grr:31, unk:96}, asOf:"09/08/2026", base:{on:"09/08/2026", lead:0, grr:31, unk:96},
+     pdf:["09/22/2026"], decided:{on:"10/09/2026", by:"A. Whitfield"}, secs:{},
+     log:[["09/22/2026", "Attempt 1 submitted", "Rick Smith"], ["10/09/2026", "Plan approved", "A. Whitfield · review locked"]]},
+
+    {pws:"Spring Creek Mobile Home Park", id:"GA1830008", type:"CWS", cty:"Long", terr:"Coastal", conns:28, pop:240, req:"req",
+     st:"Approved", date:"09/10/2026", by:"John Floyd", att:1, assign:"M. Okafor",
+     pool:{lead:0, grr:0, unk:2}, asOf:"08/27/2026", base:{on:"08/27/2026", lead:0, grr:0, unk:2},
+     pdf:["09/10/2026"], decided:{on:"09/24/2026", by:"M. Okafor"}, secs:{},
+     log:[["09/10/2026", "Attempt 1 submitted", "John Floyd"], ["09/24/2026", "Plan approved", "M. Okafor · review locked"]]},
+
+    {pws:"North Doublegate Water System", id:"GA1770026", type:"CWS", cty:"Lee", terr:"Southwest", conns:39, pop:1450, req:"req",
+     st:"Voided", date:"09/02/2026", by:"Reid Mills", att:1, assign:"A. Whitfield",
+     pool:{lead:0, grr:1, unk:4}, asOf:"08/29/2026", base:{on:"08/29/2026", lead:0, grr:1, unk:4},
+     pdf:["09/02/2026"], decided:{on:"09/05/2026", by:"A. Whitfield", note:"Submitted against the wrong water system; the utility will refile."}, secs:{},
+     log:[["09/02/2026", "Attempt 1 submitted", "Reid Mills"], ["09/05/2026", "Submission voided", "A. Whitfield · submitted against the wrong water system"]]},
+
+    {pws:"Big Tree Estates", id:"GA1910066", type:"CWS", cty:"McIntosh", terr:"Coastal", conns:18, pop:310, req:"req",
+     st:"Not submitted", pool:{lead:0, grr:0, unk:6}, base:{on:"08/14/2026", lead:0, grr:0, unk:6}, assign:"Unassigned", secs:{}},
+    {pws:"Fair Haven Acres Mobile Home Park", id:"GA1790145", type:"CWS", cty:"Liberty", terr:"Coastal", conns:27, pop:290, req:"req",
+     st:"Not submitted", pool:{lead:0, grr:2, unk:5}, base:{on:"08/11/2026", lead:0, grr:2, unk:5}, assign:"Cam Grundy", secs:{}},
+    {pws:"Oatland Island Education Cntr.", id:"GA0510095", type:"NTNCWS", cty:"Chatham", terr:"Coastal", conns:5, pop:120, req:"no",
+     st:null, pool:{lead:0, grr:0, unk:0}, base:{on:"08/22/2026", lead:0, grr:0, unk:0}, assign:"Unassigned", secs:{}},
+    {pws:"Riverbend Utilities", id:"GA2090031", type:"CWS", cty:"Morgan", terr:"Northeast", conns:610, pop:1700, req:"unk",
+     st:null, pool:null, base:null, assign:"Unassigned", secs:{}}
+  ];
+  function rpTotal(p){ return p.pool ? p.pool.lead + p.pool.grr + p.pool.unk : 0; }
+  function rpFiled(p){ return !!p.date; }
+  function rpS(p, key){ return p.secs[key] || (p.secs[key] = {}); }
+  function rpNA(p, d){ return d.na ? d.na(p) : null; }
+  function rpRejCount(p){ return RP_SECS.filter(function(d){ return p.secs[d.key] && p.secs[d.key].rej; }).length; }
+  function rpCarryOpen(p){ return RP_SECS.filter(function(d){ var s = p.secs[d.key]; return s && s.prior && !s.prior.res; }).length; }
+  function rpChanged(p){ return RP_SECS.filter(function(d){ var s = p.secs[d.key]; return s && s.changed; }).length; }
+  function rpIndexOf(id){ for (var i = 0; i < rpPlans.length; i++) if (rpPlans[i].id === id) return i; return -1; }
+  function rpInitials(n){ return n.replace(/\./g, "").split(" ").map(function(w){ return w[0]; }).join("").slice(0, 2).toUpperCase(); }
+  function rpReqLabel(p){
+    return p.req === "req" ? '<span class="rp-req">Required</span>'
+         : p.req === "no"  ? '<span class="rp-req muted">Not required</span>'
+         : '<span class="rp-req muted">Unknown</span><span class="t-sub">No baseline inventory</span>';
+  }
+
+  /* ---- tab: cards and table ---- */
+  (function rpCards(){
+    var st = [
+      {label:"Submitted",     v:214, c:C().dvBlue},
+      {label:"Approved",      v:386, c:C().sevHealthy},
+      {label:"Rejected",      v:41,  c:C().sevCrit},
+      {label:"Voided",        v:6,   c:C().text3},
+      {label:"Not Submitted", v:665, c:C().sevCaution}
+    ];
+    $("rpStatusDonut").innerHTML = donut(st, 104) + '<div class="donut-label"><b class="num">1,312</b><span>required</span></div>';
+    $("rpStatusKeys").innerHTML = keyList(st, 1312);
+    var rq = [
+      {label:"Required",     v:1312, c:C().dvNavy},
+      {label:"Not required", v:476,  c:C().dvBlue},
+      {label:"Unknown",      v:115,  c:C().text3}
+    ];
+    $("rpReqDonut").innerHTML = donut(rq, 104) + '<div class="donut-label"><b class="num">1,903</b><span>systems</span></div>';
+    $("rpReqKeys").innerHTML = keyList(rq, 1903);
+  })();
+
+  function renderRpRows(){
+    $("rpRows").innerHTML = rpPlans.map(function(p, ix){
+      var filed = rpFiled(p), rc = rpRejCount(p);
+      return TR(ix)
+        + '<td class="c-check"><label class="chk"><input type="checkbox" aria-label="Select row"></label></td>'
+        + '<td class="t-wrap"><a class="t-link" href="#">' + esc(p.pws) + '</a><span class="t-sub">' + esc(p.id) + '</span></td>'
+        + '<td>' + rpReqLabel(p) + '</td>'
+        + '<td>' + (p.st ? spill(RP_ST[p.st], p.st) : '<span class="t-none">Not expected</span>') + '</td>'
+        + cell(filed ? esc(p.date) : '<span class="t-none">—</span>', "num")
+        + cell(filed ? esc(p.by) : '<span class="t-none">—</span>')
+        + cell(filed ? String(p.att) : '<span class="t-none">—</span>', "num")
+        + cell(p.pool ? fmt(rpTotal(p)) : '<span class="t-none">—</span>', "num")
+        + cell(filed ? (p.deferred ? "Yes" : "No") : '<span class="t-none">—</span>')
+        + cell(filed ? (rc ? '<span style="color:var(--crit);font-weight:600">' + rc + '</span>' : "0") : '<span class="t-none">—</span>', "num")
+        + cell(esc(p.assign || "Unassigned")) + cell(esc(p.cty)) + cell(esc(p.terr))
+        + "</tr>";
+    }).join("");
+  }
+  renderRpRows();
+  wireRows("rpRows", function(ix){ rpFiled(rpPlans[ix]) ? rpOpen(ix) : rpNotFiled(ix); });
+  wireSearch("q-rp", "rpRows");
+  wireTools("rpRows");
+  $("rpPeriod").addEventListener("change", function(){ showToast("Period changed", "Showing " + this.value + "."); });
+  $("btnRegRp").addEventListener("click", function(){
+    openDrawer({title:"Replacement plan requirements", sub:"§141.84(c) · §141.90(e)(3)(i)",
+      body: dwSec("Who must submit", '<p class="dw-note">Every system whose baseline inventory has one or more lead, galvanized requiring replacement (GRR), or lead status unknown service lines. Systems without a baseline inventory show as Unknown until one is submitted.</p>')
+        + dwSec("What the plan must cover", dwList(RP_SECS.map(function(d){ return '<span class="dw-row" style="cursor:default"><span style="min-width:0"><span class="nm">' + esc(d.title) + '</span><span class="meta">' + esc(d.cite) + '</span></span></span>'; })))
+        + dwSec("Due", dwFacts([["Initial plan", "Nov 1, 2027"], ["Standard replacement deadline", "Dec 31, 2037"], ["Public posting", "URL required over 50,000 served"]]))});
+  });
+
+  /* a required system with no plan has nothing to review yet, so it opens a record, not a page */
+  function rpNotFiled(ix){
+    var p = rpPlans[ix];
+    var why = p.req === "req"
+      ? "Its baseline inventory submitted " + longDate(p.base.on) + " reported " + fmt(p.pool.lead) + " lead, " + fmt(p.pool.grr) + " GRR and " + fmt(p.pool.unk) + " unknown service lines, so a replacement plan is required."
+      : p.req === "no"
+        ? "Its baseline inventory submitted " + longDate(p.base.on) + " has no lead, GRR or unknown service lines, so no replacement plan is required."
+        : "This system hasn't submitted a baseline inventory yet, so whether it needs a replacement plan is unknown. It isn't counted as Not Submitted.";
+    openDrawer({
+      title:p.pws, badge: p.st ? spill(RP_ST[p.st], p.st) : "", sub:p.id + " · Replacement plan",
+      body: dwSec("Submission", dwFacts([
+          ["Required", p.req === "req" ? "Required" : p.req === "no" ? "Not required" : "Unknown"],
+          ["Status", p.st ? spill(RP_ST[p.st], p.st) : "Not expected"],
+          ["Due", "Nov 1, 2027"],
+          ["Replacement pool", p.pool ? fmt(rpTotal(p)) + " lines" : null],
+          ["Assigned to", esc(p.assign)]]))
+        + dwSec("Why", '<p class="dw-note">' + esc(why) + '</p>')
+        + dwSec("Water system", dwFacts([["PWSID", esc(p.id)], ["Type", esc(SYS_TYPE[p.type] || p.type)], ["County", esc(p.cty)], ["Territory", esc(p.terr)], ["Service connections", fmt(p.conns)]]))
+    });
+  }
+
+  /* ---- review page ---- */
+  var rpIx = 0, rpUi = null;
+  function rpResetUi(){ rpUi = {compose:{}, edit:{}, draft:{}, err:{}}; }
+  function rpOpen(ix){ rpIx = ix; rpResetUi(); renderRpReview(); showView("rp-review", "submissions"); }
+  $("rpCrumbTab").addEventListener("click", function(){ showView("submissions"); selectSubTab("stab-rp"); });
+
+  function rpGateHtml(tone, ico, html){ return '<div class="rp-gate ' + tone + '">' + ico + '<p>' + html + '</p></div>'; }
+
+  function renderRpReview(){
+    var p = rpPlans[rpIx], open = p.st === "Submitted";
+    var rc = rpRejCount(p), carry = rpCarryOpen(p);
+    $("rpCrumbNow").textContent = p.pws;
+    $("rpTitle").textContent = p.pws;
+    $("rpStatus").innerHTML = spill(RP_ST[p.st], p.st);
+    $("rpSub").textContent = "Service line replacement plan · Attempt " + p.att + " · Due Nov 1, 2027";
+
+    /* decision controls: the primary action sits last; what each one needs is stated
+       in the gate note below the header rather than discovered by clicking */
+    var acts = '<button class="btn-pill" type="button" id="rpPdfBtn">' + ICO_FILE + ' View plan PDF</button>';
+    if (open){
+      acts += '<button class="btn-danger" type="button" id="rpRejectBtn"' + (rc && !carry ? '' : ' disabled') + '>Reject plan' + (rc ? ' (' + rc + ')' : '') + '</button>'
+            + '<button class="btn-solid" type="button" id="rpApproveBtn"' + (!rc && !carry ? '' : ' disabled') + '>Approve plan</button>';
+    }
+    $("rpActs").innerHTML = acts;
+    $("rpPdfBtn").addEventListener("click", function(){ rpPdf(p.att); });
+    if (open){
+      $("rpRejectBtn").addEventListener("click", function(){ if (!this.disabled) rpDecide("reject"); });
+      $("rpApproveBtn").addEventListener("click", function(){ if (!this.disabled) rpDecide("approve"); });
+    }
+
+    var gate = "";
+    if (p.req === "unk") gate += rpGateHtml("warn", ICO_WARN, "<b>Required flag is Unknown.</b> <span>This system hasn't submitted a baseline inventory, so the replacement pool can't be checked against one. You can still review the plan.</span>");
+    if (open){
+      if (carry) gate += rpGateHtml("warn", ICO_WARN, "<b>" + carry + " section" + (carry > 1 ? "s were" : " was") + " rejected in attempt " + (p.att - 1) + ".</b> <span>Clear each one or reject it again before recording a decision.</span> <a href=\"#\" class=\"rp-link\" data-go-sec=\"carry\">Go to first</a>");
+      else if (rc) gate += rpGateHtml("crit", ICO_WARN, "<b>" + rc + " section" + (rc > 1 ? "s" : "") + " rejected, so this plan can only be rejected.</b> <span>The utility sees your comments only after you reject the plan.</span>");
+      else gate += rpGateHtml("", ICO_INFO, "<b>No sections rejected.</b> <span>Approve the plan, or reject a section to send it back to the utility with a comment.</span>");
+    } else if (p.st === "Approved"){
+      gate += rpGateHtml("ok", ICO_OK, "<b>Approved " + esc(longDate(p.decided.on)) + " by " + esc(p.decided.by) + ".</b> <span>The review is locked.</span>");
+    } else if (p.st === "Rejected"){
+      gate += rpGateHtml("crit", ICO_WARN, "<b>Rejected " + esc(longDate(p.decided.on)) + " by " + esc(p.decided.by) + ".</b> <span>" + rc + " section comment" + (rc > 1 ? "s were" : " was") + " sent to the utility. A resubmission arrives in this same period as attempt " + (p.att + 1) + ".</span>");
+    } else if (p.st === "Voided"){
+      gate += rpGateHtml("", ICO_INFO, "<b>Voided " + esc(longDate(p.decided.on)) + " by " + esc(p.decided.by) + ".</b> <span>" + esc(p.decided.note || "") + "</span>");
+    }
+    $("rpGate").innerHTML = gate;
+
+    $("rpSide").innerHTML = rpSideHtml(p);
+    $("rpMain").innerHTML = rpMainHtml(p);
+  }
+
+  function rpSideHtml(p){
+    var rc = rpRejCount(p), carry = rpCarryOpen(p);
+    var review = sideCell("Submission", [
+      ["Status", spill(RP_ST[p.st], p.st)],
+      ["Rejected", rc ? '<span class="dl-crit">' + rc + ' section' + (rc > 1 ? 's' : '') + '</span> · <a href="#" class="rp-link" data-go-sec="rej">Go to first</a>' : '<span class="dl-muted">None</span>'],
+      ["Re-review", p.att > 1 ? (carry ? '<span style="color:var(--warn);font-weight:600">' + carry + ' from attempt ' + (p.att - 1) + '</span>' : '<span class="dl-muted">Done</span>') : null],
+      ["Attempt", '<span class="num">' + p.att + '</span>' + (p.att > 1 ? ' <span class="dl-muted">· ' + rpChanged(p) + ' changed</span>' : '')],
+      ["Submitted", esc(longDate(p.date))],
+      ["Submitted by", esc(p.by)],
+      ["Reviewer", p.assign && p.assign !== "Unassigned" ? esc(p.assign) : '<span class="dl-muted">Unassigned</span>']
+    ]).replace(/<\/div>$/, '<a class="card-link" href="#" id="rpActivity">Show activity and comments <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m6 4 4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div>');
+    var sys = sideCell("Water system", [
+      ["PWSID", '<span class="num">' + esc(p.id) + '</span>'],
+      ["Type", esc(SYS_TYPE[p.type] || p.type)],
+      ["County", esc(p.cty)],
+      ["Territory", esc(p.terr)],
+      ["Connections", '<span class="num">' + fmt(p.conns) + '</span>']
+    ]);
+    /* the outline doubles as the review checklist */
+    var toc = '<nav class="rp-toc" aria-label="Plan sections"><h3>Plan sections</h3>';
+    var n = 0;
+    RP_GROUPS.forEach(function(g){
+      toc += '<div class="g">' + esc(g) + '</div>';
+      if (g === "Baseline Inventory"){
+        toc += '<a href="#" data-go-sec="pool"><span class="rp-dot ' + (rpPoolMatch(p) ? "" : "warn") + '"></span><span class="t">Replacement pool</span>' + (rpPoolMatch(p) ? "" : '<span class="s warn">Check</span>') + '</a>';
+        return;
+      }
+      RP_SECS.filter(function(d){ return d.group === g; }).forEach(function(d){
+        n++;
+        var s = p.secs[d.key] || {}, na = rpNA(p, d);
+        var dot = na ? "na" : s.rej ? "crit" : (s.prior && !s.prior.res) ? "warn" : "";
+        var tag = na ? '<span class="s na">N/A</span>' : s.rej ? '<span class="s crit">Rejected</span>' : (s.prior && !s.prior.res) ? '<span class="s warn">Re-review</span>' : "";
+        toc += '<a href="#" data-go-sec="' + d.key + '"><span class="rp-dot ' + dot + '"></span><span class="t">' + n + '. ' + esc(d.title) + '</span>' + tag + '</a>';
+      });
+    });
+    toc += '</nav>';
+    return '<section class="domain br-details"><div class="cols">' + review + sys + '</div></section>'
+         + '<section class="domain">' + toc + '</section>';
+  }
+
+  function rpPoolMatch(p){
+    if (!p.base) return true;
+    return p.base.lead === p.pool.lead && p.base.grr === p.pool.grr && p.base.unk === p.pool.unk;
+  }
+  function rpPoolHtml(p){
+    var t = rpTotal(p), rate = Math.ceil(t * 0.1);
+    var stat = function(lbl, v, c, sub){
+      return '<div class="cell"><div class="rp-stat">' + (c ? '<i style="background:' + c + '"></i>' : '') + esc(lbl) + '</div>'
+        + '<div class="rp-stat-v">' + fmt(v) + (sub ? '<small>' + sub + '</small>' : '') + '</div></div>';
+    };
+    var pct = function(v){ return t ? (v / t * 100) : 0; };
+    var recon;
+    if (!p.base){
+      recon = '<div class="rp-recon warn">' + ICO_WARN + '<span><b>No baseline inventory to compare against.</b> These counts come from the plan only.</span></div>';
+    } else if (rpPoolMatch(p)){
+      recon = '<div class="rp-recon ok">' + ICO_OK + '<span>Matches the baseline inventory submitted ' + esc(longDate(p.base.on)) + '.</span></div>';
+    } else {
+      var diffs = [];
+      if (p.base.lead !== p.pool.lead) diffs.push("lead " + fmt(p.pool.lead) + " in the plan, " + fmt(p.base.lead) + " in the inventory");
+      if (p.base.grr !== p.pool.grr) diffs.push("GRR " + fmt(p.pool.grr) + " in the plan, " + fmt(p.base.grr) + " in the inventory");
+      if (p.base.unk !== p.pool.unk) diffs.push("unknown " + fmt(p.pool.unk) + " in the plan, " + fmt(p.base.unk) + " in the inventory");
+      recon = '<div class="rp-recon warn">' + ICO_WARN + '<span><b>Doesn’t match the most recent baseline inventory</b> (submitted ' + esc(longDate(p.base.on)) + '): '
+        + esc(diffs.join("; ")) + '. The plan uses an inventory as of ' + esc(longDate(p.asOf)) + '.</span></div>';
+    }
+    var deadline = p.deferred
+      ? 'Deferred · requested ' + esc(longDate(p.deferred.deadline)) + ' <span class="dl-muted">· see section 6</span>'
+      : 'Standard · Dec 31, 2037';
+    return '<section class="domain rp-pool" id="rp-sec-pool" style="scroll-margin-top:22px">'
+      + '<div class="domain-head"><h2>Replacement Pool</h2><span class="pill neutral" style="margin-left:auto">Inventory as of ' + esc(longDate(p.asOf)) + '</span></div>'
+      + '<div class="cols cols-4">'
+      + stat("Lead", p.pool.lead, C().sevCrit) + stat("GRR", p.pool.grr, C().sevCaution) + stat("Unknown", p.pool.unk, C().dvNavy)
+      + stat("Total pool", t, null, "lines") + '</div>'
+      + '<div class="rp-bar" role="img" aria-label="Pool composition">'
+      + '<i style="width:' + pct(p.pool.lead) + '%;background:' + C().sevCrit + '"></i>'
+      + '<i style="width:' + pct(p.pool.grr) + '%;background:' + C().sevCaution + '"></i>'
+      + '<i style="width:' + pct(p.pool.unk) + '%;background:' + C().dvNavy + '"></i></div>'
+      + '<div class="rp-pool-dl"><dl class="dl">' + dlRows([
+          ["Service connections", '<span class="num">' + fmt(p.conns) + '</span>'],
+          ["10% annual replacement rate", '<span class="num">' + fmt(rate) + '</span> lines a year <span class="dl-muted">· ' + (p.conns ? (rate / p.conns * 1000).toFixed(1) : "0") + ' per 1,000 connections</span>'],
+          ["Applicable deadline", deadline]
+        ]) + '</dl></div>'
+      + recon + '</section>';
+  }
+
+  function rpMainHtml(p){
+    var html = "", n = 0;
+    RP_GROUPS.forEach(function(g){
+      html += '<div class="rp-group"><h2 class="sec-head">' + esc(g) + '</h2>';
+      if (g === "Baseline Inventory") html += rpPoolHtml(p);
+      else RP_SECS.filter(function(d){ return d.group === g; }).forEach(function(d){ n++; html += rpSecHtml(p, d, n); });
+      html += '</div>';
+    });
+    return html;
+  }
+
+  function rpFiles(files){
+    if (!files || !files.length) return "";
+    return '<div class="files">' + files.map(function(f){
+      return '<button class="file" type="button" data-rp-file="' + esc(f[0]) + '"><span class="ico">' + ICO_FILE + '</span>'
+        + '<span><b>' + esc(f[0]) + '</b><span class="m">' + esc(f[1]) + '</span></span><span class="dl-ico">' + ICO_DL + '</span></button>';
+    }).join("") + '</div>';
+  }
+  function rpDeferredFacts(p){
+    var t = rpTotal(p), ten = Math.ceil(t * 0.1), per = ten / p.conns * 1000, d = p.deferred;
+    var f = function(k, v, sub, cls){ return '<div><div class="k">' + esc(k) + '</div><div class="v ' + (cls || "") + '">' + v + (sub ? '<small>' + sub + '</small>' : '') + '</div></div>'; };
+    return '<div class="rp-facts">'
+      + f("10% of pool per year", fmt(ten) + " lines", "of " + fmt(t) + " in the pool")
+      + f("Per 1,000 connections", per.toFixed(1), per > 39 ? "Above 39 · eligible" : "At or below 39 · not eligible", per > 39 ? "ok" : "")
+      + f("Requested deadline", esc(longDate(d.deadline)), "instead of Dec 31, 2037")
+      + f("Cumulative average rate", (d.annual / t * 100).toFixed(1) + "% a year", "39 per 1,000 connections")
+      + f("Annual replacements", fmt(d.annual), "lines a year")
+      + f("Duration and completion", d.years + " years", "complete by " + esc(longDate(d.deadline)))
+      + '</div>';
+  }
+
+  function rpCmtHtml(c, opts){
+    var vis = "";
+    if (opts.cur){
+      vis = c.sent
+        ? '<span class="vis sent">' + ICO_SEND + ' Sent to utility ' + esc(longDate(c.sent)) + '</span>'
+        : '<span class="vis">' + ICO_EYE_OFF + ' Not visible to the utility yet</span>';
+    }
+    return '<div class="rp-cmt' + (opts.cur ? '' : ' prior') + '">'
+      + '<div class="rp-cmt-h"><span class="rp-av">' + esc(rpInitials(c.by)) + '</span><b>' + esc(c.by) + '</b>'
+      + '<span>' + (opts.cur ? 'Rejected ' : 'Attempt ' + c.att + ' · rejected ') + esc(longDate(c.on)) + '</span>' + vis + '</div>'
+      + '<p>' + esc(c.text) + '</p>'
+      + (c.edited ? '<div class="rp-ed">Edited by ' + esc(c.edited.by) + ' · ' + esc(longDate(c.edited.on)) + '</div>' : '')
+      + (opts.res || '') + '</div>';
+  }
+  function rpComposer(key, mode){
+    var val = rpUi.draft[key] !== undefined ? rpUi.draft[key] : "";
+    var label = mode === "edit" ? "Edit rejection comment" : "Why is this section rejected?";
+    return '<div class="rp-compose' + (rpUi.err[key] ? ' has-err' : '') + '">'
+      + '<label for="rp-ta-' + key + '">' + label + '</label>'
+      + '<textarea id="rp-ta-' + key + '" data-rp-ta="' + key + '" placeholder="Say what is missing or wrong, and what the utility needs to change.">' + esc(val) + '</textarea>'
+      + '<div class="err">' + ICO_WARN + ' Add a comment. The utility needs to know what to fix.</div>'
+      + '<div class="hint">Required. The utility sees this only after you reject the plan. Anyone on your team can edit it until then.</div>'
+      + '<div class="rp-compose-acts"><button class="btn-pill btn-sm" type="button" data-rp="cancel" data-key="' + key + '">Cancel</button>'
+      + (mode === "edit"
+          ? '<button class="btn-solid btn-sm" type="button" data-rp="save-edit" data-key="' + key + '">Save comment</button>'
+          : '<button class="btn-danger btn-sm" type="button" data-rp="save-rej" data-key="' + key + '">Reject section</button>')
+      + '</div></div>';
+  }
+
+  function rpSecHtml(p, d, n){
+    var s = rpS(p, d.key), na = rpNA(p, d), open = p.st === "Submitted";
+    var carryOpen = s.prior && !s.prior.res;
+    var cls = "rp-sec" + (na ? " is-na" : s.rej ? " is-rej" : carryOpen ? " is-carry" : "");
+    var tags = [];
+    if (p.att > 1 && !na){
+      if (s.changed) tags.push(spill("info", "Changed since attempt " + (p.att - 1)));
+      else if (s.prior) tags.push(spill("neutral", "Not changed since attempt " + (p.att - 1)));
+    }
+    if (s.rej) tags.push(spill("crit", "Rejected"));
+    else if (carryOpen) tags.push(spill("warn", "Rejected in attempt " + s.prior.att));
+    if (na) tags.push(spill("neutral", "Not applicable"));
+
+    var body;
+    if (na){
+      body = '<div class="rp-sec-body"><p class="rp-na">' + esc(na) + '</p></div>';
+    } else {
+      var resp = (p.over && p.over[d.key]) || d.resp(p);
+      body = '<div class="rp-sec-body"><p class="rp-q">' + esc(d.q) + '</p>'
+        + (d.key === "def" ? rpDeferredFacts(p) : '')
+        + '<div class="rp-resp">' + rpMd(resp) + '</div>'
+        + rpFiles(p.over && p.over[d.key] ? [] : d.files) + '</div>';
+    }
+
+    var blocks = "";
+    if (s.prior){
+      var res = "";
+      if (s.prior.res === "cleared") res = '<div class="res">' + ICO_OK + ' Cleared by ' + esc(s.prior.resBy) + ' · ' + esc(longDate(s.prior.resOn)) + '</div>';
+      if (s.prior.res === "again") res = '<div class="res" style="color:var(--text-2)">Rejected again in attempt ' + p.att + '</div>';
+      blocks += rpCmtHtml(s.prior, {cur:false, res:res});
+    }
+    if (s.rej){
+      blocks += rpUi.edit[d.key] ? rpComposer(d.key, "edit") : rpCmtHtml(s.rej, {cur:true});
+    }
+    if (rpUi.compose[d.key]) blocks += rpComposer(d.key, "new");
+
+    var foot = "";
+    if (open && !na && !rpUi.compose[d.key] && !rpUi.edit[d.key]){
+      var b = "", note = "";
+      if (s.rej){
+        note = "Clearing the rejection removes its comment. The original stays in the activity log.";
+        b = '<button class="btn-text" type="button" data-rp="edit" data-key="' + d.key + '">Edit comment</button>'
+          + '<button class="btn-pill btn-sm" type="button" data-rp="unreject" data-key="' + d.key + '">Clear rejection</button>';
+      } else if (carryOpen){
+        note = s.changed ? "The utility changed this section after it was rejected." : "The utility didn’t change this section after it was rejected.";
+        b = '<button class="btn-pill btn-sm" type="button" data-rp="carry-clear" data-key="' + d.key + '">Clear rejection</button>'
+          + '<button class="btn-ghost-danger btn-sm" type="button" data-rp="carry-again" data-key="' + d.key + '">Reject again</button>';
+      } else {
+        b = '<button class="btn-ghost-danger btn-sm" type="button" data-rp="reject" data-key="' + d.key + '">Reject section</button>';
+      }
+      foot = '<div class="rp-sec-foot"><span class="note">' + note + '</span><div class="acts">' + b + '</div></div>';
+    }
+
+    return '<section class="' + cls + '" id="rp-sec-' + d.key + '">'
+      + '<div class="rp-sec-head"><span class="rp-num">' + n + '</span>'
+      + '<div class="rp-sec-title"><h3>' + esc(d.title) + '</h3><div class="rp-cite">' + esc(d.cite) + '</div></div>'
+      + (tags.length ? '<div class="rp-tags">' + tags.join("") + '</div>' : '') + '</div>'
+      + body + blocks + foot + '</section>';
+  }
+
+  function rpLog(p, what, who){ p.log.push([RP_TODAY, what, who]); }
+  function rpRerender(focusKey){
+    renderRpReview(); renderRpRows();
+    if (focusKey){
+      var ta = document.querySelector('[data-rp-ta="' + focusKey + '"]');
+      if (ta){ ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length); }
+    }
+  }
+  function rpScrollTo(key){
+    var el = $("rp-sec-" + key); if (!el) return;
+    el.scrollIntoView({behavior:"smooth", block:"start"});
+    el.classList.add("flash");
+    window.setTimeout(function(){ el.classList.remove("flash"); }, 1400);
+  }
+
+  /* every control on the page routes through here */
+  document.getElementById("view-rp-review").addEventListener("input", function(e){
+    var ta = e.target.closest("[data-rp-ta]"); if (!ta) return;
+    var k = ta.getAttribute("data-rp-ta");
+    rpUi.draft[k] = ta.value;
+    if (rpUi.err[k] && ta.value.trim()){ rpUi.err[k] = false; ta.closest(".rp-compose").classList.remove("has-err"); }
+  });
+  document.getElementById("view-rp-review").addEventListener("click", function(e){
+    var p = rpPlans[rpIx];
+    var go = e.target.closest("[data-go-sec]");
+    if (go){
+      e.preventDefault();
+      var g = go.getAttribute("data-go-sec");
+      if (g === "rej" || g === "carry"){
+        var first = RP_SECS.filter(function(d){ var s = p.secs[d.key]; return s && (g === "rej" ? s.rej : (s.prior && !s.prior.res)); })[0];
+        if (first) rpScrollTo(first.key);
+      } else rpScrollTo(g);
+      return;
+    }
+    if (e.target.closest("#rpActivity")){ e.preventDefault(); rpActivity(); return; }
+    var f = e.target.closest("[data-rp-file]");
+    if (f){ showToast("Download started", f.getAttribute("data-rp-file")); return; }
+    var btn = e.target.closest("[data-rp]"); if (!btn) return;
+    var act = btn.getAttribute("data-rp"), key = btn.getAttribute("data-key"), s = rpS(p, key), d = rpDef(key);
+    if (act === "reject" || act === "carry-again"){
+      rpUi.compose[key] = true; rpUi.draft[key] = ""; rpUi.err[key] = false;
+      rpRerender(key); return;
+    }
+    if (act === "cancel"){
+      rpUi.compose[key] = false; rpUi.edit[key] = false; rpUi.err[key] = false; delete rpUi.draft[key];
+      rpRerender(); return;
+    }
+    if (act === "save-rej"){
+      var txt = (rpUi.draft[key] || "").trim();
+      if (!txt){ rpUi.err[key] = true; rpRerender(key); return; }
+      s.rej = {by:RP_ME, on:RP_TODAY, text:txt};
+      if (s.prior && !s.prior.res){ s.prior.res = "again"; s.prior.resBy = RP_ME; s.prior.resOn = RP_TODAY; }
+      rpUi.compose[key] = false; delete rpUi.draft[key];
+      rpLog(p, "Section rejected: " + d.title, RP_ME);
+      rpRerender();
+      showToast("Section rejected", "Your comment stays hidden from the utility until you reject the plan.");
+      return;
+    }
+    if (act === "edit"){
+      rpUi.edit[key] = true; rpUi.draft[key] = s.rej.text; rpRerender(key); return;
+    }
+    if (act === "save-edit"){
+      var t2 = (rpUi.draft[key] || "").trim();
+      if (!t2){ rpUi.err[key] = true; rpRerender(key); return; }
+      if (t2 !== s.rej.text){
+        rpLog(p, "Comment edited: " + d.title, RP_ME + " · original kept in this log: “" + s.rej.text + "”");
+        s.rej.text = t2; s.rej.edited = {by:RP_ME, on:RP_TODAY};
+      }
+      rpUi.edit[key] = false; delete rpUi.draft[key];
+      rpRerender(); showToast("Comment saved", d.title); return;
+    }
+    if (act === "unreject"){
+      rpLog(p, "Rejection cleared: " + d.title, RP_ME + " · comment removed: “" + s.rej.text + "”");
+      delete s.rej;
+      if (s.prior && s.prior.res === "again"){ s.prior.res = null; }
+      rpRerender(); showToast("Rejection cleared", d.title + " is no longer rejected."); return;
+    }
+    if (act === "carry-clear"){
+      s.prior.res = "cleared"; s.prior.resBy = RP_ME; s.prior.resOn = RP_TODAY;
+      rpLog(p, "Attempt " + s.prior.att + " rejection cleared: " + d.title, RP_ME);
+      rpRerender(); showToast("Rejection cleared", d.title + " is accepted for this attempt."); return;
+    }
+  });
+
+  /* ---- decision ---- */
+  var rpPending = null;
+  function rpDecide(kind){
+    var p = rpPlans[rpIx];
+    rpPending = kind;
+    var rej = RP_SECS.filter(function(d){ return p.secs[d.key] && p.secs[d.key].rej; });
+    if (kind === "reject"){
+      $("rpMIco").className = "cf-ico";
+      $("rpMIco").innerHTML = '<svg width="19" height="19" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 4.6v4.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="8" cy="11.4" r="1" fill="currentColor"/></svg>';
+      $("rpMTitle").textContent = "Reject plan and send " + rej.length + " comment" + (rej.length > 1 ? "s" : "") + "?";
+      $("rpMLead").textContent = p.pws + " will see the Rejected status and these comments, and can resubmit in this same period.";
+      $("rpMBody").innerHTML = '<div class="dw-list">' + rej.map(function(d){
+          return '<span class="dw-row" style="cursor:default;align-items:flex-start"><span style="min-width:0"><span class="nm">' + esc(d.title) + '</span>'
+            + '<span class="meta" style="font-size:13px;color:var(--text-2)">' + esc(p.secs[d.key].rej.text) + '</span></span></span>';
+        }).join("") + '</div>'
+        + '<p class="dw-note">Sections not listed are accepted as submitted.</p>';
+      $("rpMGo").className = "btn-danger";
+      $("rpMGo").textContent = "Reject plan and send comments";
+    } else {
+      $("rpMIco").className = "cf-ico ok";
+      $("rpMIco").innerHTML = ICO_OK;
+      $("rpMTitle").textContent = "Approve " + p.pws + "’s replacement plan?";
+      $("rpMLead").textContent = "The utility will see the plan as Approved. The review locks, so sections can’t be rejected after this.";
+      $("rpMBody").innerHTML = '<dl class="dw-facts">'
+        + '<dt>Sections</dt><dd>' + RP_SECS.filter(function(d){ return !rpNA(p, d); }).length + ' reviewed, none rejected</dd>'
+        + '<dt>Replacement pool</dt><dd>' + fmt(rpTotal(p)) + ' lines</dd>'
+        + '<dt>Deadline</dt><dd>' + (p.deferred ? 'Deferred to ' + esc(longDate(p.deferred.deadline)) : 'Standard · Dec 31, 2037') + '</dd>'
+        + '</dl>' + (!rpPoolMatch(p) ? '<p class="dw-note" style="color:var(--warn);font-weight:600">The replacement pool doesn’t match the most recent baseline inventory.</p>' : '');
+      $("rpMGo").className = "btn-solid";
+      $("rpMGo").textContent = "Approve plan";
+    }
+    $("rpScrim").hidden = false;
+    requestAnimationFrame(function(){ $("rpScrim").classList.add("in"); });
+    $("rpMCancel").focus();
+  }
+  function rpCloseModal(){
+    $("rpScrim").classList.remove("in");
+    window.setTimeout(function(){ $("rpScrim").hidden = true; }, 250);
+    rpPending = null;
+  }
+  $("rpMCancel").addEventListener("click", rpCloseModal);
+  $("rpScrim").addEventListener("click", function(e){ if (e.target === $("rpScrim")) rpCloseModal(); });
+  document.addEventListener("keydown", function(e){ if (e.key === "Escape" && !$("rpScrim").hidden) rpCloseModal(); });
+  $("rpMGo").addEventListener("click", function(){
+    var p = rpPlans[rpIx], kind = rpPending;
+    runBusy(this, kind === "reject" ? "Rejecting…" : "Approving…", 1000, function(){
+      p.decided = {on:RP_TODAY, by:RP_ME};
+      if (kind === "reject"){
+        var n = 0;
+        RP_SECS.forEach(function(d){ var s = p.secs[d.key]; if (s && s.rej){ s.rej.sent = RP_TODAY; n++; } });
+        p.st = "Rejected";
+        rpLog(p, "Plan rejected", RP_ME + " · " + n + " section comment" + (n > 1 ? "s" : "") + " sent to the utility");
+        showToast("Plan rejected", p.pws + " can now see your " + n + " comment" + (n > 1 ? "s" : "") + " and resubmit.");
+      } else {
+        p.st = "Approved";
+        rpLog(p, "Plan approved", RP_ME + " · review locked");
+        showToast("Plan approved", p.pws + "’s replacement plan is approved.");
+      }
+      rpCloseModal(); rpResetUi(); rpRerender();
+      window.scrollTo({top:0, behavior:"smooth"});
+    });
+  });
+
+  /* ---- activity and comments ---- */
+  function rpActivity(){
+    var p = rpPlans[rpIx];
+    var items = p.log.slice().reverse().map(function(h){ return [longDate(h[0]), h[1], h[2]]; });
+    var open = RP_SECS.filter(function(d){ return p.secs[d.key] && p.secs[d.key].rej; });
+    openDrawer({
+      title:"Activity and comments", sub:p.pws + " · " + p.id,
+      body: (open.length ? dwSec("Rejection comments", dwList(open.map(function(d){
+                var r = p.secs[d.key].rej;
+                return '<span class="dw-row" style="cursor:default;align-items:flex-start"><span style="min-width:0"><span class="nm">' + esc(d.title) + '</span>'
+                  + '<span class="meta">' + esc(r.by) + ' · ' + esc(longDate(r.on)) + (r.sent ? ' · sent to utility' : ' · not yet visible to the utility') + '</span>'
+                  + '<span class="meta" style="font-size:13px;color:var(--text-2);margin-top:4px">' + esc(r.text) + '</span></span></span>';
+              }))) : "")
+        + dwSec("Activity", histRows(items))
+        + '<p class="dw-note">Edited and cleared comments keep their original text here.</p>'
+    });
+  }
+
+  /* ---- generated PDF, in a flyout over the page so the review stays put ---- */
+  function rpPdf(att){
+    var p = rpPlans[rpIx], on = p.pdf[att - 1];
+    var bar = '<div class="rp-pdfbar"><span>Attempt <b>' + att + '</b> of ' + p.att + ' · generated by 120Utility ' + esc(longDate(on)) + '</span>'
+      + (p.att > 1 ? '<div class="seg" role="group" aria-label="Attempt">' + p.pdf.map(function(x, i){
+          return '<button type="button" data-rp-att="' + (i + 1) + '" aria-pressed="' + (i + 1 === att) + '">Attempt ' + (i + 1) + '</button>';
+        }).join("") + '</div>' : '') + '</div>';
+    var body;
+    if (p.pdfFail){
+      body = '<div class="rp-pdf-fail">' + ICO_WARN.replace(/16/g, "28") + '<b>This PDF couldn’t be loaded</b>'
+        + '<p>The file for attempt ' + att + ' didn’t come back from 120Utility. Nothing in your review has changed. Try again, or keep reviewing the sections on the page.</p>'
+        + '<button class="btn-pill" type="button" id="rpPdfRetry">Try again</button></div>';
+    } else {
+      var html = '<div class="rp-page"><h1>Service Line Replacement Plan</h1>'
+        + '<div class="meta">' + esc(p.pws) + ' · PWSID ' + esc(p.id) + ' · ' + esc(p.cty) + ' County, Georgia</div>'
+        + '<div class="meta">Submitted ' + esc(longDate(on)) + ' by ' + esc(p.by) + ' · Attempt ' + att + '</div>'
+        + '<h2>Baseline Inventory</h2><p>Replacement pool as of ' + esc(longDate(p.asOf)) + ': ' + fmt(p.pool.lead) + ' lead, ' + fmt(p.pool.grr) + ' GRR, '
+        + fmt(p.pool.unk) + ' unknown (' + fmt(rpTotal(p)) + ' total). ' + fmt(p.conns) + ' service connections.</p>';
+      var n = 0;
+      RP_GROUPS.slice(1).forEach(function(g){
+        html += '<h2>' + esc(g) + '</h2>';
+        RP_SECS.filter(function(d){ return d.group === g; }).forEach(function(d){
+          n++;
+          var na = rpNA(p, d);
+          var resp = (att < p.att && p.prev && p.prev[d.key]) || (p.over && p.over[d.key]) || d.resp(p);
+          html += '<h3>' + n + '. ' + esc(d.title) + '</h3><div class="c">' + esc(d.cite) + '</div>'
+            + (na ? '<p class="na">Not applicable. ' + esc(na) + '</p>' : rpMd(resp));
+        });
+      });
+      html += '<div class="pg">Generated by 120Utility · page 1 of 1 (preview)</div></div>';
+      body = '<div class="rp-pdf">' + html + '</div>';
+    }
+    openDrawer({
+      wide:true, title:"Replacement plan PDF", sub:p.pws + " · " + p.id,
+      body: bar + body,
+      actions:[{label:"Close", id:"rpPdfClose", onClick:closeDrawer},
+               {label:"Download PDF", primary:true, id:"rpPdfDl", onClick:function(){
+                  if (this.disabled) return;
+                  var name = p.pws.replace(/[^A-Za-z0-9]+/g, "-") + "-replacement-plan-attempt-" + att + ".pdf";
+                  runBusy(this, "Preparing…", 900, function(){ showToast("Download started", name); });
+               }}]
+    });
+    if (p.pdfFail){
+      $("rpPdfDl").disabled = true;
+      $("rpPdfDl").title = "The PDF for this attempt is unavailable";
+      $("rpPdfRetry").addEventListener("click", function(){
+        runBusy(this, "Retrying…", 1000, function(){ showToast("Still unavailable", "120Utility hasn’t returned this PDF. Try again later."); });
+      });
+    }
+    Array.prototype.forEach.call(document.querySelectorAll("[data-rp-att]"), function(b){
+      b.addEventListener("click", function(){ rpPdf(Number(b.getAttribute("data-rp-att"))); });
+    });
+  }
 
 })();
 </script>
