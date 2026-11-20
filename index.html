@@ -2249,6 +2249,63 @@ html[data-skin="combined"] body #view-dashboard .kpi-panel div.kp-inner{backgrou
 .rp-req.muted{font-weight:500;color:var(--text-2)}
 
 .rv .rp-pool .dl{grid-template-columns:200px minmax(0,1fr)}
+
+/* submission details: collapsed card at the top of the side column */
+.rp-det-tog{width:100%;display:flex;align-items:flex-start;gap:10px;padding:16px 20px;text-align:left;font-size:14px;color:var(--text);min-height:52px}
+.rp-det-tog:hover{background:var(--surface-2)}
+.rp-det-tog:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.rp-det-t{min-width:0;flex:1}
+.rp-det-t b{display:block;font-weight:600}
+.rp-det-sum{display:block;font-size:13px;line-height:1.5;color:var(--text-2);margin-top:3px}
+.rp-det-tog .chev{flex:none;margin-top:2px;color:var(--text-2);transition:transform .15s ease}
+.rp-det.open .rp-det-tog .chev{transform:rotate(180deg)}
+.rp-det-body{border-top:1px solid var(--border)}
+.rp-det-body .cols{grid-template-columns:minmax(0,1fr)}
+.rp-det-body .cell{border-left:0;padding:16px 20px}
+.rp-det-body .cell+.cell{border-top:1px solid var(--border)}
+.rp-det-body .dl{grid-template-columns:96px minmax(0,1fr)}
+.rp-det-foot{padding:12px 20px;border-top:1px solid var(--border)}
+
+/* the side column is now just the outline */
+.rv:not([data-layout="top"]) #view-rp-review .rp-side,.rv:not([data-layout="top"]) .rp-side{margin-top:44px}
+.rp-toc-h{padding:0 10px 6px}
+.rp-toc-h h3{padding:0}
+.rp-toc-c{display:flex;gap:12px;flex-wrap:wrap;margin-top:4px}
+.rp-tc{font-size:12px;font-weight:600;color:var(--text-3);padding:0;min-height:0}
+.rp-tc.crit{color:var(--crit)} .rp-tc.warn{color:var(--warn)}
+a.rp-tc:hover{text-decoration:underline;background:none}
+.rp-toc .rp-toc-c a{display:inline;padding:0;min-height:0}
+
+/* attachments: row opens an embedded preview, download is separate */
+.rp-att{border:1px solid var(--border);border-radius:var(--r);background:var(--surface);overflow:hidden}
+.rp-att .rp-file{border:0;border-radius:0;cursor:pointer}
+.rp-att.open .rp-file{border-bottom:1px solid var(--border);background:var(--surface-2)}
+.rp-file:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.rp-file-t{min-width:0;flex:1}
+.rp-file-a{margin-left:auto;display:flex;align-items:center;gap:4px;flex:none}
+.rp-file-v{pointer-events:none}
+.rp-file:hover .rp-file-v{background:var(--brand-tint)}
+.rp-ibtn{width:34px;height:34px;border-radius:8px;display:grid;place-items:center;color:var(--text-2)}
+.rp-ibtn:hover{background:var(--surface-3);color:var(--text)}
+.rp-ibtn:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.rp-sec .files{max-width:640px}
+.rp-embed-bar{display:flex;align-items:center;gap:10px;padding:6px 8px 6px 14px;font-size:12px;color:var(--text-2);border-bottom:1px solid var(--border)}
+.rp-embed-bar .btn-text{margin-left:auto}
+.rp-embed-doc{background:var(--surface-3);padding:18px;max-height:340px;overflow:auto}
+.rp-paper{background:#fff;box-shadow:0 1px 3px rgba(33,37,43,.12);padding:28px 32px;max-width:460px;margin:0 auto;min-height:300px}
+.rp-paper b{display:block;font-size:14px;font-weight:600;color:#21252B}
+.rp-paper .m{display:block;font-size:11px;color:#888D97;margin-top:2px}
+.rp-paper .lines{display:flex;flex-direction:column;gap:7px;margin-top:18px}
+.rp-paper .lines i{display:block;height:7px;border-radius:4px;background:#E4E7EC}
+.rp-sheet{background:#fff;box-shadow:0 1px 3px rgba(33,37,43,.12);max-width:520px;margin:0 auto;overflow:auto}
+.rp-sheet table{border-collapse:collapse;width:100%;font-size:12px}
+.rp-sheet th,.rp-sheet td{border:1px solid #E4E7EC;padding:6px 10px;text-align:left;font-variant-numeric:tabular-nums}
+.rp-sheet th{background:#F3F5F8;font-weight:600}
+
+/* PDF attempt picker */
+.rp-attsel{margin-left:auto;padding:6px 10px!important;gap:8px}
+.rp-attsel span{font-size:13px;color:var(--text-2)}
+.rp-attsel select{font-size:13px}
 </style>
 </head>
 <body>
@@ -7526,7 +7583,7 @@ html[data-skin="combined"] body #view-dashboard .kpi-panel div.kp-inner{backgrou
 
   /* ---- review page ---- */
   var rpIx = 0, rpUi = null;
-  function rpResetUi(){ rpUi = {compose:{}, edit:{}, draft:{}, err:{}}; }
+  function rpResetUi(){ rpUi = {compose:{}, edit:{}, draft:{}, err:{}, view:{}}; }
   function rpOpen(ix){ rpIx = ix; rpResetUi(); renderRpReview(); showView("rp-review", "submissions"); }
   $("rpCrumbTab").addEventListener("click", function(){ showView("submissions"); selectSubTab("stab-rp"); });
 
@@ -7573,17 +7630,17 @@ html[data-skin="combined"] body #view-dashboard .kpi-panel div.kp-inner{backgrou
     $("rpMain").innerHTML = rpMainHtml(p);
   }
 
-  function rpSideHtml(p){
-    var rc = rpRejCount(p), carry = rpCarryOpen(p);
+  /* Submission and water system details are reference, not the work, so they sit
+     collapsed at the top of the side column; the summary line keeps the essentials in view. */
+  var rpDetailsOpen = false;
+  function rpDetailsHtml(p){
     var review = sideCell("Submission", [
       ["Status", spill(RP_ST[p.st], p.st)],
-      ["Rejected", rc ? '<span class="dl-crit">' + rc + ' section' + (rc > 1 ? 's' : '') + '</span> · <a href="#" class="rp-link" data-go-sec="rej">Go to first</a>' : '<span class="dl-muted">None</span>'],
-      ["Re-review", p.att > 1 ? (carry ? '<span style="color:var(--warn);font-weight:600">' + carry + ' from attempt ' + (p.att - 1) + '</span>' : '<span class="dl-muted">Done</span>') : null],
-      ["Attempt", '<span class="num">' + p.att + '</span>' + (p.att > 1 ? ' <span class="dl-muted">· ' + rpChanged(p) + ' changed</span>' : '')],
+      ["Attempt", '<span class="num">' + p.att + '</span>' + (p.att > 1 ? ' <span class="dl-muted">· ' + rpChanged(p) + ' section' + (rpChanged(p) === 1 ? '' : 's') + ' changed</span>' : '')],
       ["Submitted", esc(longDate(p.date))],
       ["Submitted by", esc(p.by)],
       ["Reviewer", p.assign && p.assign !== "Unassigned" ? esc(p.assign) : '<span class="dl-muted">Unassigned</span>']
-    ]).replace(/<\/div>$/, '<a class="card-link" href="#" id="rpActivity">Show activity and comments <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m6 4 4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div>');
+    ]);
     var sys = sideCell("Water system", [
       ["PWSID", '<span class="num">' + esc(p.id) + '</span>'],
       ["Type", esc(SYS_TYPE[p.type] || p.type)],
@@ -7591,8 +7648,25 @@ html[data-skin="combined"] body #view-dashboard .kpi-panel div.kp-inner{backgrou
       ["Territory", esc(p.terr)],
       ["Connections", '<span class="num">' + fmt(p.conns) + '</span>']
     ]);
-    /* the outline doubles as the review checklist */
-    var toc = '<nav class="rp-toc" aria-label="Plan sections"><h3>Plan sections</h3>';
+    var sum = "Attempt " + p.att + " \u00b7 " + longDate(p.date) + " \u00b7 " + p.by;
+    return '<section class="domain rp-det' + (rpDetailsOpen ? ' open' : '') + '">'
+      + '<button type="button" class="rp-det-tog" id="rpDetTog" aria-expanded="' + rpDetailsOpen + '" aria-controls="rpDetBody">'
+      + '<span class="rp-det-t"><b>Submission details</b>'
+      + (rpDetailsOpen ? '' : '<span class="rp-det-sum">' + esc(sum) + '</span>') + '</span>'
+      + '<svg class="chev" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m4 6 4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>'
+      + '<div class="rp-det-body" id="rpDetBody"' + (rpDetailsOpen ? '' : ' hidden') + '><div class="cols">' + review + sys + '</div></div>'
+      + '<div class="rp-det-foot"><a href="#" class="rp-link" id="rpActivity">Show activity and comments</a></div>'
+      + '</section>';
+  }
+
+  function rpSideHtml(p){
+    var rc = rpRejCount(p), carry = rpCarryOpen(p);
+    /* the outline doubles as the review checklist, so its head carries the counts */
+    var counts = [];
+    if (rc) counts.push('<a href="#" class="rp-tc crit" data-go-sec="rej">' + rc + ' rejected</a>');
+    if (carry) counts.push('<a href="#" class="rp-tc warn" data-go-sec="carry">' + carry + ' to re-review</a>');
+    var toc = '<nav class="rp-toc" aria-label="Plan sections"><div class="rp-toc-h"><h3>Plan sections</h3>'
+      + (counts.length ? '<div class="rp-toc-c">' + counts.join("") + '</div>' : '<div class="rp-toc-c"><span class="rp-tc">None rejected</span></div>') + '</div>';
     var n = 0;
     RP_GROUPS.forEach(function(g){
       toc += '<div class="g">' + esc(g) + '</div>';
@@ -7609,8 +7683,7 @@ html[data-skin="combined"] body #view-dashboard .kpi-panel div.kp-inner{backgrou
       });
     });
     toc += '</nav>';
-    return '<section class="domain br-details"><div class="cols">' + review + sys + '</div></section>'
-         + '<section class="domain">' + toc + '</section>';
+    return rpDetailsHtml(p) + '<section class="domain">' + toc + '</section>';
   }
 
   function rpPoolMatch(p){
@@ -7668,12 +7741,43 @@ html[data-skin="combined"] body #view-dashboard .kpi-panel div.kp-inner{backgrou
     return html;
   }
 
-  function rpFiles(files){
+  var ICO_EYE = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M1.8 8S4 3.8 8 3.8 14.2 8 14.2 8 12 12.2 8 12.2 1.8 8 1.8 8Z" stroke="currentColor" stroke-width="1.4"/><circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.4"/></svg>';
+  function rpFiles(p, key, files){
     if (!files || !files.length) return "";
-    return '<div class="files">' + files.map(function(f){
-      return '<button class="file" type="button" data-rp-file="' + esc(f[0]) + '"><span class="ico">' + ICO_FILE + '</span>'
-        + '<span><b>' + esc(f[0]) + '</b><span class="m">' + esc(f[1]) + '</span></span><span class="dl-ico">' + ICO_DL + '</span></button>';
+    return '<div class="files">' + files.map(function(f, i){
+      var id = key + ":" + i, open = !!rpUi.view[id];
+      return '<div class="rp-att' + (open ? ' open' : '') + '">'
+        + '<div class="file rp-file" role="button" tabindex="0" data-rp-view="' + id + '" aria-expanded="' + open + '">'
+        + '<span class="ico">' + ICO_FILE + '</span>'
+        + '<span class="rp-file-t"><b>' + esc(f[0]) + '</b><span class="m">' + esc(f[1]) + '</span></span>'
+        + '<span class="rp-file-a">'
+        + '<span class="btn-text rp-file-v">' + ICO_EYE + (open ? ' Hide preview' : ' View') + '</span>'
+        + '<button class="rp-ibtn" type="button" data-rp-file="' + esc(f[0]) + '" aria-label="Download ' + esc(f[0]) + '" title="Download">' + ICO_DL + '</button>'
+        + '</span></div>'
+        + (open ? rpEmbed(p, f) : '')
+        + '</div>';
     }).join("") + '</div>';
+  }
+  /* a stand-in render of the attachment, so the reviewer can read it in place */
+  function rpEmbed(p, f){
+    var name = f[0], base = name.replace(/\.[a-z]+$/i, ""), ext = (name.match(/\.([a-z]+)$/i) || [,""])[1].toLowerCase();
+    var bar = function(w){ return '<i style="width:' + w + '%"></i>'; };
+    var doc;
+    if (ext === "xlsx"){
+      var rows = [["Area", "Lead", "GRR", "Unknown", "Score"], ["Downtown", "4", "6", "9", "92"], ["Mill Village", "2", "5", "11", "81"],
+                  ["Oak Ridge", "0", "2", "8", "64"], ["River Bend", "0", "1", "6", "52"], ["Pine Hollow", "0", "0", "4", "38"]];
+      doc = '<div class="rp-sheet"><table>' + rows.map(function(r, i){
+        return '<tr>' + r.map(function(c){ return i ? '<td>' + esc(c) + '</td>' : '<th>' + esc(c) + '</th>'; }).join("") + '</tr>';
+      }).join("") + '</table></div>';
+    } else {
+      doc = '<div class="rp-paper"><b>' + esc(base) + '</b><span class="m">' + esc(p.pws) + ' \u00b7 ' + esc(p.id) + '</span>'
+        + '<div class="lines">' + bar(96) + bar(92) + bar(98) + bar(64) + '</div>'
+        + '<div class="lines">' + bar(94) + bar(97) + bar(88) + bar(95) + bar(42) + '</div>'
+        + '<div class="lines">' + bar(90) + bar(96) + bar(71) + '</div></div>';
+    }
+    return '<div class="rp-embed"><div class="rp-embed-bar"><span>' + (ext === "xlsx" ? "Sheet 1 of 1" : "Page 1 of 3") + '</span>'
+      + '</div>'
+      + '<div class="rp-embed-doc">' + doc + '</div></div>';
   }
   function rpDeferredFacts(p){
     var t = rpTotal(p), ten = Math.ceil(t * 0.1), per = ten / p.conns * 1000, d = p.deferred;
@@ -7738,7 +7842,7 @@ html[data-skin="combined"] body #view-dashboard .kpi-panel div.kp-inner{backgrou
       body = '<div class="rp-sec-body"><p class="rp-q">' + esc(d.q) + '</p>'
         + (d.key === "def" ? rpDeferredFacts(p) : '')
         + '<div class="rp-resp">' + rpMd(resp) + '</div>'
-        + rpFiles(p.over && p.over[d.key] ? [] : d.files) + '</div>';
+        + rpFiles(p, d.key, p.over && p.over[d.key] ? [] : d.files) + '</div>';
     }
 
     var blocks = "";
@@ -7813,7 +7917,14 @@ html[data-skin="combined"] body #view-dashboard .kpi-panel div.kp-inner{backgrou
     }
     if (e.target.closest("#rpActivity")){ e.preventDefault(); rpActivity(); return; }
     var f = e.target.closest("[data-rp-file]");
-    if (f){ showToast("Download started", f.getAttribute("data-rp-file")); return; }
+    if (f){ e.stopPropagation(); showToast("Download started", f.getAttribute("data-rp-file")); return; }
+    var pv = e.target.closest("[data-rp-view]");
+    if (pv){ var vid = pv.getAttribute("data-rp-view"); rpUi.view[vid] = !rpUi.view[vid]; rpRerender(); return; }
+    if (e.target.closest("#rpDetTog")){
+      rpDetailsOpen = !rpDetailsOpen;
+      $("rpSide").innerHTML = rpSideHtml(p);
+      return;
+    }
     var btn = e.target.closest("[data-rp]"); if (!btn) return;
     var act = btn.getAttribute("data-rp"), key = btn.getAttribute("data-key"), s = rpS(p, key), d = rpDef(key);
     if (act === "reject" || act === "carry-again"){
@@ -7859,6 +7970,10 @@ html[data-skin="combined"] body #view-dashboard .kpi-panel div.kp-inner{backgrou
       rpLog(p, "Attempt " + s.prior.att + " rejection cleared: " + d.title, RP_ME);
       rpRerender(); showToast("Rejection cleared", d.title + " is accepted for this attempt."); return;
     }
+  });
+
+  document.getElementById("view-rp-review").addEventListener("keydown", function(e){
+    if ((e.key === "Enter" || e.key === " ") && e.target.matches && e.target.matches("[data-rp-view]")){ e.preventDefault(); e.target.click(); }
   });
 
   /* ---- decision ---- */
@@ -7945,10 +8060,11 @@ html[data-skin="combined"] body #view-dashboard .kpi-panel div.kp-inner{backgrou
   /* ---- generated PDF, in a flyout over the page so the review stays put ---- */
   function rpPdf(att){
     var p = rpPlans[rpIx], on = p.pdf[att - 1];
-    var bar = '<div class="rp-pdfbar"><span>Attempt <b>' + att + '</b> of ' + p.att + ' · generated by 120Utility ' + esc(longDate(on)) + '</span>'
-      + (p.att > 1 ? '<div class="seg" role="group" aria-label="Attempt">' + p.pdf.map(function(x, i){
-          return '<button type="button" data-rp-att="' + (i + 1) + '" aria-pressed="' + (i + 1 === att) + '">Attempt ' + (i + 1) + '</button>';
-        }).join("") + '</div>' : '') + '</div>';
+    var bar = '<div class="rp-pdfbar"><span>' + (p.att > 1 ? '' : 'Attempt 1 \u00b7 ') + 'Generated by 120Utility ' + esc(longDate(on)) + (att < p.att ? ' \u00b7 <b>not the current attempt</b>' : '') + '</span>'
+      + (p.att > 1 ? '<label class="field rp-attsel"><span>Showing</span><select id="rpAttSel" aria-label="Attempt">' + p.pdf.map(function(x, i){
+          var n = i + 1;
+          return '<option value="' + n + '"' + (n === att ? ' selected' : '') + '>Attempt ' + n + ' \u00b7 ' + longDate(x) + (n === p.att ? ' (current)' : '') + '</option>';
+        }).slice().reverse().join("") + '</select></label>' : '') + '</div>';
     var body;
     if (p.pdfFail){
       body = '<div class="rp-pdf-fail">' + ICO_WARN.replace(/16/g, "28") + '<b>This PDF couldn’t be loaded</b>'
@@ -7991,9 +8107,7 @@ html[data-skin="combined"] body #view-dashboard .kpi-panel div.kp-inner{backgrou
         runBusy(this, "Retrying…", 1000, function(){ showToast("Still unavailable", "120Utility hasn’t returned this PDF. Try again later."); });
       });
     }
-    Array.prototype.forEach.call(document.querySelectorAll("[data-rp-att]"), function(b){
-      b.addEventListener("click", function(){ rpPdf(Number(b.getAttribute("data-rp-att"))); });
-    });
+    if ($("rpAttSel")) $("rpAttSel").addEventListener("change", function(){ rpPdf(Number(this.value)); });
   }
 
 })();
